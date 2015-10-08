@@ -31,7 +31,7 @@
     numbers=left,
 }
 
-\title{Master Thesis Proposal \\
+\title{Master's Thesis Proposal \\
        KLSM: A Relaxed Concurrent Priority Queue \\
        Technical University of Vienna}
 \author{Jakob Gruber, 0203440 \\
@@ -68,11 +68,19 @@ data structures which are able to be used concurrently and scale well to a large
 of threads. In particular, lock-free structures promise superior scalability by avoiding
 the use of blocking synchronization primitives.
 
-Concurrent priority queues have been extensively researched over the past decades.
-In this paper, we discuss three major ideas within the field: fine-grained locking
-employs multiple locks to avoid a single bottleneck within the queue; SkipLists
-are search structures which use randomization and therefore do not require elaborate reorganization
-schemes; and relaxed data structures trade semantic guarantees for improved scalability.
+However, priority queues in particular are challenging to parallelize efficiently since
+the \lstinline|delete_min| operation causes high contention at the minimal (maximal) element.
+Even though concurrent priority queues have been extensively researched over the past decades,
+a good solution has not yet been reached.
+
+A recent promising approach has been through relaxation of provided guarantees, i.e.
+allowing the priority queue to return one of the $k$ minimal items. The $k$-LSM is a lock-free
+priority queue design which follows this approach and displays high scalability in initial
+benchmarks. However, it is currently only available integrated into the task-scheduling framework
+Pheet\footnote{\url{www.pheet.org}} and thus cannot be compared directly to other recent designs.
+
+Within this thesis, a standalone version of the $k$-LSM priority queue will be developed and
+compared extensively with state of the art concurrent priority queues.
 
 \section{Expected Results}
 
