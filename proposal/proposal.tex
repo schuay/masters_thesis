@@ -84,6 +84,25 @@ compared extensively with state of the art concurrent priority queues.
 
 \section{Expected Results}
 
+There are several goals of this thesis: first, to provide a solid implementation of the $k$-LSM
+which may easily be compared against other priority queues and/or used in practice. This implies not
+only that the implementation must be efficient and correct, but it also needs to be reliable and
+easy to to understand. Ideally, the scalability at high thread counts will also be improved
+by following up on several potential optimization ideas.
+
+Second, to gain an in-depth understanding of the $k$-LSM's behavior in different situations. In
+recent literature on concurrent priority queues, a simply uniform throughput benchmark (in which
+each thread performs 50\% insertions, 50\% deletions of uniformly random keys) has often
+been the main performance evaluation tool - but is this benchmark appropriate and does it accurately
+reflect a design's performance? And how do these data structures perform on different machines
+and architectures? This thesis will investigate answers to these questions and present comparisons
+against other current designs.
+
+And finally, to provide an extensive overview of the development of priority queues, reaching
+from sequential queues through early lock-based concurrent designs and several variations of
+lock-free skiplist-based queues, to recent work which has often focused on various relaxation
+approaches. Special focus will be given to the $k$-LSM implementation including all of its
+intricacies such as memory management in a lock-free environment.
 \section{Methodology}
 
 \section{State of the Art}
