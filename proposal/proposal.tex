@@ -1,0 +1,65 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{comment}
+\usepackage{graphicx}
+\usepackage[pdfborder={0 0 0}]{hyperref}
+\usepackage{listings}
+\usepackage[usenames,dvipsnames,table]{xcolor}
+
+\bibliography{bibliography.bib}
+
+\definecolor{Gray}{gray}{0.5}
+\definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
+
+\pdfstringdefDisableCommands{\def\citeauthor#1{#1}}
+
+\lstset{
+    language=C++,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{OliveGreen},
+    commentstyle=\color{Gray},
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=false,
+    showspaces=false,
+    showtabs=false,
+    numbers=left,
+}
+
+\title{Master Thesis Proposal \\
+       KLSM: A Relaxed Concurrent Priority Queue \\
+       Technical University of Vienna}
+\author{Jakob Gruber, 0203440 \\
+        Advisor: Prof. Dr. Scient. Jesper Larsson Tr\"aff}
+
+\begin{document}
+
+\maketitle
+
+\section{Abstract}
+
+Priority queues are abstract data structures which store a set of key/value pairs
+and allow efficient access to the item with the minimal (maximal) key. Such queues are an important
+element in various areas of computer science such as algorithmics (i.e. Dijkstra's shortest
+path algorithm) and operating system (i.e. priority schedulers).
+
+The recent trend towards multiprocessor computing requires new implementations of basic
+data structures which are able to be used concurrently and scale well to a large number
+of threads. In particular, lock-free structures promise superior scalability by avoiding
+the use of blocking synchronization primitives.
+
+Concurrent priority queues have been extensively researched over the past decades.
+In this paper, we discuss three major ideas within the field: fine-grained locking
+employs multiple locks to avoid a single bottleneck within the queue; SkipLists
+are search structures which use randomization and therefore do not require elaborate reorganization
+schemes; and relaxed data structures trade semantic guarantees for improved scalability.
+
+\nocite{*} % TODO: Remove me.
+\printbibliography
+
+\end{document}
