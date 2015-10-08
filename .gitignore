@@ -1,0 +1,5 @@
+*.backup
+*.swp
+*~
+*~[0-9]
+build/

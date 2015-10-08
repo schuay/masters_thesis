@@ -6,7 +6,7 @@ library(scales)
 pqplot <- function(csvfile) {
     # install.packages(c("Rmisc", "ggplot2", "plyr"))
 
-    figfile <- "build/fig.eps"
+    figfile <- "graphics/fig.eps"
 
     df <- read.csv(csvfile)
     colnames(df) <- c("kernel", "p", "throughput")

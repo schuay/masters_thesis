@@ -688,7 +688,7 @@ benchmarking suite and is available at \url{https://github.com/schuay/seminar_in
 \begin{center}
 <<results = tex, echo = FALSE>>=
 \SweaveInput{pqplot.Rnw}
-pqplot("../results/random.csv")
+pqplot("results/random.csv")
 @
 \end{center}
 
