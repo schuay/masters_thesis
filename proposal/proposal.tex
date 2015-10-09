@@ -58,52 +58,84 @@ Bsp 2: http://www.informatik.tuwien.ac.at/dekanat/Abstract2.pdf
 
 \section{Motivation \& Problem Statement}
 
-Priority queues are abstract data structures which store a set of key/value pairs
-and allow efficient access to the item with the minimal (maximal) key. Such queues are an important
-element in various areas of computer science such as algorithmics (i.e. Dijkstra's shortest
-path algorithm) and operating system (i.e. priority schedulers).
+Priority queues are abstract data structures which store a set of key/value
+pairs and allow efficient access to the item with the minimal (maximal) key.
+They are also a vital element in various areas of computer science such as
+algorithmics (i.e. Dijkstra's shortest path algorithm) and operating system
+(i.e. priority schedulers).
 
-The recent trend towards multiprocessor computing requires new implementations of basic
-data structures which are able to be used concurrently and scale well to a large number
-of threads. In particular, lock-free structures promise superior scalability by avoiding
-the use of blocking synchronization primitives.
+The recent trend towards multiprocessor computing requires new implementations
+of basic data structures which are able to be used concurrently and scale well
+to a large number of threads. In particular, lock-free structures promise
+superior scalability by avoiding the use of blocking synchronization
+primitives.
 
-However, priority queues in particular are challenging to parallelize efficiently since
-the \lstinline|delete_min| operation causes high contention at the minimal (maximal) element.
-Even though concurrent priority queues have been extensively researched over the past decades,
-a good solution has not yet been reached.
+However, priority queues in particular are challenging to parallelize
+efficiently since the \lstinline|delete_min| operation causes high contention
+at the minimal (maximal) element.  Even though concurrent priority queues have
+been extensively researched over the past decades, an ultimately solution has
+not yet been reached.
 
-A recent promising approach has been through relaxation of provided guarantees, i.e.
-allowing the priority queue to return one of the $k$ minimal items. The $k$-LSM is a lock-free
-priority queue design which follows this approach and displays high scalability in initial
-benchmarks. However, it is currently only available integrated into the task-scheduling framework
-Pheet\footnote{\url{www.pheet.org}} and thus cannot be compared directly to other recent designs.
+A recent promising approach has been through relaxation of provided guarantees,
+i.e.  allowing the priority queue to return one of the $k$ minimal items
+instead of only being allowed to return the minimal item itself. The $k$-LSM is
+a lock-free priority queue design which follows this approach and displays high
+scalability in initial benchmarks. However, it is currently only available
+integrated into the task-scheduling framework
+Pheet\footnote{\url{www.pheet.org}} and thus cannot be compared directly to
+other recent designs.
 
-Within this thesis, a standalone version of the $k$-LSM priority queue will be developed and
-compared extensively with state of the art concurrent priority queues.
+Within this thesis, a standalone version of the $k$-LSM priority queue will be
+developed and compared extensively with state of the art concurrent priority
+queues.
 
 \section{Expected Results}
 
-There are several goals of this thesis: first, to provide a solid implementation of the $k$-LSM
-which may easily be compared against other priority queues and/or used in practice. This implies not
-only that the implementation must be efficient and correct, but it also needs to be reliable and
-easy to to understand. Ideally, the scalability at high thread counts will also be improved
-by following up on several potential optimization ideas.
+There are several goals of this thesis: first, to provide a solid
+implementation of the $k$-LSM which may easily be compared against other
+priority queues and/or used in practice. This implies not only that the
+implementation must be efficient and correct, but it also needs to be reliable
+and easy to to understand. Ideally, the scalability at high thread counts
+compared to the current version will also be improved by following up on
+several potential optimization ideas.
 
-Second, to gain an in-depth understanding of the $k$-LSM's behavior in different situations. In
-recent literature on concurrent priority queues, a simply uniform throughput benchmark (in which
-each thread performs 50\% insertions, 50\% deletions of uniformly random keys) has often
-been the main performance evaluation tool - but is this benchmark appropriate and does it accurately
-reflect a design's performance? And how do these data structures perform on different machines
-and architectures? This thesis will investigate answers to these questions and present comparisons
-against other current designs.
+Second, to gain an in-depth understanding of the $k$-LSM's behavior in
+different situations. In recent literature on concurrent priority queues, a
+simple uniform throughput benchmark (in which each thread performs 50\%
+insertions, 50\% deletions of uniformly random keys) has often been the main
+performance evaluation tool - but is this benchmark appropriate and does it
+accurately reflect a design's performance? And how do these data structures
+perform on different machines and architectures? This thesis will investigate
+answers to these questions and present comparisons against other current
+priority queues.
 
-And finally, to provide an extensive overview of the development of priority queues, reaching
-from sequential queues through early lock-based concurrent designs and several variations of
-lock-free skiplist-based queues, to recent work which has often focused on various relaxation
-approaches. Special focus will be given to the $k$-LSM implementation including all of its
-intricacies such as memory management in a lock-free environment.
+And finally, to provide an extensive overview of the development of priority
+queues, reaching from sequential queues through early lock-based concurrent
+designs and several variations of lock-free skiplist-based queues, to recent
+work which has often focused on various relaxation approaches. Special focus
+will be given to the $k$-LSM implementation including all of its intricacies
+such as memory management in a lock-free environment.
+
 \section{Methodology}
+
+Work on this thesis will proceed in several related parts:
+
+\begin{itemize}
+    \item Researching literature on priority queues, with special emphasis on
+        modern, highly performant concurrent designs. What kind of designs
+        are popular? What kind of performance can we expect? What are the
+        main challenges faced by other designs?
+    \item Thoroughly investigating the current $k$-LSM data structure. On
+        the one hand, I need a thorough understanding of its implementation
+        details in order to be successful in creating a reimplementation; and
+        on the other, benchmarking the current implementation will provide a
+        good performance baseline.
+    \item Implementing a standalone version. Far from being a simple one-to-one 
+        port, the standalone $k$-LSM will rather be a reimplementation from
+        the basic principles of the $k$-LSM design. 
+    \item Benchmarking and comparisons against other state of the art concurrent
+        priority queues on multiple machines and varying benchmarks.
+\end{itemize}
 
 \section{State of the Art}
 
