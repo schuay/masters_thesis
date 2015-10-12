@@ -32,9 +32,8 @@
 }
 
 \title{Master's Thesis Proposal \\
-       KLSM: A Relaxed Concurrent Priority Queue \\
-       Technical University of Vienna}
-\author{Jakob Gruber, 0203440 \\
+       \textsc{KLSM: A Relaxed Lock-Free Priority Queue}}
+\author{Jakob Gruber BA BSc, 0203440 \\
         Advisor: Prof. Dr. Scient. Jesper Larsson Tr\"aff}
 
 \begin{document}
@@ -61,8 +60,8 @@ Bsp 2: http://www.informatik.tuwien.ac.at/dekanat/Abstract2.pdf
 Priority queues are abstract data structures which store a set of key/value
 pairs and allow efficient access to the item with the minimal (maximal) key.
 They are also a vital element in various areas of computer science such as
-algorithmics (i.e. Dijkstra's shortest path algorithm) and operating system
-(i.e. priority schedulers).
+algorithmics (e.g. Dijkstra's shortest path algorithm) and operating system
+(e.g. priority schedulers).
 
 The recent trend towards multiprocessor computing requires new implementations
 of basic data structures which are able to be used concurrently and scale well
@@ -73,12 +72,13 @@ primitives.
 However, priority queues in particular are challenging to parallelize
 efficiently since the \lstinline|delete_min| operation causes high contention
 at the minimal (maximal) element.  Even though concurrent priority queues have
-been extensively researched over the past decades, an ultimately solution has
+been extensively researched over the past decades, an ultimately satisfying
+solution has
 not yet been reached.
 
 A recent promising approach has been through relaxation of provided guarantees,
-i.e.  allowing the priority queue to return one of the $k$ minimal items
-instead of only being allowed to return the minimal item itself. The $k$-LSM is
+i.e.  allowing the priority queue to return one of the $k$ minimal (maximal) items
+instead of only being allowed to return the minimal (maximal) item itself. The $k$-LSM is
 a lock-free priority queue design which follows this approach and displays high
 scalability in initial benchmarks. However, it is currently only available
 integrated into the task-scheduling framework
@@ -130,15 +130,88 @@ Work on this thesis will proceed in several related parts:
         details in order to be successful in creating a reimplementation; and
         on the other, benchmarking the current implementation will provide a
         good performance baseline.
-    \item Implementing a standalone version. Far from being a simple one-to-one 
+    \item Implementing a standalone version. Far from being a simple one-to-one
         port, the standalone $k$-LSM will rather be a reimplementation from
-        the basic principles of the $k$-LSM design. 
+        the basic principles of the $k$-LSM design.
     \item Benchmarking and comparisons against other state of the art concurrent
         priority queues on multiple machines and varying benchmarks.
     \item Summarizing and reporting on previous steps.
 \end{itemize}
 
 \section{State of the Art}
+
+The main focus of this thesis will be on concurrent, lock-free priority queues.
+These may further be divided into strict queues, which ensure that \lstinline|delete_min|
+returns the minimal element, and queues with relaxed quality guarantees.
+
+% Strict.
+% Hunt heap.
+
+Concurrent priority queues have been the subject of research since the 1980s, with
+early designs mostly based on search trees \cite{boyar1994chromatic,johnson1991highly} and
+heaps \cite{ayani1990lr,biswas1987simultaneous,das1996distributed,deo1992parallel,huang1991evaluation,
+luchetti1993some,mans1998portable,olariu1991optimal,prasad1995parallel}. The heap-based
+priority queue by \citeauthor{hunt1996efficient} \cite{hunt1996efficient}, which uses one lock
+per node to reduce lock contention has been proven to
+perform well \cite{shavit2000skiplist} in comparison to other efforts of the time such as
+\cite{nageshwara1988concurrent,ayani1990lr,yan1998lock}.
+
+% Strict skiplists.
+
+In the late 90s, SkipList \cite{pugh1990skip,pugh1998concurrent} based designs have become the focus
+of modern concurrent priority queue research
+\cite{shavit2000skiplist,sundell2003fast,herlihy2012art,linden2013skiplist,alistarhspraylist}
+since they have high disjoint-access parallelism, i.e. operations in one sections of a SkipList
+are independent of operations in other parts.
+SkipList-based priority queues evolved from \citeauthor{shavit2000skiplist}
+\cite{shavit2000skiplist} and \citeauthor{sundell2003fast} \cite{sundell2003fast} queues
+to finally arrive at the \citeauthor{linden2013skiplist} \cite{linden2013skiplist} queue,
+which has been widely accepted as the best-performing strict, concurrent, and lock-free
+priority queue. The ideas behind these SkipList queues are similar, relying on a two-phase deletion
+protocol in which nodes are first logically deleted by setting a flag before being physically
+removed at some point by updating pointers. The \citeauthor{linden2013skiplist} queue minimizes
+the number of Compare-And-Swap (CAS) operations in order to improve upon the performance of previous
+designs.
+
+% CBPQ.
+
+Very recently, the CBPQ by \citeauthor{cbpq} \cite{cbpq} has been reported to improve further upon
+the \citeauthor{linden2013skiplist} queue's performance by up to a factor of two in synthetic
+mixed operation (\lstinline|insert|, \lstinline|delete_min|) benchmarks. Contrary to other state of
+the art lock-free priority queues, the CBPQ is composed of a list of arrays and relies on the
+more efficient Fetch-And-Increment (FAI) for many operations.
+
+% Relaxed.
+
+In general, the most efficient strict concurrent priority queues scale well while
+all participating cores are located on the same socket.
+Relaxed data structures are another way of approaching the problem of creating efficient
+concurrent designs that further extend scalability beyond a single socket.
+First applied in \cite{afek2010quasi} and later by \citeauthor{kirsch2012fast} \cite{kirsch2012fast} in their
+$k$-FIFO queues, relaxed data structures provide weaker guarantees such as allowing a number
+of items within the structure to be skipped by each thread in return for better
+scalability.
+
+The SprayList \cite{alistarhspraylist} applies this concept to a SkipList based
+and lock-free priority queue. Deletions do a random walk over the list head
+and return one of the $O(P \log^3 P)$ first elements, where $P$ is the number of
+participating threads.
+
+Multiqueues \cite{rihani2014multiqueues} also use probabilistic techniques to
+return one of the minimal items, however without currently being able to provide
+a bound of any kind. The idea is elegant: each thread has a number of local,
+sequential priority queues and a lock for each such queue (i.e. Multiqueues are not lock-free).
+Elements are simply
+inserted into a random queue, and deletions remove the minimal item of two random
+queues.
+
+Finally, the $k$-LSM priority queue \cite{wimmer2015lock} is a composite design
+which guarantees that \lstinline|delete_min| returns one of the $kP$ minimal
+items, where $k$ is a configuration parameter and $P$ is again the number of threads.
+It consists of both a global component (the shared LSM) and thread-local components
+(the distributed LSM). Both components complement each other: the shared LSM provides
+no global guarantees but is highly scalable and is used to batch insertions into
+the global LSM, which does ensure that quality guarantees are kept.
 
 \section{Relevance to Software Engineering \& Internet Computing}
 
@@ -154,7 +227,6 @@ and parallel computing. Some closely related lectures are:
     \item Seminar in Algorithms
 \end{itemize}
 
-\nocite{*} % TODO: Remove me.
 \printbibliography
 
 \end{document}
