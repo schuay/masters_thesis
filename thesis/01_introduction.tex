@@ -1,0 +1,42 @@
+\chapter{Introduction} \label{ch:introduction}
+
+% Move to many cores, why do we need concurrent algorithms/data structures?
+
+In the past decade, advancements in computer performance have been made mostly
+through an increasing number of processors instead of higher clock speeds.
+This development necessitates new approaches to data structures and algorithms
+that take advantage of concurrent execution on multiple threads and processors.
+
+% The priority queue - semantics and usage summary.
+
+This paper focuses on the priority queue data structure, consisting of two operations
+traditionally called \lstinline|Insert| and \lstinline|DeleteMin|. \lstinline|Insert|
+places an item into the queue together with its priority, while \lstinline|DeleteMin|
+removes and returns the lowest priority item. Both of these operations are expected to have
+a complexity of at most $O(\log n)$. Priority queues are used in a large variety
+of situations such as shortest path algorithms and scheduling. % See liu2012lock for more.
+
+% Concurrent priority queues - heaps, trees, skiplists.
+
+Concurrent priority queues have been the subject of research since the 1980s
+\cite{ayani1990lr,biswas1987simultaneous,das1996distributed,deo1992parallel,huang1991evaluation,
+luchetti1993some,mans1998portable,olariu1991optimal,prasad1995parallel}.
+While early efforts have focused mostly on parallelizing Heap structures
+\cite{hunt1996efficient},
+more recently priority queues based on \citeauthor{pugh1990skip}'s SkipLists
+\cite{pugh1990skip} seem to show more potential \cite{shavit2000skiplist,
+sundell2003fast,herlihy2012art,linden2013skiplist}. Current research has also examined
+relaxed data structures \cite{wimmer2013data,alistarhspraylist} which trade
+strictness of provided guarantees against improved scalability.
+
+% Our plan for the paper - somehow this kind of duplicates the last paragraph though.
+
+In the following, we investigate the evolution of concurrent priority queues suitable for general use,
+i.e. unbounded range queues based on widely available atomic primitives such as \ac{CAS}.
+Section \ref{sec:concepts} outlines basic concepts and definitions. In Section \ref{sec:hunt},
+we cover the \citeauthor{hunt1996efficient} queue as a representative of early heap-based queues using
+fine-grained locking to avoid the bottleneck of a single global lock. Lock-free SkipList-based
+structures offering better disjoint-access parallelism are discussed in Section \ref{sec:lockfree},
+while Section \ref{sec:relaxed} introduces the concept of relaxed data structures and presents two
+such priority queues. Finally, related work is presented in Section \ref{sec:related}, and the paper is
+concluded in Section \ref{sec:conclusion}.

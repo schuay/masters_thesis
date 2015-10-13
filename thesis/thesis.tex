@@ -93,7 +93,31 @@
 
 \mainmatter
 
-\include{99_samplechapter}
+% What's priority queue, applications, ...
+\include{01_introduction}
+
+% Naive, heaps, skip lists, binary trees. Theoretical properties, structure.
+\include{02_sequential}
+
+% Definitions for parallel structures. Lock/wait-free, linearizable, etc.
+\include{03_definitions}
+
+% Global lock, hunt heap, shavit & lotan, linden, CBPQ.
+\include{04_strict}
+
+% Concept of relaxation, k-fifo, quasi-linearizability, roh-whatever (martin),
+% quality guarantees. Multiqueues, spraylist, klsm.
+\include{05_relaxed}
+
+% Everything about my work, including code.
+\include{06_implementation}
+
+% Machine characteristivcs, methodology, throughput, benchmarks on all machines
+% with different parameters, comparison against pheet & others.
+\include{07_evaluation}
+
+% Dominance of K-LSM in throughput benchmark, importance of benchmark parameters.
+\include{08_conclusion}
 
 \backmatter
 

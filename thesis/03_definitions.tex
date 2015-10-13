@@ -1,0 +1,95 @@
+\chapter{Definitions} \label{ch:definitions}
+
+% Blocking, lock-free and wait-free data structures.
+
+Concurrent data structures are intended to be accessed simultaneously by several processes
+at once. \emph{Lock-based} structures ensure that only a limited number of processes may enter
+a critical section at once. \emph{Lock-free} data structures eschew the use of locks, and guarantee
+that at least a single process makes progress at all times. Since lock-free structures are
+non-blocking, they are not susceptible to priority inversion, deadlock, and livelock.
+\emph{Wait-freedom} further guarantees that every process finishes each operation in a bounded number of steps.
+In practice, wait-freedom often introduces an unacceptable overhead; lock-freedom
+however has proven to be both efficient and to scale well to large numbers of processes.
+Recently, \citeauthor{kogan2012methodology} have also developed a methodology for implementing efficient
+wait-free data structures \cite{kogan2012methodology}.
+
+% Linearizability, sequential and quiescent consistency.
+
+There are several different criteria which allow reasoning about the correctness of concurrent
+data structures. \emph{Linearizable} \cite{herlihy1990linearizability} operations appear to take
+effect at a single instant in time at so-called linearization points.
+\emph{Quiescently consistent} \cite{shavit1996diffracting} data structures
+guarantee that the result of a set of parallel operations is equal to the result of a sequential ordering
+after a period of quiescence, i.e. an interval without active operations has passed.
+Linearizability as well as quiescent consistency are composable ---
+any data structure composed of linearizable (quiescently consistent) objects is also linearizable
+(quiescently consistent).
+\emph{Sequential consistency} \cite{lamport1979make} requires the result of a set of operations
+executed in parallel to be equivalent to the result of some sequential ordering of the same
+operations.
+
+% Synchronization primitives.
+
+Lock-free algorithms and data structures are commonly constructed using synchronization primitives
+such as \acf{CAS}, \ac{FAA}, \ac{FAO}, and \ac{TAS}. The \ac{CAS} instruction, which atomically
+compares a memory location to an expected value and sets it to a new value if they are equal,
+is implemented on most modern architectures and can be considered a basic building block of lock-free
+programming. More exotic primitives such as \ac{DCAS} and \ac{DCSS} exist as well, but are not yet
+widely available and require inefficient software emulations to be used.
+
+% Disjoint-access parallelism.
+
+An area in memory accessed frequently by a large number of processes is said to be \emph{contended}.
+Contention is a limiting factor regarding scalability: concurrent reads and writes to the same
+location must be serialized by the cache coherence protocol, and only a single concurrent \ac{CAS}
+can succeed while all others must retry. \emph{Disjoint-access parallelism} is the concept of
+spreading such accesses in order to reduce contention as much as possible.
+
+% Priority queues.
+
+Priority queues are an abstract data structure allowing insertion of items with a given priority
+and removal of the lowest-priority item in logarithmic time. Search trees and Heaps (which are
+flattened representations of complete trees such that each node's key is at least as large as
+those of both children) are concrete data structures which are usually used to implement sequential
+priority queues. However, both require fairly elaborate reorganization after
+{\lstset{breakatwhitespace=true} \lstinline|DeleteMin|}
+and/or \lstinline|Insert| operations, which are especially challenging to achieve in a concurrent
+environment.
+
+% SkipLists.
+
+SkipLists \cite{pugh1990skip} have become increasingly popular in concurrent data structures because
+they are both simple to implement, and exhibit excellent disjoint-access parallelism. In contrast to
+search trees and Heaps, reorganization is not necessary since SkipLists rely on
+randomization for an expected $O(\log n)$ complexity of \lstinline|Insert|, \lstinline|Search|
+and \lstinline|Delete| operations.
+A SkipList may be visualized as a set of linked lists with corresponding levels. The linked
+list at level 0 is the sorted sequence of all objects in the SkipList,
+and higher levels provide ``shortcuts''
+into the SkipList such that a list of level $i + 1$ contains a subset of the objects in level
+$i$. A SkipList node $n$ is said to be of level $i$ if it is in all lists of levels $[0, i]$
+and in none of levels $[i + 1, \infty]$. Upon insertion, the new node's level is assigned at random
+according to a geometric distribution; deletion simply removes the node.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+struct slist_t {
+  size_t max_level;
+  node_t head[max_level];
+};
+
+struct node_t {
+  key_t key;
+  value_t value;
+  size_t level;
+  node_t *next[level];
+};
+
+/* All operations are expected O(log n) time. */
+void slist_insert(slist_t *l, key_t k, value_t v);
+bool slist_delete(slist_t *l, key_t k, value_t &v);
+bool slist_contains(slist_t *l, key_t k);
+\end{lstlisting}
+\caption{Basic SkipList structure and operations.}
+\label{fig:basicsl}
+\end{figure}

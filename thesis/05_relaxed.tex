@@ -1,0 +1,115 @@
+\chapter{Relaxed Concurrent Priority Queues} \label{ch:relaxed}
+
+
+
+\section{Relaxed Priority Queues} \label{sec:relaxed}
+
+The body of work discussed in previous sections
+creates the impression that the outer limits of strict, deterministic priority queues have been reached.
+In particular, \citeauthor{linden2013skiplist} conclude that scalability is solely limited by \lstinline|DeleteMin|,
+and that less than one modified memory location per thread and operation would have to be read
+in order to achieve improved performance \cite{linden2013skiplist}.
+
+Recently, relaxation of provided guarantees have been investigated as another method of reducing
+contention and improving disjoint-access parallelism.
+For instance, k-FIFO queues \cite{kirsch2012fast} have achieved considerable
+speed-ups compared to strict FIFO queues by allowing {\lstset{breaklines,breakatwhitespace} \lstinline|Dequeue|} to return elements
+up to $k$ positions out of order.
+
+Relaxation has also been applied to concurrent priority queues with some success, and in the following
+sections we discuss two such approaches.
+
+\section{\citeauthor{wimmer2013data}} \label{sec:wimmer}
+
+\citeauthor{wimmer2013data} presented the first relaxed, linearizable, and lock-free priority queue
+in \cite{wimmer2013data}. It is integrated as a priority scheduler into their \emph{Pheet} task-scheduling
+system, and an open-source implementation is available\footnote{\url{http://pheet.org}}.
+
+Their paper presents several variations on the common theme of priority queues: a distributed work-stealing
+queue which can give no guarantees as to global ordering since it consists of separate priority queues
+at each thread; a relaxed centralized priority queue in which no more than $k$ items are missed
+by any processor; and a relaxed hybrid data structure which combines both ideas and provides
+a guarantee that no thread misses more than $kP$ items where $P$ is the number of participating threads.
+In this section, we examine only the hybrid variant since it provides both the scalability of work-stealing
+queues and the ordering guarantees of the centralized priority queue.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+struct globals_t {
+  list_of_item_t global_list;
+};
+
+/* Thread-local items. */
+struct locals_t {
+  list_of_item_t local_list;
+  pq_t prio_queue;
+  size_t remaining_k;
+};
+\end{lstlisting}
+\caption{\citeauthor{wimmer2013data} structure.}
+\label{fig:wimmerq}
+\end{figure}
+
+The hybrid queue consists of a list of globally visible items and one local item list as well as a local
+sequential priority queue per thread. The thread-local counter \lstinline|remaining_k| tracks how many more
+items may be added to the local queue until all local items must be made globally visible to avoid
+breaking guarantees.
+
+Whenever an item is added, it is first added locally to both \lstinline|local_list| and \lstinline|prio_queue|
+and \lstinline|remaining_k| is decremented. If \lstinline|remaining_k| reaches zero, then the local
+item list is appended to the global list, and all not yet seen (by this thread) items of the global
+queue are added to the local priority queue.
+
+\lstinline|DeleteMin| simply pops the local priority queue as long is it is non-empty and the popped
+item has already been deleted. When a non-deleted item is popped, it is atomically marked as deleted
+and returned to the caller. If instead we are faced with an empty local queue, we attempt to spy,
+i.e. copy items from another thread's local list.
+
+Both \lstinline|Insert| and \lstinline|DeleteMin| periodically synchronize with the global list
+by adding all items that have not yet been seen locally to \lstinline|prio_queue|.
+Memory allocations are handled using the wait-free memory manager by \citeauthor{wimmer2013wait} \cite{wimmer2013wait}.
+
+The \citeauthor{wimmer2013data} priority queue was evaluated using a label-correcting variant
+of Dijkstra's shortest path algorithms. Their model creates a task for each node
+expansion, and therefore comes with a considerable task scheduling overhead. Nonetheless,
+the parallel implementation scales well up to 10 threads, and further limited performance
+gains are made until 40 threads. To date, no direct comparisons to other concurrent
+priority queues have been possible since the data structure is strongly tied to \emph{Pheet},
+but a separate implementation of k-priority queues is planned.
+
+\section{SprayList} \label{sec:spraylist}
+
+The SprayList is another recent approach towards a relaxed priority queue by \citeauthor{alistarhspraylist}
+\cite{alistarhspraylist}. Instead of the distributed approach described in the previous section,
+the SprayList is based on a central data structure, and uses a random walk in \lstinline|DeleteMin|
+in order to spread accesses over the $O(P \log^3 P)$ first elements with high probability, where $P$
+is again the number of participating threads.
+
+\citeauthor{fraser2004practical}'s lock-free SkipList \cite{fraser2004practical} again serves as the
+basis for the priority queue implementation. The full source code is available online\footnote{
+\url{https://github.com/jkopinsky/SprayList}}. In the SprayList, \lstinline|Insert| calls are simply
+forwarded to the underlying SkipList.
+
+The \lstinline|DeleteMin| operation however executes a random walk, also called a \emph{spray}, the
+purpose of which is to spread accesses over a certain section of the SkipList uniformly such that
+collisions between multiple concurrent \lstinline|DeleteMin| calls are unlikely. This is achieved by
+starting at some initial height, walking a randomized number of steps, descending a randomized number of levels,
+and repeating this procedure until a node $n$ is reached on the lowest level. If $n$ is not deleted,
+it is logically deleted and returned. Otherwise, a \emph{spray} is either reattempted, or the thread
+becomes a cleaner, traversing the lowest level of the SkipList and physically removing logically deleted
+nodes it comes across. A number of dummy nodes are added to the beginning of the list in order to counteract
+the algorithm's bias against initial items.
+
+The \emph{spray} parameters are chosen such that with high probability, one of the $O(P \log^3 P)$
+first elements is returned, and that each of these elements is chosen roughly uniformly at random.
+The final effect is that accesses to the data structure are spread out, reducing contention and resulting
+in a noticeably lower number of \ac{CAS} failures in comparison to strict priority queues described
+in Section \ref{sec:lockfree}.
+
+The authors do not provide any statement as to the linearizability (or other concurrent correctness
+criteria) of the SprayList, and it is not completely clear how to define it since no
+sequential semantics are given.
+
+Benchmarks show promising results: the SprayList scales well at least up to 80 threads,
+and performs close (within a constant factor) to an implementation using a random remove instead
+of \lstinline|DeleteMin|, which the authors consider as the performance ideal.
