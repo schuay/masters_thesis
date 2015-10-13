@@ -686,11 +686,7 @@ The benchmarking code was adapted from \citeauthor{linden2013skiplist}'s
 benchmarking suite and is available at \url{https://github.com/schuay/seminar_in_algorithms}.
 
 \begin{center}
-<<results = tex, echo = FALSE>>=
-\SweaveInput{pqplot.Rnw}
-pqplot("results/random.csv")
-@
-\end{center}
+\includegraphics[width = \textwidth]{graphics/fig.eps}\end{center}
 
 The \textit{Linden} priority queue emerged as the clear winner of these benchmarks,
 with impressive scalability while all threads remain on the same socket. In fact, it is the only
