@@ -72,10 +72,106 @@ the next section will be about. We should briefly mention memory management but 
 detail.
 \end{comment}
 
-\citeauthor{wimmer2013data} presented the first relaxed, linearizable, and lock-free priority queue
-in \cite{wimmer2013data}. It is integrated as a priority scheduler into their \emph{Pheet} task-scheduling
-system, and an open-source implementation is available\footnote{\url{http://pheet.org}}.
+We now finally come to the main topic of this thesis, the relaxed, linearizable, and lock-free
+$k$-LSM priority queue.
+\citeauthor{wimmer2013data} first presented this data structure in \citedate{wimmer2013data}
+\cite{wimmer2013data} and have improved on it continuously since, with the most recent results
+being published in \cite{wimmer2015lock}. The original $k$-LSM queue is integrated as a priority scheduler
+into their \emph{Pheet} task-scheduling system, and an open-source implementation is
+available at \url{http://pheet.org}. In this section we describe its design in detail, while
+Chapter \ref{ch:implementation} covers our implementation and improvements.
 
+Taken as a black box, the $k$-LSM conforms to the interface as shown in Figure \ref{fig:klsm_interface}.
+It is a template data structure in the sense that it has a configuration parameter $k$, which
+determines how far quality guarantees may be relaxed. Given $k$, the \lstinline|delete_min| operation
+$(k + 1) \cdot P$ minimal items, where $P$ is the number of threads.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V>
+class k_lsm {
+public:
+    void insert(const K &key, const V &value);
+    bool delete_min(V &val);
+};
+\end{lstlisting}
+\caption{The $k$-LSM interface.}
+\label{fig:klsm_interface}
+\end{figure}
+
+The semantics are as follows: when \lstinline|insert| completes, the given key-value pair has been
+inserted into the queue. \lstinline|delete_min| can either complete successfully, in which case
+it returns \lstinline|true|, one of the $(k + 1) \cdot P$ minimal items is removed from the queue
+and its value is written into the given argument; or it can fail, in which case no item is removed
+from the queue and the \lstinline|false| is returned. Failures of \lstinline|delete_min| may occur
+spuriously even if the queue is non-empty, but the number of such failures are low in practice.
+
+The \klsm is a composite data structure consisting of a global component called the \ac{SLSM},
+and a thread-local component called the \ac{DLSM}. As implied by their names, both the \ac{SLSM}
+and \ac{DLSM} are based on the \ac{LSM} \cite{o1996log} data structure which will be elaborated
+upon below. Both structures may be used as standalone priority queues, but have complementing
+advantages and disadvantages which motivates their composition.
+
+\subsection{\acl{LSM}} \label{ssec:lsm}
+
+\aclp{LSM} were introduced to the database community in \citedate{o1996log} \cite{o1996log}
+and reinvented indepently by \citeauthor{wimmer2013data} based on the requirements of concurrent
+priority queues. \acp{LSM} are one of the basic building blocks of the \ac{SLSM} and \ac{DLSM}
+and hence also the \klsm.
+
+By itself, the
+\ac{LSM} is not a parallel data structure, and special care must be taken when accessing shared
+(i.e. not exclusively owned, thread-local) \acp{LSM}. For our purposes,
+we imagine it to have an interface as shown in Figure \ref{fig:lsm_interface}. \lstinline|insert|
+simply inserts the given item into the set, while \lstinline|peek_min| returns the
+minimal item and \lstinline|true|, or \lstinline|false| if the set is empty.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class Item>
+class lsm {
+public:
+    void insert(const Item &item);
+    bool peek_min(Item &item);
+};
+\end{lstlisting}
+\caption{The \ac{LSM} interface.}
+\label{fig:lsm_interface}
+\end{figure}
+
+In more detail, the \ac{LSM} consists of an ordered set of sorted arrays fulfilling a set of
+invariants after the completion of each operation:
+
+\begin{itemize}
+\item Each block $B$ is associated with a level $i$ such that $B$ has a capacity of $2^i$.
+\item If block $B$ (with associated level $i$) is located before block $B'$ (with level $i'$),
+      then $i < i'$.
+\item For each block $B$ with level $i$, $|B| \geq 2^{i-1}$ where $|B|$ is the number of items
+      stored in $B$.
+\end{itemize}
+
+Insertions initially create a singleton block $B$ containing the given item. $B$ is then inserted
+into the \ac{LSM}, possibly violating invariants temporarily. While invariants remain unsatisfied,
+i.e. while the \ac{LSM} contains multiple blocks of the same level, $B$ is then merged with its
+successor block.
+
+Peek operations iterate through each block in the \ac{LSM} and return the minimal encountered item.
+Note that this operation is $O(1)$ for each block since the minimal item is located at the head of
+head array.
+
+Both insertions and deletions are of amortized complexity $O(\log n)$.
+
+\subsection{\acl{DLSM}} \label{ssec:dlsm}
+
+The \ac{DLSM} is a priority queue with purely thread-local guarantees. It adheres to the same
+interface as the \klsm as given in Figure \ref{fig:klsm_interface}, but with subtly altered semantics
+in that there is no relaxation parameter $k$ --- the \ac{DLSM}'s \lstinline|delete_min| simply
+removes the thread-locally minimal item. If the local queue is empty an operation called \lstinline|spy|
+is performed, which attempts to copy all items from a randomly chosen thread's queue.
+
+\subsection{\acl{SLSM}} \label{ssec:slsm}
+
+\begin{comment}
 Their paper presents several variations on the common theme of priority queues: a distributed work-stealing
 queue which can give no guarantees as to global ordering since it consists of separate priority queues
 at each thread; a relaxed centralized priority queue in which no more than $k$ items are missed
@@ -127,3 +223,4 @@ the parallel implementation scales well up to 10 threads, and further limited pe
 gains are made until 40 threads. To date, no direct comparisons to other concurrent
 priority queues have been possible since the data structure is strongly tied to \emph{Pheet},
 but a separate implementation of k-priority queues is planned.
+\end{comment}

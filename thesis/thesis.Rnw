@@ -13,6 +13,7 @@
 \usepackage{microtype}
 \usepackage{nag}
 \usepackage[usenames,dvipsnames,table]{xcolor}
+\usepackage{xspace}
 \usepackage[acronym,toc]{glossaries} % Has to be last.
 
 % --- BEGIN copied setup.
@@ -56,6 +57,8 @@
 \newcommand{\todo}[1]{{\color{red}\textbf{TODO: {#1}}}} % Comment for the final version, to raise errors.
 
 % --- END copied setup.
+
+\newcommand{\klsm}{$k$-LSM\xspace}
 
 \input{acronyms}
 \bibliography{bibliography.bib}

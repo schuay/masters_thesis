@@ -1,1 +1,1 @@
-\chapter{Implementation of the $k$-LSM Priority Queue}
+\chapter{Implementation of the $k$-LSM Priority Queue} \label{ch:implementation}
