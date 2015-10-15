@@ -112,7 +112,13 @@ and \ac{DLSM} are based on the \ac{LSM} \cite{o1996log} data structure which wil
 upon below. Both structures may be used as standalone priority queues, but have complementing
 advantages and disadvantages which motivates their composition.
 
-\subsection{\acl{LSM}} \label{ssec:lsm}
+Throughout this chapter, we gloss over the complexities of lock-free memory management and simply
+assume the existence of a garbage collector. The implementation by \citeauthor{wimmer2013data}
+uses their own lock-free memory allocator for to handle items, while blocks and block arrays are
+allocated in a pool and reused. Memory management will be discussed in further detail in Chapter
+\ref{ch:implementation}.
+
+\subsection{\aclp{LSM}} \label{ssec:lsm}
 
 \aclp{LSM} were introduced to the database community in \citedate{o1996log} \cite{o1996log}
 and reinvented indepently by \citeauthor{wimmer2013data} based on the requirements of concurrent
@@ -200,50 +206,6 @@ in the \klsm in order to amend this point.
 \subsection{\acl{SLSM}} \label{ssec:slsm}
 
 \begin{comment}
-Their paper presents several variations on the common theme of priority queues: a distributed work-stealing
-queue which can give no guarantees as to global ordering since it consists of separate priority queues
-at each thread; a relaxed centralized priority queue in which no more than $k$ items are missed
-by any processor; and a relaxed hybrid data structure which combines both ideas and provides
-a guarantee that no thread misses more than $kP$ items where $P$ is the number of participating threads.
-In this section, we examine only the hybrid variant since it provides both the scalability of work-stealing
-queues and the ordering guarantees of the centralized priority queue.
-
-\begin{figure}[ht]
-\begin{lstlisting}
-struct globals_t {
-  list_of_item_t global_list;
-};
-
-/* Thread-local items. */
-struct locals_t {
-  list_of_item_t local_list;
-  pq_t prio_queue;
-  size_t remaining_k;
-};
-\end{lstlisting}
-\caption{\citeauthor{wimmer2013data} structure.}
-\label{fig:wimmerq}
-\end{figure}
-
-The hybrid queue consists of a list of globally visible items and one local item list as well as a local
-sequential priority queue per thread. The thread-local counter \lstinline|remaining_k| tracks how many more
-items may be added to the local queue until all local items must be made globally visible to avoid
-breaking guarantees.
-
-Whenever an item is added, it is first added locally to both \lstinline|local_list| and \lstinline|prio_queue|
-and \lstinline|remaining_k| is decremented. If \lstinline|remaining_k| reaches zero, then the local
-item list is appended to the global list, and all not yet seen (by this thread) items of the global
-queue are added to the local priority queue.
-
-\lstinline|DeleteMin| simply pops the local priority queue as long is it is non-empty and the popped
-item has already been deleted. When a non-deleted item is popped, it is atomically marked as deleted
-and returned to the caller. If instead we are faced with an empty local queue, we attempt to spy,
-i.e. copy items from another thread's local list.
-
-Both \lstinline|Insert| and \lstinline|DeleteMin| periodically synchronize with the global list
-by adding all items that have not yet been seen locally to \lstinline|prio_queue|.
-Memory allocations are handled using the wait-free memory manager by \citeauthor{wimmer2013wait} \cite{wimmer2013wait}.
-
 The \citeauthor{wimmer2013data} priority queue was evaluated using a label-correcting variant
 of Dijkstra's shortest path algorithms. Their model creates a task for each node
 expansion, and therefore comes with a considerable task scheduling overhead. Nonetheless,
