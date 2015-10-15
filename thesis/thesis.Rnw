@@ -134,7 +134,6 @@
 \printindex
 \printglossaries
 
-\nocite{*} % TODO: Remove me.
 \printbibliography
 
 \end{document}
