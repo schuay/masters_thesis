@@ -172,26 +172,30 @@ is performed, which attempts to copy all items from a randomly chosen thread's q
 
 The implementation is essentially a thin wrapper on top of a thread-local \ac{LSM} with some complicating
 factors. Items store both the key-value pair as well as an atomic flag indicating whether an item
-has been taken (removed) from the \ac{DLSM} or not, with the \ac{LSM} storing pointers to these items.
+has been taken (removed) from the \ac{DLSM} or not. The \ac{LSM} itself stores pointers to these items.
 \lstinline|delete_min| operations perform
 a \lstinline|peek_min| on the underlying local \ac{LSM} and mark the returned item as taken using
-an atomic \ac{CAS} instruction. Special care is taken in order to remove physically taken items
+an atomic \ac{CAS} instruction. Special care is taken in order to eventually physically remove taken items
 from the \ac{LSM}: merges skip taken items, and whenever a block is noted to be less than half-full
 the block is shrunk and \ac{LSM} invariants are reasserted.
 
 So far, all operations have been exclusively thread-local, and thus no attention had to be given
 to concurrency complications. Unfortunately, \lstinline|spy| does access other thread's \acp{LSM}
-and thus we cannot ignore these issues entirely. The set of blocks in the \ac{LSM} is modelled by
+and we cannot ignore these issues entirely. The set of blocks in the \ac{LSM} is modelled
 as a doubly-linked list of blocks. The set of pointers to the previous element may be accessed
 exclusively by the owning thread, while the set of pointers to the next element can by read by
 all threads (but written only by the owning thread). When a maintenance operation triggers
 changes to the block set, merges are performed locally and the new tail of the linked list is
-appended atomically using a \ac{CAS} instruction. While other threads currently reading the local list
+spliced in atomically using a \ac{CAS} instruction. While other threads currently reading the local list
 may encounter pointers to the same item multiple items within a single \lstinline|spy| operation if the linked
 list has been updated concurrently, this is not an issue since the item may only be taken successfully
 by a single thread when its flag is set atomically.
 
-The \ac{DLSM}
+The \ac{DLSM} is essentially embarassingly parallel as long as all local queues remain nonempty,
+and scales exceedingly well even at very high thread counts. This is to be expected, since the \ac{LSM}
+is very efficient, and most, if not all operations are thread-local. However, its major weakness
+is the lack of global quality guarantees. The next section discusses the \ac{SLSM}, which is utilized
+in the \klsm in order to amend this point.
 
 \subsection{\acl{SLSM}} \label{ssec:slsm}
 
