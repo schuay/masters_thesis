@@ -84,7 +84,7 @@ Chapter \ref{ch:implementation} covers our implementation and improvements.
 Taken as a black box, the $k$-LSM conforms to the interface as shown in Figure \ref{fig:klsm_interface}.
 It is a template data structure in the sense that it has a configuration parameter $k$, which
 determines how far quality guarantees may be relaxed. Given $k$, the \lstinline|delete_min| operation
-$(k + 1) \cdot P$ minimal items, where $P$ is the number of threads.
+may return one of the $(k + 1) \cdot P$ minimal items, where $P$ is the number of threads.
 
 \begin{figure}[ht]
 \begin{lstlisting}
@@ -112,7 +112,7 @@ and \ac{DLSM} are based on the \ac{LSM} \cite{o1996log} data structure which wil
 upon below. Both structures may be used as standalone priority queues, but have complementing
 advantages and disadvantages which motivates their composition.
 
-Throughout this chapter, we gloss over the complexities of lock-free memory management and simply
+Throughout this section, we gloss over the complexities of lock-free memory management and simply
 assume the existence of a garbage collector. The implementation by \citeauthor{wimmer2013data}
 uses their own lock-free memory allocator for to handle items, while blocks and block arrays are
 allocated in a pool and reused. Memory management will be discussed in further detail in Chapter
@@ -122,7 +122,7 @@ allocated in a pool and reused. Memory management will be discussed in further d
 
 \aclp{LSM} were introduced to the database community in \citedate{o1996log} \cite{o1996log}
 and reinvented indepently by \citeauthor{wimmer2013data} based on the requirements of concurrent
-priority queues. \acp{LSM} are one of the basic building blocks of the \ac{SLSM} and \ac{DLSM}
+priority queues. \acp{LSM} are the basic building blocks of the \ac{SLSM} and \ac{DLSM}
 and hence also the \klsm.
 
 By itself, the
@@ -149,21 +149,21 @@ In more detail, the \ac{LSM} consists of an ordered set of sorted arrays fulfill
 invariants after the completion of each operation:
 
 \begin{itemize}
-\item Each block $B$ is associated with a level $i$ such that $B$ has a capacity of $2^i$.
+\item Each block $B$ is associated with a level $i$ such that $B$ has a capacity of $2^i$ items.
 \item If block $B$ (with associated level $i$) is located before block $B'$ (with level $i'$),
       then $i < i'$.
-\item For each block $B$ with level $i$, $|B| \geq 2^{i-1}$ where $|B|$ is the number of items
+\item For each block $B$ with level $i$, $2^{i-1} \leq |B| \leq 2^i$ where $|B|$ is the number of items
       stored in $B$.
 \end{itemize}
 
 Insertions initially create a singleton block $B$ containing the given item. $B$ is then inserted
-into the \ac{LSM}, possibly violating invariants temporarily. While invariants remain unsatisfied,
-i.e. while the \ac{LSM} contains multiple blocks of the same level, $B$ is then merged with its
-successor block.
+at the front of the \ac{LSM}, possibly violating invariants temporarily. While invariants remain unsatisfied,
+i.e. while the \ac{LSM} contains multiple blocks of the same level, $B$ is merged with its
+successor block, replacing both $B$ and the successor block with a new block of doubled capacity.
 
 Peek operations iterate through each block in the \ac{LSM} and return the minimal encountered item.
 Note that this operation is $O(1)$ for each block since the minimal item is
-located at the head of head array.
+located at the head of each block, and thus of logarithmic complexity for the entire \ac{LSM}.
 
 Both insertions and deletions are of amortized complexity $O(\log n)$ and are usually extremely
 cache-efficient since items are mostly accessed with high locality (e.g. during merge operations).
@@ -185,6 +185,9 @@ an atomic \ac{CAS} instruction. Special care is taken in order to eventually phy
 from the \ac{LSM}: merges skip taken items, and whenever a block is noted to be less than half-full
 the block is shrunk and \ac{LSM} invariants are reasserted.
 
+% TODO: Revise following paragraph - explanations are unclear and I'm not sure whether
+% it is even possible to encounter an item multiple times.
+
 So far, all operations have been exclusively thread-local, and thus no attention had to be given
 to concurrency complications. Unfortunately, \lstinline|spy| does access other thread's \acp{LSM}
 and we cannot ignore these issues entirely. The set of blocks in the \ac{LSM} is modelled
@@ -205,12 +208,43 @@ in the \klsm in order to amend this point.
 
 \subsection{\acl{SLSM}} \label{ssec:slsm}
 
-\begin{comment}
-The \citeauthor{wimmer2013data} priority queue was evaluated using a label-correcting variant
-of Dijkstra's shortest path algorithms. Their model creates a task for each node
-expansion, and therefore comes with a considerable task scheduling overhead. Nonetheless,
-the parallel implementation scales well up to 10 threads, and further limited performance
-gains are made until 40 threads. To date, no direct comparisons to other concurrent
-priority queues have been possible since the data structure is strongly tied to \emph{Pheet},
-but a separate implementation of k-priority queues is planned.
-\end{comment}
+The \acl{SLSM} could be considered the polar opposite of the previous section's
+\ac{DLSM}: it consists of a single, global \ac{LSM} whereas the \ac{DLSM} has a local \ac{LSM}
+for each thread; it is relaxed, returning one of the $k$ minimal items from \lstinline|delete_min|
+whereas the \ac{DLSM} is strict; and it has fairly limited scalability while the \ac{DLSM} is
+embarassingly parallel.
+
+The \ac{SLSM}'s interface is once again identical to Figure \ref{fig:klsm_interface}.
+Insertion semantics are as expected, and deletions may either succeed, removing and returning one of the $k$
+minimal items within the queue; or fail without altering the queue's item set.
+
+At a high level, the concept of its implementation is simple: it consists of a single global 
+\ac{LSM} with an associated item range containing the (approximately) $k$ minimal 
+items within the queue. Insertions first add the new item to a local copy of the
+queue and then atomically replace the global copy with the modified local version.
+Deletions query the pivot range size, and then randomly select one of the contained
+items. If it has not yet been taken by another thread, it is removed and the call returns
+successfully. Otherwise, the same procedure is repeated (possibly growing the pivot range)
+until the queue is either empty or an untaken item is found and returned. 
+
+From the previous description, it almost seems as if the \ac{SLSM} were a simple
+data structure; however, rest assured that this is not the case. Chapter \ref{ch:implementation}
+covers its implementation in great detail.
+
+\subsection{\klsm} \label{ssec:klsm}
+
+Taken by themselves, both the \ac{DLSM} and \ac{SLSM} are interesting but not
+particularly practical data structures. The \ac{DLSM} is fast and scalable, but
+cannot offer any guarantees as to the quality of returned items, while the \ac{SLSM}
+has a significant global bottleneck.
+
+The \klsm combines both of these designs to reduce these drawbacks. In order
+to be able to offer global quality guarantees, the thread-local \ac{DLSM} are
+limited to a capacity of $k$ each, and \lstinline|delete_min| returns the minimal
+item returned from the \ac{DLSM} and \ac{SLSM}. Note that we skip up to $k (P - 1)$
+potentially smaller items located within other thread's local \ac{DLSM} and up to
+$k - 1$ items through relaxation of the \ac{SLSM}. We therefore still stay comfortably
+within the claimed guarantees of returning one of the $(k + 1) \cdot P$ minimal items.
+
+The remaining issue of the \ac{SLSM}'s scalability is ultimately caused by updates
+to the global \ac{LSM} caused mostly by item insertions.
