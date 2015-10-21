@@ -247,4 +247,14 @@ $k - 1$ items through relaxation of the \ac{SLSM}. We therefore still stay comfo
 within the claimed guarantees of returning one of the $(k + 1) \cdot P$ minimal items.
 
 The remaining issue of the \ac{SLSM}'s scalability is ultimately caused by updates
-to the global \ac{LSM} caused mostly by item insertions.
+to the global \ac{LSM}, which in turn mostly occur through item insertions.
+The \klsm reduces the occurrence of these insertions by a factor of $O(k)$ by
+only inserting blocks of size $> \frac{k}{2}$ into the \ac{SLSM}. This harmonizes
+well with the quality guarantee solution from the previous paragraph - when
+a local \ac{DLSM} exceeds its maximal size, the largest block is simply inserted
+into the \ac{SLSM}.
+
+The \klsm as presented in \cite{wimmer2015lock} exhibits varying behavior according
+to the parameter $k$; at low values ($k \in {0, 4}$) scalability is somewhat comparable
+the the \citeauthor{linden2013skiplist} queue. At higher relaxation values of $k \in {256, 4096}$,
+the \klsm approaches linear speedup up to high thread counts.
