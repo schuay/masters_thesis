@@ -4,7 +4,9 @@ The body of work discussed in previous sections
 creates the impression that the outer limits of strict, deterministic priority queues have been reached.
 In particular, \citeauthor{linden2013skiplist} conclude that scalability is solely limited by \lstinline|DeleteMin|,
 and that less than one modified memory location per thread and operation would have to be read
-in order to achieve improved performance \cite{linden2013skiplist}.
+in order to achieve improved performance \cite{linden2013skiplist} through SkipLists. 
+The CBPQ \cite{cbpq} manages to improve on the Linden queue using a novel concept,
+but only up to a factor of two, and only while on one socket.
 
 Recently, relaxation of provided guarantees have been investigated as another method of reducing
 contention and improving disjoint-access parallelism.
@@ -13,19 +15,19 @@ speed-ups compared to strict FIFO queues by allowing {\lstset{breaklines,breakat
 up to $k$ positions out of order.
 
 Relaxation has also been applied to concurrent priority queues with some success, and in the following
-sections we discuss two such approaches.
+sections we discuss three such approaches.
 
 \section{SprayList} \label{sec:spraylist}
 
-The SprayList is another recent approach towards a relaxed priority queue by \citeauthor{alistarhspraylist}
-\cite{alistarhspraylist}. Instead of the distributed approach described in the previous section,
+The SprayList is a recent approach towards a relaxed priority queue by \citeauthor{alistarhspraylist}
+\cite{alistarhspraylist}. Instead of taking a distributed approach,
 the SprayList is based on a central data structure, and uses a random walk in \lstinline|DeleteMin|
 in order to spread accesses over the $O(P \log^3 P)$ first elements with high probability, where $P$
-is again the number of participating threads.
+is the number of participating threads.
 
 \citeauthor{fraser2004practical}'s lock-free SkipList \cite{fraser2004practical} again serves as the
-basis for the priority queue implementation. The full source code is available online\footnote{
-\url{https://github.com/jkopinsky/SprayList}}. In the SprayList, \lstinline|Insert| calls are simply
+basis for the priority queue implementation. The full source code is available online at 
+\url{https://github.com/jkopinsky/SprayList}. In the SprayList, \lstinline|Insert| calls are simply
 forwarded to the underlying SkipList.
 
 The \lstinline|DeleteMin| operation however executes a random walk, also called a \emph{spray}, the
@@ -42,7 +44,7 @@ The \emph{spray} parameters are chosen such that with high probability, one of t
 first elements is returned, and that each of these elements is chosen roughly uniformly at random.
 The final effect is that accesses to the data structure are spread out, reducing contention and resulting
 in a noticeably lower number of \ac{CAS} failures in comparison to strict priority queues described
-in Section \ref{sec:lockfree}.
+in Chapter \ref{ch:strict}.
 
 The authors do not provide any statement as to the linearizability (or other concurrent correctness
 criteria) of the SprayList, and it is not completely clear how to define it since no
@@ -50,11 +52,40 @@ sequential semantics are given.
 
 Benchmarks show promising results: the SprayList scales well at least up to 80 threads,
 and performs close (within a constant factor) to an implementation using a random remove instead
-of \lstinline|DeleteMin|, which the authors consider as the performance ideal.
+of \lstinline|DeleteMin|, which the authors consider as the performance ideal (although it might be
+more fair to narrow that statement down to SkipList-based structures).
 
 \section{Multiqueue} \label{sec:multiq}
 
-% TODO.
+Multiqueues, published in \citeyear{rihani2014multiqueues} by \citeauthor{rihani2014multiqueues} \cite{rihani2014multiqueues}, 
+are a simple and elegant relaxed 
+priority queues design using probabilistic techniques. The published design uses
+a lock-based approach in combination with any sequential priority queue to construct
+a scalable concurrent priority queue, but unfortunately without being able to offer
+any defined quality guarantees (probabilistic or otherwise). In their benchmarks,
+Multiqueues outperform the SprayList in both throughput (by around a factor of two)
+and quality.
+
+Similar to the \klsm (see Section \ref{sec:wimmer} and Chapter \ref{ch:implementation}),
+the Multiqueue is a configurable data structure. It takes a parameter $c$, which
+controls the number of created sequential priority queues. Each thread creates
+$c$ queues, adding up to $cP$ queues in total.
+
+In addition, each sequential queue is associated with its own lock and a cached
+copy of its smallest key. Insertions
+choose a random queue $q_i, i \in [0, cP[$, obtain the associated lock, and
+insert the given item, updating the cached smallest key if necessary.
+
+Deletions choose \emph{two} queues $q_i, q_j$ at random and peek at their respective cached
+minimal keys. The queue with the smaller cached key is then locked and popped,
+again updating the cached key. This technique is somewhat similar load balancing
+through random selection \cite{richa2001power}, but no definite quality analysis
+has yet been given due to the complications arising through priority queue semantics.
+
+While the Multiqueue is inherently lock-based, it can easily be made lock-free
+by simply using lock-free queues as its backing structures. We have implemented
+a version using \acp{LSM} as the local queues and present the results in Chapter
+\ref{ch:evaluation}.
 
 \section{$k$-LSM} \label{sec:wimmer}
 
@@ -255,6 +286,6 @@ a local \ac{DLSM} exceeds its maximal size, the largest block is simply inserted
 into the \ac{SLSM}.
 
 The \klsm as presented in \cite{wimmer2015lock} exhibits varying behavior according
-to the parameter $k$; at low values ($k \in {0, 4}$) scalability is somewhat comparable
-the the \citeauthor{linden2013skiplist} queue. At higher relaxation values of $k \in {256, 4096}$,
+to the parameter $k$; at low values ($k \in \{0, 4\}$) scalability is somewhat comparable
+the the \citeauthor{linden2013skiplist} queue. At higher relaxation values of $k \in \{256, 4096\}$,
 the \klsm approaches linear speedup up to high thread counts.
