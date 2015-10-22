@@ -93,3 +93,7 @@ bool slist_contains(slist_t *l, key_t k);
 \caption{Basic SkipList structure and operations.}
 \label{fig:basicsl}
 \end{figure}
+
+\todo{Move skiplist definition to strict PQ section? Move/extend priority queue
+section to sequential priority queues? Add relaxed semantic definitions (roh-relaxation,
+quasi, etc).}
