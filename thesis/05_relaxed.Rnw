@@ -87,6 +87,10 @@ by simply using lock-free queues as its backing structures. We have implemented
 a version using \acp{LSM} as the local queues and present the results in Chapter
 \ref{ch:evaluation}.
 
+% TODO: It might be nice to have one long-form example within each chapter 
+% (sequential, strict, relaxed). In this chapter, the multiq seems to be a great
+% fit since it's compact and easy to understand.
+
 \section{$k$-LSM} \label{sec:wimmer}
 
 \begin{comment}
