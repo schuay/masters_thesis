@@ -1,1 +1,34 @@
 \chapter{Implementation of the $k$-LSM Priority Queue} \label{ch:implementation}
+
+\begin{comment}
+* Initially: language and libraries used, cmake, interfaces, general guidelines
+  (modularity, template use for flexible key/value types & relaxation), header programming.
+  Mention tests, benching utilities (bench.py, plot.R, unpheet.sh, etc). rationale
+  - why is a standalone impl needed -> measurability, composability missing in original,
+  etc.
+  
+* top down: klsm interface, members, methods. 
+  slsm interface, members, methods. dlsm interface, members, methods.
+  further components.
+  
+* lock-free memory management. martin's item mm. block mm (2 methods), block
+  array pool. instances where we need to take special care of reuse (e.g.
+  when merging & size of blocks exceeds capacity (?)).
+  
+* important steps in development. performance jumps (-flto, binary search pivots,
+  pointer walks). find more and show benchmarks.
+\end{comment}
+
+% Introduction.
+
+\section{\klsm Internals} \label{sec:klsm_internals}
+\section{\acl{SLSM} Internals} \label{sec:slsm_internals} 
+\section{\acl{DLSM} Internals} \label{sec:dlsm_internals}
+\section{Component Internals} \label{sec:component_internals}
+
+\section{Memory Management} \label{sec:mm_internals}
+\subsection{Items} \label{ssec:item_mm_internals}
+\subsection{Blocks} \label{ssec:block_mm_internals}
+\subsection{Block Arrays} \label{ssec:block_array_mm_internals}
+
+\section{Implementation Impact on Performance} \label{sec:implementation_impact}
