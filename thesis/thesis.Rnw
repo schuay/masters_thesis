@@ -19,7 +19,7 @@
 % --- BEGIN copied setup.
 
 \newcommand{\authorname}{Jakob Gruber}
-\newcommand{\thesistitle}{KLSM: A Concurrent Priority Queue}
+\newcommand{\thesistitle}{KLSM: A Relaxed Lock-Free Priority Queue}
 
 % Set PDF document properties
 \hypersetup{
@@ -46,7 +46,7 @@
 \setaddress{Kirschenallee 6/1, 2120 Wolkersdorf}
 \setregnumber{0203440}
 \setdate{23}{09}{2015}
-\settitle{\thesistitle}{KLSM: Ein Paralleler Priority Queue}
+\settitle{\thesistitle}{KLSM: Ein Relaxed Lock-Free Priority Queue}
 
 \setthesis{master}
 \setmasterdegree{dipl.}
