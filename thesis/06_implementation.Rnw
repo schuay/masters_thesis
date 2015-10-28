@@ -19,6 +19,8 @@
   pointer walks). find more and show benchmarks.
 \end{comment}
 
+% TODO: Mention that the klsm is a min queue.
+
 Contrary to the previous chapter in which the concept of the \klsm was briefly
 described, this chapter will cover the implementation details of the new standalone
 \klsm.
@@ -195,12 +197,195 @@ return from from \lstinline|delete_min| with a so-called spurious failure,
 returning \lstinline|false| even though the queue might be non-empty.
 
 \section{\acl{SLSM} Internals} \label{sec:slsm_internals} 
+
+The \ac{SLSM} is the central, global component of the \klsm and contains
+all items that have overflowed the local \ac{DLSM} capacities. The \ac{SLSM}
+batches insertions by inserting blocks rather than items, and relaxes deletions
+by keeping track of a so-called pivot range, which contains a subset of $k$
+smallest items. 
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V, int Rlx>
+class shared_lsm {
+public:
+    void insert(const K &key,
+                const V &val);
+    void insert(block<K, V> *b);
+
+    bool delete_min(V &val);
+    void find_min(typename block<K, V>::peek_t &best);
+
+private:
+    versioned_array_ptr<K, V, Rlx> m_global_array;
+    thread_local_ptr<shared_lsm_local<K, V, Rlx>> m_local_component;
+};
+\end{lstlisting}
+\caption{The \ac{SLSM} header.}
+\label{fig:shared_lsm.h}
+\end{figure}
+
+Figure \ref{fig:shared_lsm.h} shows the header file for the \lstinline|shared_lsm|
+class. The interface contains the standard insertion and deletion functions since
+the \ac{SLSM} may be used as a standalone priority queue. However, it also has
+a batched insertion function which takes a block argument, and a \lstinline|find_min|
+function used by the \klsm to retrieve one of the smallest items without removing it.
+
+The \ac{SLSM} itself contains a versioned pointer to the global block array, which is
+the single point of truth for determining the contents of the \ac{SLSM}. The
+pointer is versioned since block arrays are heavily reused --- each thread allocates
+two block arrays and uses them in an alternating fashion when setting the global
+array pointer (see Section \ref{sec:mm_internals}). 
+
+Without versioning, this might
+cause issues: consider a case in which thread A retrieves the global array
+pointer $ptr$ (which has been allocated by thread B) and then stalls. Thread B then
+reuses the array $ptr$ and fills it with new contents. When thread A continues
+execution and successfully verifies that the global pointer appears to be unchanged, 
+$ptr$ contains different content than A expects - this is an instance
+of the ABA problem.
+
+Versioning is used to solve several aspects of this issue. First, the block array
+itself contains an integral version number which may compared with a local copy
+the check whether the array has remained unchanged. Second, a portion of the version
+number (more precisely, the least 11 bits) is packed into the global array pointer
+itself to ensure valid results of \ac{CAS} operations when setting the global pointer.
+The class \lstinline|versioned_array_ptr| handles operations on such packed pointers,
+and itself contains an \lstinline|aligned_block_array|, which is simply a block
+array allocated at a 2048 byte boundary (i.e., the least 11 bits are zeroed).
+
+The thread-local \ac{SLSM} component is wrapped within the \lstinline|thread_local_ptr|
+class (see Section \ref{sec:component_internals}), which allows lock-free retrieval
+of a thread-local instance of the given class. Contrary to the standard thread-local
+mechanisms provided by e.g. POSIX threads (\lstinline|pthread_getspecific|) or
+C++ (the \lstinline|thread_local| keyword), \lstinline|thread_local_ptr| allows
+usage as a class member, and access to other threads' local instances.
+
+The local \ac{SLSM} component, \lstinline|shared_lsm_local|, contains most
+of the vital logic, and its interface is presented in Figure \ref{fig:shared_lsm_local.h}.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V, int Rlx>
+class shared_lsm_local {
+public:
+    void insert(block<K, V> *b,
+                versioned_array_ptr<K, V, Rlx> &global_array);
+
+    void peek(typename block<K, V>::peek_t &best,
+              versioned_array_ptr<K, V, Rlx> &global_array);
+
+private:
+    typename block<K, V>::peek_t m_cached_best;
+
+    /** A copy of the global block array, updated regularly. */
+    block_array<K, V, Rlx> m_local_array_copy;
+
+    /** Memory management. */
+    item_allocator<item<K, V>, typename item<K, V>::reuse> m_item_pool;
+    block_pool<K, V> m_block_pool;
+    aligned_block_array<K, V, Rlx> m_array_pool_odds;
+    aligned_block_array<K, V, Rlx> m_array_pool_evens;
+};
+\end{lstlisting}
+\caption{The header of the local \ac{SLSM} component.}
+\label{fig:shared_lsm_local.h}
+\end{figure}
+
+Members include pools for memory management of several classes, which are covered
+in further depth in Section \ref{sec:mm_internals}. Furthermore, a cached copy of
+the item previously returned from \lstinline|peek| (the local equivalent to \lstinline|shared_lsm::find_min|)
+is kept in order to avoid useless repeated lookups. If, for instance, the \klsm
+chooses the item returned by the \ac{DLSM} to return from \lstinline|k_lsm::delete_min|,
+then a subsequent call to \lstinline|shared_lsm::find_min| (and thus \lstinline|shared_lsm_local::peek|)
+may simply return the cached item if the global block array has remained unchanged.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V, int Rlx>
+void
+shared_lsm_local<K, V, Rlx>::insert_block(
+        block<K, V> *b,
+        versioned_array_ptr<K, V, Rlx> &global_array)
+{
+    while (true) {
+        /* Fetch a consistent copy of the global array. */
+
+        block_array<K, V, Rlx> *observed_packed;
+        version_t observed_version;
+        refresh_local_array_copy(observed_packed, observed_version, global_array);
+
+        /* Create a new version which we will attempt to push globally. */
+
+        auto &new_blocks = /* A local pooled instance. */
+        auto new_blocks_ptr = new_blocks.ptr();
+        new_blocks_ptr->copy_from(&m_local_array_copy);
+        new_blocks_ptr->increment_version();
+        new_blocks_ptr->insert(b, &m_block_pool);
+
+        /* Try to update the global array. */
+
+        if (global_array.compare_exchange_strong(observed_packed, (@* \label{ln:shared_lsm_local::insert_block.cas} *@)
+                                                 new_blocks)) {
+            break;
+        }
+    }
+}
+\end{lstlisting}
+\caption{The \lstinline|shared_lsm_local::insert_block| implementation.}
+\label{fig:shared_lsm_local::insert_block}
+\end{figure}
+
+Insertions are ultimately handled by \lstinline|insert_block|, shown in
+Figure \ref{fig:shared_lsm_local::insert_block}. We skip over
+single-item insertions since we are mostly concerned with the \ac{SLSM} in the
+context of the \klsm (but essentially, they simply create a singleton block
+and insert it).
+
+Block insertions initially ensure that the local
+array copy (a shallow copy of the global array) is up to date by retrieving
+the current global block array and comparing versions, then updating the copy
+if necessary. It is then possible to access the local copy without fear of
+concurrent modifications (as long as one is careful when reading blocks
+themselves).
+
+A new block array copy is then constructed from the local array copy, its
+version is incremented,
+and the given block is inserted into it (details in Section \ref{ssec:block_array_internals}).
+
+Finally, the global array pointer is updated using a \ac{CAS} operation. The
+update fails if the global array has changed since it has been last read by this
+thread, in which case the insertion is retried. Otherwise, the insertion
+is successful. The linearization point for insertions into the \ac{SLSM}
+is upon a successful in line \ref{ln:shared_lsm_local::insert_block.cas}.
+
+It is important to realize that any work done within this function prior to a
+failed \ac{CAS} is wasted work. Insertions into the block array copy trigger
+expensive merges and other maintenance, and we must attempt to minimize
+such failures as much as possible. Using higher values of $k$, i.e. batching
+more items together during insertions is one way of reducing \ac{CAS} failures.
+
+Experiments using performance counter show that on average, there are $0.75$
+retries per insertion when running a simple throughput benchmark with $k = 256$
+on 35 threads,
+and $2.95$ retries per insertion when running on 80 threads. As expected, absolute
+performance is higher with 35 threads, resulting in around $15\%$ more completed
+insertions.
+
+\subsection{Block Arrays} \label{ssec:block_array_internals}
+
 \section{\acl{DLSM} Internals} \label{sec:dlsm_internals}
 \section{Component Internals} \label{sec:component_internals}
 
 \section{Memory Management} \label{sec:mm_internals}
 \subsection{Items} \label{ssec:item_mm_internals}
 \subsection{Blocks} \label{ssec:block_mm_internals}
+
+% DLSM: Simpler mechanism since block pointers owned by thread.
+% SLSM: insert_block.
+
 \subsection{Block Arrays} \label{ssec:block_array_mm_internals}
+
+% SLSM: insert_block.
 
 \section{Implementation Impact on Performance} \label{sec:implementation_impact}

@@ -79,6 +79,7 @@
     showspaces=false,
     showtabs=false,
     numbers=left,
+    escapeinside={(@*}{*@)}
 }
 
 \begin{document}
