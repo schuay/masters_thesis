@@ -372,7 +372,226 @@ and $2.95$ retries per insertion when running on 80 threads. As expected, absolu
 performance is higher with 35 threads, resulting in around $15\%$ more completed
 insertions.
 
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V, int Rlx>
+void
+shared_lsm_local<K, V, Rlx>::peek(
+        typename block<K, V>::peek_t &best,
+        versioned_array_ptr<K, V, Rlx> &global_array)
+{
+    if (local_array_copy_is_fresh(global_array)
+            && !m_cached_best.empty()
+            && !m_cached_best.taken()) {
+        best = m_cached_best;
+        return;
+    }
+
+    block_array<K, V, Rlx> *observed_packed;
+    version_t observed_version;
+
+    do {
+        refresh_local_array_copy(observed_packed,
+                                 observed_version,
+                                 global_array);
+        best = m_cached_best = m_local_array_copy.peek();
+    } while (global_array.load()->version() != observed_version);
+}
+\end{lstlisting}
+\caption{The \lstinline|shared_lsm_local::peek| implementation.}
+\label{fig:shared_lsm_local::peek}
+\end{figure}
+
+Deletions (Figure \ref{fig:shared_lsm_local::peek}) follow a similar pattern:
+the local copy of the global block array is refreshed, and a peek operation
+is then performed on the array copy. The process is repeated if the global array
+has changed since the local copy has last been updated.
+
+As previously mentioned, if there is a cached item from a previous call to
+\lstinline|peek| that has not yet been taken, and the global array has not changed
+in the meantime, then the cached item can simply be returned without any additional
+work.
+
+% TODO: Either introduce benchmark methodology before, or add a pointer
+% to the description in the next chapter.
+
+Experiments using performance counters show that in the standard uniform
+throughput benchmark, the item cache is hit very frequently. On 35 threads,
+$95\%$ of all \lstinline|peek| calls simply hit the cache and return without
+doing further work. Of the remaining calls that do real work, only $2\%$ result
+in a retry.
+
+These numbers show that the \ac{SLSM} item cache is very effective; however,
+the high number of cache hits also imply that almost all items are actually
+taken from the \ac{DLSM} during the uniform throughput benchmark --- this might
+be a symptom of a problem with the benchmark itself, as we will see in the next
+chapter. The low frequency of retries show that peeks are relatively inexpensive,
+since they are rarely interrupted by a concurrent insertion.
+
 \subsection{Block Arrays} \label{ssec:block_array_internals}
+
+Block arrays are the lowest level of the \ac{SLSM} proper and represent the
+actual \ac{LSM}. The \lstinline|block_array| class (Figure \ref{fig:shared_lsm_local::peek})
+contains an array of blocks
+conforming to the \ac{LSM} invariants at the boundaries of functions:
+
+\begin{itemize}
+\item There is at most a single block of each level present in the array.
+\item Blocks are ordered by capacity. In this case, if $i < j$, then
+      \lstinline|m_blocks[i]->capacity()| $>$ \lstinline|m_blocks[j]->capacity()|.
+\end{itemize}
+
+The \ac{LSM} is represented through member variables holding the block pointer
+array together with its size. Additionally, block arrays contain pivot ranges
+(storing ranges within the blocks which contain a subset of the $k$ smallest items),
+a version (to avoid the ABA problem), and an efficient random number generator.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V, int Rlx>
+class block_array {
+public:
+    /** May only be called when this block is not visible to other threads. */
+    void insert(block<K, V> *block,
+                block_pool<K, V> *pool);
+
+    /** Callable from other threads. */
+    typename block<K, V>::peek_t peek();
+
+private:
+    block<K, V> *m_blocks[MAX_BLOCKS];
+    size_t m_size;
+
+    block_pivots<K, V, Rlx, MAX_BLOCKS> m_pivots;
+
+    std::atomic<version_t> m_version;
+
+    xorshf96 m_gen;
+};
+\end{lstlisting}
+\caption{The block array header.}
+\label{fig:shared_lsm_local::peek}
+\end{figure}
+
+During insertions, a block is first such that the block array remains
+ordered by capacity. Then, while the block array contains multiple blocks
+of the same capacity, it is merged with its predecessor block until all \ac{LSM}
+invariants are satisfied. The block array is then compacted: blocks which are less
+than half-filled are shrunk and empty blocks are removed.
+
+Finally, pivot ranges are updated (if possible) or recalculated (if necessary).
+Most pivot range modifications are incremental updates --- when a range is
+less than half-filled (i.e., $\text{range size } < \frac{k}{2}$), the range
+is grown from its current state. On the other hand, if new range exceeds its upper
+bounds ($\text{range size } > k$), a completely new pivot range is determined.
+
+% TODO: The figure might be redundant.
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V, int Rlx>
+typename block<K, V>::peek_t
+block_array<K, V, Rlx>::peek()
+{
+    while (true) {
+        /* Not shown: pivot range maintenance. */
+        int selected_element = m_gen() % m_pivots.count(m_size);
+
+        size_t block_ix;
+        block<K, V> *b = nullptr;
+        const typename block<K,  V>::block_item *best = nullptr;
+        for (block_ix = 0; block_ix < m_size; block_ix++) {
+            const int elems_in_range = m_pivots.count_in(block_ix);
+
+            if (selected_element >= elems_in_range) {
+                /* Element not in this block. */
+                selected_element -= elems_in_range;
+                continue;
+            }
+
+            b = m_blocks[block_ix];
+            best = b->peek_nth(m_pivots.nth_ix_in(selected_element, block_ix));
+
+            break;
+        }
+
+        if (!best->taken()) {
+            ret = *best;
+            return ret;
+        } else {
+            /* Not shown: pivot range maintenance. */
+        }
+    }
+}
+\end{lstlisting}
+\caption{The partial \lstinline|block_array::peek| implementation.}
+\label{fig:block_array::peek}
+\end{figure}
+
+Deletions, shown in Figure \ref{fig:block_array::peek}, use the pivot range
+to determine a random item within the $k$ least items in the block array.
+This is done as follows: for each block within the block array, pivots store
+a range of items guaranteed to be within the $k$ least items of the array.
+An item within this range is picked at random, and returned if it has not yet
+been taken; otherwise, pivot range maintenance is performed and the operation
+is repeated.
+
+As it turns out, representing pivots as contiguous ranges within each block
+might not be sufficient to maintain maximal performance. Experiments
+show that for every successful peek, $3.5$ failed peeks must be performed,
+i.e. every successful peek iterates through the loop 5 times on average.
+
+This effect is caused by fragmentation of the pivot range, which has detrimental
+effects both on item selection (through random selection of a taken item)
+and relaxation (since the pivot range actually contains fewer elements than
+its size, calculated through pivot range boundaries, implies).
+
+We experimented with an alternative data structure for pivot maintainance which
+was based on a balanced binary interval tree to store taken items for each block.
+Each time a thread encountered a taken item, it would be marked in the interval
+tree and excluded from further random selections. Even though operations on the tree
+were in $O(\log n)$ where $n$ is the number of marked taken elements within the tree,
+maintenance overhead turned out to exceed any gains we made by more accurate
+pivot management.
+
+\subsection{Block Pivots} \label{ssec:block_pivot_internals}
+
+In more detail, block pivots consist of upper and lower index boundaries
+for each block (see Figure \ref{fig:block_pivots.h}). The \lstinline|shrink|
+and \lstinline|grow| methods maintain the pivot range.
+
+Care is taken to recalculate the pivot range infrequently.
+Recall that the pivot range is a member variable of the block array
+(Figure \ref{fig:block_array.h}); the pivot range is thus calculated once
+when the new block is created upon insertion in \lstinline|block_array::insert|,
+and then propagated to other threads when local block array copies are updated.
+From that point on, threads maintain their own pivot ranges --- however, the next
+insertion will create a new global pivot range which all threads then acquire.
+In the ideal case, pivot ranges will thus never need to be recalculated by local
+threads if insertions are frequent.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V, int Rlx, int MaxBlocks>
+class block_pivots {
+public:
+    size_t shrink(block<K, V> **blocks,
+                  const size_t size);
+    size_t grow(const int initial_range_size,
+                block<K, V> **blocks,
+                const size_t size);
+
+private:
+    int m_upper[MaxBlocks];
+    int m_lower[MaxBlocks];
+    K m_maximal_pivot;
+};
+\end{lstlisting}
+\caption{The block pivot header.}
+\label{fig:block_pivots.h}
+\end{figure}
+
+% Original pivot algorithm.
+% My pivot algorithm.
 
 \section{\acl{DLSM} Internals} \label{sec:dlsm_internals}
 \section{Component Internals} \label{sec:component_internals}
