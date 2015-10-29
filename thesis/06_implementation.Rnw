@@ -782,9 +782,102 @@ of these are blocks and items, the base containers used to store all items
 within the \klsm; and thread-local pointers, which implement local storage while
 still granting access to other threads' data on demand.
 
-\subsection{Blocks and Items} \label{ssec:block_internals}
 \subsection{Thread-Local Pointers} \label{ssec:thread_local_ptr_internals}
 
+Thread-local memory is a core requirement of the \klsm: the \ac{DLSM} is
+inherently distributed and has one separate \ac{LSM} per thread, while the
+\ac{SLSM} also caches data such as a copy of the global block array on
+a per-thread basis.
+
+There are several mechanisms and libraries which offer thread-local storage,
+the most popular being the C++11 \lstinline|thread_local| keyword and
+\ac{pthreads}' \lstinline|pthread_getspecific, pthread_setspecific| functions.
+
+We have evaluated both of these for use in the \klsm; unfortunately,
+neither are suitable. \lstinline|thread_local| is only usable at namespace and
+block scopes or for static members, but the \klsm uses nonstatic thread-local class
+members. And while POSIX threads could be used to create thread-local class members
+(\lstinline|pthread_getspecific| uses a key-value mechanism), neither \ac{pthreads}
+nor \lstinline|thread_local| support access to other threads' storage, which is
+required by the \ac{DLSM}'s \lstinline|spy| function.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class T>
+class thread_local_ptr
+{
+public:
+    T *get();
+    T *get(const int32_t tid);
+
+    static size_t current_thread();
+    static size_t num_threads();
+
+private:
+    lockfree_vector<T> m_items;
+};
+\end{lstlisting}
+\caption{The thread-local pointer header.}
+\label{fig:thread_local_ptr.h}
+\end{figure}
+
+It therefore seemed necessary to implement a custom mechanism
+to handle our thread-local storage needs. The interface of the resulting class
+is shown in Figure \ref{fig:thread_local_ptr.h}, and contains functions
+to get the current thread's storage, other threads' storage, and determine
+the current thread ID as well as the current number of threads.
+
+The class itself is backed on a combination of a lock-free vector which provides
+the actual storage space and grows as required in a lock-free manner, as well
+as an artificial, strictly ascending \lstinline|thread_local| thread id which is
+set by each thread when it first accesses the \lstinline|thread_local_ptr|.
+The \lstinline|get| methods then simply resolve to vector accesses.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class T>
+class lockfree_vector
+{
+public:
+    T *get(const int n)
+    {
+        // Determines index of block containing n'th item.
+        const int i = index_of(n);
+
+        T *bucket = m_buckets[i].load(std::memory_order_relaxed);
+        if (bucket == nullptr) {
+            bucket = new T[1 << i];
+            T *expected = nullptr;
+            if (!m_buckets[i].compare_exchange_strong(expected, bucket)) {
+                delete[] bucket;
+                bucket = expected;
+            }
+        }
+
+        return &bucket[n + 1 - (1 << i)];
+    }
+
+private:
+    std::atomic<T *> m_buckets[bucket_count];
+};
+\end{lstlisting}
+\caption{The lockfree vector header.}
+\label{fig:lockfree_vector.h}
+\end{figure}
+
+The lock-free vector itself is based on the simple idea of an array of
+logarithmically growing arrays. The full implementation is shown in Figure
+\ref{fig:lockfree_vector.h}. If the array containing the desired item
+does not yet exist, a new array is created and added to the array of arrays
+using a \ac{CAS} instruction.
+
+Benchmarks have shown that the \lstinline|thread_local| outperforms both \ac{pthreads}
+and our custom implementation by roughly a factor of $2$. However, the increased
+cost is dominated by actual work within the priority queues' \lstinline|insert|
+and \lstinline|delete_min| functions, and does not contribute meaningfully to
+\klsm benchmark results.
+
+\subsection{Blocks and Items} \label{ssec:block_internals}
 
 \section{Memory Management} \label{sec:mm_internals}
 \subsection{Items} \label{ssec:item_mm_internals}
