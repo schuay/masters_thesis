@@ -20,6 +20,7 @@
 \end{comment}
 
 % TODO: Mention that the klsm is a min queue.
+% TODO: State claimed qualities. Linearizability, lock-free, O(\log n) operations (really?)
 
 Contrary to the previous chapter in which the concept of the \klsm was briefly
 described, this chapter will cover the implementation details of the new standalone
@@ -470,7 +471,7 @@ private:
 };
 \end{lstlisting}
 \caption{The block array header.}
-\label{fig:shared_lsm_local::peek}
+\label{fig:block_array.h}
 \end{figure}
 
 During insertions, a block is first such that the block array remains
@@ -590,11 +591,200 @@ private:
 \label{fig:block_pivots.h}
 \end{figure}
 
-% Original pivot algorithm.
-% My pivot algorithm.
+The original Pheet \klsm grows the pivot range iteratively by starting at the first block,
+tentatively picking the next
+key beyond the current pivot range as the new upper bound for keys within the range,
+and then recalculating the pivot range for each block. If the new pivot range
+size is too small, the process is repeated; if it is too large, the pivot range
+is reverted to its previous state, and the process is repeated on the next block.
+
+This algorithm can become expensive and cause a large amount of repeated and
+wasted work. Instead of iteratively using existing keys, the standalone \klsm
+uses binary search to arrive at the desired value of the upper key bound in
+logarithmic time. As an additional optimization, the previously used key upper
+bound is stored and reused as a lower bound for the binary search in \lstinline|grow|
+operations (in which the new upper bound must be higher than its previous value)
+and as upper bounds in \lstinline|shrink| calls.
 
 \section{\acl{DLSM} Internals} \label{sec:dlsm_internals}
+
+The \ac{DLSM} is a completely distributed priority queue without any
+global quality guarantees. It is, however, extremely scalable, and mostly
+responsible for the high performance of the \klsm under benign situations.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V, int Rlx>
+class dist_lsm
+{
+public:
+    void insert(const K &key,
+                const V &val,
+                shared_lsm<K, V, Rlx> *slsm);
+
+    void find_min(typename block<K, V>::peek_t &best);
+
+    int spy();
+
+private:
+    thread_local_ptr<dist_lsm_local<K, V, Rlx>> m_local;
+};
+\end{lstlisting}
+\caption{The \ac{DLSM} header.}
+\label{fig:dist_lsm.h}
+\end{figure}
+
+Its interface, shown in Figure \ref{fig:dist_lsm.h}, consists of the standard
+\lstinline|insert| (not shown) and \lstinline|find_min|, as well as a special
+insertion function used from the \klsm which includes a \ac{SLSM} argument,
+and a \lstinline|spy| function. Again, a thread-local pointer contains the local
+part of the data structure.
+
+The local component, called \lstinline|dist_lsm_local| and shown in Figure
+\ref{fig:dist_lsm_local.h}, contains the actual \ac{LSM} representation,
+memory management pools for blocks and items, a cached item similar to the
+\ac{SLSM}, and a random number generator used to determine a victim during
+\lstinline|spy| calls.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V, int Rlx>
+class dist_lsm_local
+{
+public:
+    void insert(const K &key,
+                const V &val,
+                shared_lsm<K, V, Rlx> *slsm);
+
+    void peek(typename block<K, V>::peek_t &best);
+
+    int spy(class dist_lsm<K, V, Rlx> *parent);
+
+private:
+    std::atomic<block<K, V> *> m_head; /**< The largest  block. */
+    block<K, V>               *m_tail; /**< The smallest block. */
+    block<K, V>               *m_spied;
+
+    block_storage<K, V, 4> m_block_storage;
+    item_allocator<item<K, V>, typename item<K, V>::reuse> m_item_allocator;
+
+    typename block<K, V>::peek_t m_cached_best;
+
+    xorshf96 m_gen;
+};
+\end{lstlisting}
+\caption{The local \ac{DLSM} header.}
+\label{fig:dist_lsm_local.h}
+\end{figure}
+
+Contrary to the \ac{SLSM}, the \ac{DLSM} uses a linked list of blocks to represent
+the local \ac{LSM}. Blocks (covered further in Section \ref{sec:component_internals})
+contain \lstinline|next| pointers accessible by all threads, and \lstinline|prev|
+pointers which may only be used by the owning thread. Insertions proceed
+similar to the \ac{SLSM}: a singleton block is created which is then inserted
+at the tail of the list. Trailing blocks are then merged until there is again
+only a single block of each capacity within the \ac{LSM}.
+
+Block merges are performed locally, and are invisible to other threads until
+the newly formed \ac{LSM} tail is appended atomically to the linked list of blocks
+by a single \ac{CAS} instruction on a \lstinline|next| pointer (or the list head).
+
+In order to accomodate the \klsm design in which \acp{DLSM} may never exceed
+the relaxation parameter $k$ (\lstinline|Rlx| within the code) in size,
+the \ac{DLSM} insertion method has an \lstinline|slsm| argument containing
+the global component of the \klsm. Whenever the largest block of the \ac{DLSM}
+exceeds $\frac{k}{2}$ in size at the end of an insertion, the block is removed
+from the \ac{DLSM} and added to the \ac{SLSM} instead.
+
+An interesting
+facet of the current implementation is that since the \ac{DLSM} and \ac{SLSM}
+use different memory management methods for blocks, the \ac{DLSM} block
+must be copied into an \ac{SLSM} block upon insertion. However, since this copy
+is only performed at most once for each item, it only adds an overhead of $O(1)$.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V, int Rlx>
+void
+dist_lsm_local<K, V, Rlx>::peek(typename block<K, V>::peek_t &best)
+{
+    /* Short-circuit. */
+    if (!m_cached_best.empty() && !m_cached_best.taken()) {
+        best = m_cached_best;
+        return;
+    }
+
+    for (auto i = m_head.load(std::memory_order_relaxed);
+            i != nullptr;
+            i = i->m_next.load(std::memory_order_relaxed)) {
+
+        /* Not shown: block maintenance. Empty blocks are removed,
+         * sparsely filled blocks are shrunk. */
+
+        auto candidate = i->peek();
+        if (best.empty() ||
+                (!candidate.empty() && candidate.m_key < best.m_key)) {
+            best = candidate;
+        }
+    }
+
+    if (best.empty() && m_spied != nullptr) {
+        best = m_spied->peek();
+    }
+
+    m_cached_best = best;
+}
+\end{lstlisting}
+\caption{The local \ac{DLSM} header.}
+\label{fig:dist_lsm_local.h}
+\end{figure}
+
+Code for the \lstinline|peek| function is shown in Figure
+\ref{fig:dist_lsm_local.h}. Similar to the \ac{SLSM}, the \ac{DLSM}
+keeps a local cache of the previously determined item with the least key,
+which is updated both during calls to \lstinline|peek| and during insertions
+(in case the newly inserted item is smaller than the previously known least item).
+If a valid cached least item is present when \lstinline|peek| is called, it is
+simply returned and no further work is done.
+
+Otherwise, we iterate through each block in the \ac{LSM} and inspect its least item.
+Since that item is located at the head of the block, access to it can be done
+in constant time. If the \ac{LSM} is nonempty, the minimal such item is returned;
+alternatively, we fall back to the minimal item of the spied block. There is
+a logarithmic number of blocks, and thus the complexity of \lstinline|peek| is
+$O(\log n)$.
+
+The implementation of \lstinline|spy| is another area in which the standalone
+\klsm deviates from the Pheet \klsm. In Pheet, spying attempts to copy the
+entire contents of another thread's local \ac{LSM}, and adds the copied items
+to its own linked list of blocks.
+
+However, this has the disadvantage of raising
+the frequency of $k$ boundary overflows coupled with resulting block insertions
+into the \ac{SLSM}, as well as the insertion of duplicate items into the \ac{SLSM}.
+Semantics of the \ac{SLSM} remain valid even in the presence of duplicates ---
+recall that the \acp{LSM} store as pointers to items, and each item may only
+be taken atomically by a single thread; but such duplicate items waste both space
+and time.
+
+On the other hand, the standalone \klsm simplifies \lstinline|spy| to only
+copy the largest block from another thread's local \ac{LSM}, and storing
+that block separately from the main local block linked list. This change
+makes \lstinline|spy| more efficient since only a single block needs to be copied
+and no merges must be performed, and additionally prevents insertion of duplicates
+into the global \ac{SLSM}.
+
 \section{Component Internals} \label{sec:component_internals}
+
+This section covers the implementation of so-called components,
+basic building blocks which are used throughout the \klsm. The most essential
+of these are blocks and items, the base containers used to store all items
+within the \klsm; and thread-local pointers, which implement local storage while
+still granting access to other threads' data on demand.
+
+\subsection{Blocks and Items} \label{ssec:block_internals}
+\subsection{Thread-Local Pointers} \label{ssec:thread_local_ptr_internals}
+
 
 \section{Memory Management} \label{sec:mm_internals}
 \subsection{Items} \label{ssec:item_mm_internals}
