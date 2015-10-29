@@ -879,6 +879,104 @@ and \lstinline|delete_min| functions, and does not contribute meaningfully to
 
 \subsection{Blocks and Items} \label{ssec:block_internals}
 
+Blocks and items are the base containers used within the \klsm: items
+store key-value pairs, blocks store items, and blocks in turn are stored
+by the different \ac{LSM} variants --- linked-list \acp{LSM} in the \ac{DLSM},
+and array-based \acp{LSM} in the \ac{SLSM}.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V>
+class item
+{
+public:
+    void initialize(const K &key,
+                    const V &val) {
+        m_version.fetch_add(1, std::memory_order_relaxed);
+        m_key = key;
+        m_val = val;
+    }
+
+    bool take(const version_t version,
+              V &val) {
+        val = m_val;
+
+        version_t expected = version;
+        return m_version.compare_exchange_strong(
+                expected,
+                expected + 1,
+                std::memory_order_relaxed);
+    }
+
+private:
+    std::atomic<version_t> m_version;
+    K m_key;
+    V m_val;
+};
+\end{lstlisting}
+\caption{The item header.}
+\label{fig:item.h}
+\end{figure}
+
+Items are conceptually simple, consisting only of the key-value pair
+and a version number (see Figure \ref{fig:item.h}). Even version numbers
+are considered reusable and may be reclaimed at any time by the memory manager,
+while odd versions are in
+use. Thus both \lstinline|initialize| and \lstinline|take| increment
+the version by one and thereby both invalidate other concurrent \ac{CAS}
+instructions and set the item's taken status.
+
+In their most basic form (Figure \ref{fig:block.h},
+blocks are likewise simple constructs. A block
+contains an array of items of a certain capacity which is always equal
+to $2^n$ for some $n$. The array stores \lstinline|block_item| instances,
+which store an expected version and a cached key together with a pointer
+to the actual item.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V>
+class block
+{
+public:
+    struct block_item {
+        K m_key;
+        item<K, V> *m_item;
+        version_t m_version;
+    };
+
+public:
+    void insert(item<K, V> *it,
+                const version_t version);
+
+    void merge(const block<K, V> *lhs,
+               const block<K, V> *rhs);
+
+    peek_t peek();
+
+private:
+    const size_t m_capacity;
+    block_item *m_block_items;
+};
+\end{lstlisting}
+\caption{The block header.}
+\label{fig:block.h}
+\end{figure}
+
+It is crucial to understand how a \lstinline|block_item| interacts with
+the remaining data structure in order to guarantee atomic access to each
+item. Upon insertion, while the item and its version are only visible to
+a single thread, the current item version (together with the item's key)
+is copied into the \lstinline|block_item|. From this point on, the
+\lstinline|block_item| is may be copied multiple times, but remains read-only
+and its values are never altered. Thus when a thread attempts to take
+an item using a \ac{CAS} instruction with the \lstinline|block_item|'s
+version, it is guaranteed that \lstinline|block_item.m_version|
+has remained unchanged from the time the item has been inserted.
+If any thread has taken that particular item, then any further attempts to
+take it must fail.
+
+
 \section{Memory Management} \label{sec:mm_internals}
 \subsection{Items} \label{ssec:item_mm_internals}
 \subsection{Blocks} \label{ssec:block_mm_internals}
