@@ -1076,14 +1076,170 @@ reads of the atomic item version and a second iteration of the entire block
 in which almost every item may be moved in the worst case.
 
 \section{Memory Management} \label{sec:mm_internals}
+
+Any lock-free data structure such as the \klsm also requires lock-free
+memory management, and unlike standard single-threaded memory management,
+its lock-free counterpart is not a solved problem.
+
+To illustrate, the lock-free priority queues briefly discussed in Chapters
+\ref{ch:strict} and \ref{ch:relaxed} use a wide variety of memory management methods.
+The \citeauthor{shavit2000skiplist} queue uses a dedicated garbage collection
+thread in combination with timestamps in order to free memory only once
+it cannot be visible to any threads. The \citeauthor{sundell2003fast} priority
+queue uses the memory management method by \citeauthor{valois1996lock}
+\cite{valois1995lock,valois1996lock} which does not require a separate
+garbage collector thread. \citeauthor{linden2013skiplist} use
+\citeauthor{fraser2004practical}'s epoch-based reclamation scheme
+\cite{fraser2004practical}, and the CBPQ makes use of the author's 'Drop the Anchor'
+lock-free memory management scheme \cite{braginsky2011locality,braginsky2013drop}.
+The SprayList does not have any robust memory management at the time of writing;
+it simply preallocates a set amount of memory in advance and fails in case it runs
+out of space.
+
+Memory management in both the standalone \klsm and the Pheet \klsm are based
+on reuse. Once allocated, a memory chunk is never freed but reused extensively.
+Lock-free memory management is required for components accessed across threads,
+i.e. items, blocks, and block arrays. These components have differing requirements
+and thus each has its own memory management variant, described further
+in the following sections.
+
 \subsection{Items} \label{ssec:item_mm_internals}
+
+The standalone \klsm (as well as the Pheet \klsm) use \citeauthor{wimmer2013data}'s
+wait-free memory management \cite{wimmer2013data,wimmerphd} for items. A detailed
+presentation of the scheme is omitted and is presented in detail in
+\cite{wimmerphd}.
+
+A general overview is as follows: each thread owns a thread-local copy of
+\citeauthor{wimmer2013data}'s block-based memory manager. The memory manager
+has a single function called \lstinline|acquire|, which returns a pointer to
+an available item. Internally, \lstinline|acquire| operates on a list of arrays
+of items. An amortized complexity of $O(1)$ per allocation is guaranteed by
+iterating through items and returning the first unused one found as long as
+amortized guarantees are not violated, and simply creating a new block if they
+are.
+
+As explained previously, the ABA problem is handled by linking each item with
+a specific integral version, with even versions representing unused items and
+odd versions being in use. Marking items used can thus use an \ac{FAA} instruction,
+while taking an item (i.e. marking it unused) can be done with an atomic \ac{CAS}.
+
 \subsection{Blocks} \label{ssec:block_mm_internals}
 
-% DLSM: Simpler mechanism since block pointers owned by thread.
-% SLSM: insert_block.
+Blocks (and block arrays in the next section) are managed based on the idea
+of a fixed-size pool. It is possible to bound the number of blocks of any given
+capacity which may be allocated at once on a single thread, and thus we may
+simply pre-allocate the required number of blocks.
+
+Handling of block allocations has subtly different requirements in the \ac{SLSM}
+and \ac{DLSM}: in the \ac{DLSM}, blocks have a simple lifecycle in which
+they are either used or unused. In the \ac{SLSM}, blocks may be used short-term locally,
+long-term globally, or unused. We thus use two separate mechanisms for managing
+block memory.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V, int N>
+class block_storage
+{
+private:
+    struct block_tuple {
+        block<K, V> *xs[N];
+    };
+
+public:
+    block<K, V> *get_block(const size_t i);
+
+private:
+    block_tuple m_blocks[MAX_BLOCKS];
+    size_t m_size;
+};
+\end{lstlisting}
+\caption{The \lstinline|block_storage| header.}
+\label{fig:block_storage.h}
+\end{figure}
+
+The \ac{DLSM} uses the more primitive memory manager, called \lstinline|block_storage|
+(Figure \ref{fig:block_storage.h}). It consists of an array of block $N$-tuples,
+which are dynamically allocated by \lstinline|get_block| whenever a block
+of an as-of-yet unused capacity is requested and set by a single \ac{CAS} instruction.
+The first unused block within the requested capacity $N$-tuple is then returned.
+In the case of the \ac{DLSM}, at most four blocks of the same capacity may be
+used during a single operation.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V>
+class block_pool {
+private:
+    enum block_status {
+        BLOCK_FREE,
+        BLOCK_LOCAL,
+        BLOCK_GLOBAL,
+    };
+
+public:
+    block<K, V> *get_block(const size_t i)
+    {
+        int max_global_version = /* maximal version of level i */;
+        for (int j = ix(i); j < ix(i + 1); j++) {
+            if (m_status[j] == BLOCK_FREE
+                    || (m_status[j] == BLOCK_GLOBAL
+                        && m_version[j] != max_global_version)) {
+                m_status[j] = BLOCK_LOCAL;
+                if (m_pool[j] == nullptr) {
+                    m_pool[j] = new block<K, V>(i);
+                }
+                return m_pool[j];
+            }
+        }
+        return nullptr;
+    }
+
+private:
+    block<K, V> *m_pool[BLOCKS_IN_POOL];
+    block_status m_status[BLOCKS_IN_POOL];
+    version_t    m_version[BLOCKS_IN_POOL];
+};
+\end{lstlisting}
+\caption{The \lstinline|block_pool| header.}
+\label{fig:block_pool.h}
+\end{figure}
+
+Block management within the \ac{SLSM} is complicated by the fact that blocks
+go through additional lifecycle stages. During \lstinline|shared_lsm::insert|,
+the new merged blocks are first created locally, during which allocated blocks
+are marked as in local use. If the newcly created block array is published
+successfully, all blocks it contains are then marked as in global use. If,
+on the other hand, publishing fails, then all locally used blocks are marked
+as unused and the operation is restarted.
+
+The \ac{SLSM} block manager,
+the \lstinline|block_pool|, is structured similarly to \lstinline|block_storage|,
+except that it additionally stores a block status and version for each block
+(Figure \ref{fig:block_pool.h}). The version represents the version of the most
+recently published global array containing the corresponding block and is set
+when a global array is published successfully. A block may be reusable in two
+circumstances: either it is marked as unused; or it is set as globally used,
+but there is a more recently published block of the same capacity, in which
+case the older block is safe to use since there may only be a single block of
+each capacity within an \ac{LSM}. The states \lstinline|BLOCK_FREE| and
+\lstinline|BLOCK_LOCAL| may transition freely between each other, but
+\lstinline|BLOCK_GLOBAL| is never explicitly marked unused and may thus only
+transition to \lstinline|BLOCK_LOCAL| if a newer published block of the same capacity
+exists.
+
+Blocks do not have their own versions, and are instead associated with a versioned
+block array in order to avoid the ABA problem.
 
 \subsection{Block Arrays} \label{ssec:block_array_mm_internals}
 
-% SLSM: insert_block.
+Block arrays are used within the \ac{SLSM} to represent array-based \acp{LSM}.
+Memory management is simple as there may only be a single published block
+array at a time. Each thread has two preallocated block arrays. Which one of these
+is chosen for allocation depends on the version of the to-be-constructed array ---
+one for odd versions, the other for even versions.
 
-\section{Implementation Impact on Performance} \label{sec:implementation_impact}
+Like items, block arrays are associated with an integral version. The full version
+is included in the block array itself, while a truncated version is packed into
+the published block array pointer to prevent the ABA problem.
