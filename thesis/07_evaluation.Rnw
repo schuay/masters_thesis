@@ -1,5 +1,91 @@
 \chapter{Results \& Discussion} \label{ch:evaluation}
 
+This chapter presents and discusses results for a variety of benchmarks, and executed
+on a number of different platforms. We evaluate both the \klsm
+together with a selection of other representative parallel priority queues.
+
+Section \ref{sec:benchmarks} covers the different benchmark types we used, while
+Section \ref{sec:algorithms} presents the various priority queue algorithms and
+Section \ref{sec:methodology} lists our systems and methodology. Results are
+finally shown and discussed in Section \ref{sec:results}.
+
+\section{Benchmarks} \label{sec:benchmarks}
+
+Initially when we started work on the \klsm, we relied almost exlusively on
+a benchmark which we call the uniformly random throughput benchmark, in which
+the priority queue is prefilled with a certain number of elements, and each
+thread then performs an equal mixture of insertion/deletion operations.
+The operation type is chosen uniformly at random with a probability of $50\%$
+each, and key values for insertions are likewise chosen uniformly at random
+within the range of 32-bit integers. The benchmark is run for a certain amount
+of time, and the number of performed operations is then reported as the resulting
+throughput
+
+This type of benchmark is hugely popular within priority queue research and
+has been used as the basis for performance evaluations in most publications,
+including
+\cite{hunt1996efficient,alistarhspraylist,linden2013skiplist,shavit2000skiplist,sundell2003fast,wimmer2015lock,cbpq}.
+Its popularity is understandable: the uniform random throughput benchmark is
+easy to understand as well as to implement, and it allows for some form of
+consistency and comparability between different publications.
+
+However, within the course of this thesis, it has become clear that this benchmark
+has a significant drawback, since it causes priority queues degrades to
+quasi-\ac{LIFO} queue performance over time and may severely distort obtained
+results. This is caused  by the fact that inserted keys are chosen uniformly at random ---
+over time, lower keys are removed from the priority queue and its contents become
+biased towards higher keys. Newly inserted keys have a high chance of being within
+the lowest keys of the queue and quickly becoming a candidate for removal by
+\lstinline|delete_min|. Especially with queues having relaxed semantics such as
+the SprayList and the \klsm, this can lead to a situation which very closely
+approximates the behavior of a \ac{LIFO} queue.
+
+In order to get a better picture of a queue's overall performance, we have introduced
+parameters to obtain variations on the random throughput benchmark. The goal
+of these parameters was to preserve the aspect of the random throughput benchmark
+which caused the data structure to remain at a more or less constant size, allowing
+a benchmark to run without resulting in either an empty or an ever-growing queue.
+
+The first introduced parameter is called the \emph{workload}; a balanced workload
+performs a roughly equal amount of insertions and deletions on each thread, while
+an unbalanced workload performs only insertions on half of all threads, and only
+deletions on the other half. The second parameter concerns \emph{key generation},
+and we have experimented both with uniform key generation (uniformly at random
+within the range of 32-bit integers), and ascending key generation (uniformly at random
+within a smaller range that grows over time, i.e. selection from $[0, U] + t$).
+
+Besides the artificial throughput benchmark, we also experimented with a
+single source shortest paths benchmark as in \cite{wimmer2015lock}. The graphs
+are randomly generated for a given key and node degree. Each thread then repeatedly
+pops the queue (containing the next path portion to evaluate), generates successor
+subpaths, and adds them to the queue.
+
+Finally, the quality of the produced output is evaluated by using a variant of
+the throughput benchmark. Quality in this sense compares the output sequence of
+the measured priority queue against a strict sequential queue. Each insertion
+and deletion is tagged with a timestamp, which is then used to reconstruct an
+approximate linear sequence of insertions and deletions. This sequence is then
+replayed using a strict sequential queue, and the rank of each deleted item
+within the queue at the time of deletion is recorded (with the rank of the least
+item being $1$). Theoretically, strict queues should result in an average rank
+of $1$, but in practice we can expect deviations of this value due to 'simultaneous'
+operations between threads and imprecise timestamps. However, even though
+it is not an exact value, the average rank still provides a good feel for the
+quality of a queue's returned results.
+
+\section{Algorithms} \label{sec:algorithms}
+\section{Systems and Methodology} \label{sec:methodology}
+\section{Results} \label{sec:results}
+
+\begin{comment}
+* introductory paragraph(s). roughly what this chapter will cover.
+* benchmarks.
+* algorithms.
+* methodology.
+* results - but how to structure these? for the random benchmark, we have different
+  types: uniform/split, uniform/ascending; plus there are also quality numbers to present.
+  all of these are correlated. perhaps pair quality + throughput side by side?
+
 In this section, we compare the performance of several different concurrent priority
 queue implementations:
 
@@ -88,3 +174,4 @@ As a final observation we note that even the most efficient strict concurrent pr
 never exceeds the throughput of the simple sequential heap executed on a single thread by more
 than a factor of two. There is hope however since relaxed data structures continue to scale
 beyond 10 threads (see the benchmarks performed in \cite{alistarhspraylist} for an example).
+\end{comment}
