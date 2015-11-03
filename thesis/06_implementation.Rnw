@@ -926,7 +926,7 @@ use. Thus both \lstinline|initialize| and \lstinline|take| increment
 the version by one and thereby both invalidate other concurrent \ac{CAS}
 instructions and set the item's taken status.
 
-In their most basic form (Figure \ref{fig:block.h},
+In their most basic form (Figure \ref{fig:block.h}),
 blocks are likewise simple constructs. A block
 contains an array of items of a certain capacity which is always equal
 to $2^n$ for some $n$. The array stores \lstinline|block_item| instances,
@@ -957,6 +957,11 @@ public:
 private:
     const size_t m_capacity;
     block_item *m_block_items;
+    size_t m_first;
+    size_t m_last;
+
+    static constexpr size_t MAX_SKIPPED_PRUNES = 16;
+    size_t m_skipped_prunes;
 };
 \end{lstlisting}
 \caption{The block header.}
@@ -968,7 +973,7 @@ the remaining data structure in order to guarantee atomic access to each
 item. Upon insertion, while the item and its version are only visible to
 a single thread, the current item version (together with the item's key)
 is copied into the \lstinline|block_item|. From this point on, the
-\lstinline|block_item| is may be copied multiple times, but remains read-only
+\lstinline|block_item| may be copied multiple times, but remains read-only
 and its values are never altered. Thus when a thread attempts to take
 an item using a \ac{CAS} instruction with the \lstinline|block_item|'s
 version, it is guaranteed that \lstinline|block_item.m_version|
@@ -976,6 +981,99 @@ has remained unchanged from the time the item has been inserted.
 If any thread has taken that particular item, then any further attempts to
 take it must fail.
 
+Insertions into a block simply copy the given item's key version into a
+\lstinline|block_item| instance which is then appended to the block item array
+by incrementing the \lstinline|m_last| field. \lstinline|peek| iterates
+through the block beginning at index \lstinline|m_first|, and returns
+the first untaken item (any taken item encountered causes an increment of
+\lstinline|m_first|).
+
+Block merges are one of the central operation of the \ac{LSM}, occurring
+in both the \ac{SLSM} and \ac{DLSM} as part of most insertions (during
+the actual insertion and also during concluding maintenance operations)
+and of many deletions (through maintenance when blocks are less than half full).
+A block merge consists of both the actual merge of both blocks' items as well
+as removal of any encountered taken items, called prune.
+
+We have evaluated several different implementations of \lstinline|merge| ---
+a merge with simultaneous pruning of taken items, lazy multi-way merging at
+the end of an \lstinline|insert| operation, and finally a simple two-phase
+merge-prune. Each of these methods has its own strenghts and weaknesses; the
+simultaneous merge \& prune iterates through each item only once per \lstinline|merge|
+call, but produces lengthier code. The lazy multi-way merge bundles several
+\lstinline|merge| calls into one, avoiding repeated useless work, but is even
+more complex to code and understand. Finally, the simple two-phase merge
+needs to iterate through each item twice, and needlessly merges taken items
+before pruning them; however, it has turned out to be the most efficient
+method of operation.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V>
+void
+block<K, V>::merge(const block<K, V> *lhs,
+                   const size_t lhs_first,
+                   const block<K, V> *rhs,
+                   const size_t rhs_first)
+{
+    const size_t lhs_last = lhs->m_last;
+    const size_t rhs_last = rhs->m_last;
+
+    auto l = lhs->m_block_items + lhs_first;
+    auto r = rhs->m_block_items + rhs_first;
+    const auto lend = lhs->m_block_items + lhs_last;
+    const auto rend = rhs->m_block_items + rhs_last;
+
+    auto dst = m_block_items;
+    while (l < lend && r < rend) {
+        *dst++ = (l->m_key < r->m_key) ? *l++ : *r++;
+    }
+
+    while (l < lend) *dst++ = *l++;
+    while (r < rend) *dst++ = *r++;
+
+    /* Prune. */
+
+    const size_t skipped_prunes = std::max(lhs->m_skipped_prunes,
+            rhs->m_skipped_prunes);
+    if (skipped_prunes > MAX_SKIPPED_PRUNES) {
+        const auto end = dst;
+        dst = m_block_items;
+        for (auto src = dst; src < end; src++) {
+            if (src->taken()) {
+                continue;
+            } else if (src != dst) {
+                *dst = *src;
+            }
+            dst++;
+        }
+
+        m_last = dst - m_block_items;
+        m_skipped_prunes = 0;
+    } else {
+        m_last = size;
+        m_skipped_prunes = skipped_prunes + 1;
+    }
+}
+\end{lstlisting}
+\caption{The \lstinline|block::merge| implementation.}
+\label{fig:block::merge}
+\end{figure}
+
+Code for \lstinline|block::merge| is shown in Figure \ref{fig:block::merge}.
+The first stage consists of a standard pointer-based merge algorithm, combining
+concise code with excellent spacial locality properties. When compared to
+a version of the algorithm using array indexing instead of pointer walks,
+the pointer walks provide noticeably superior performance. An important point
+to note is that this stage does not read the atomic version variable of each
+item; this is possible since item keys are cached in the \lstinline|block_item|,
+and we can thus completely ignore any issues concerning reused items (with
+changed keys) and taken items.
+
+We have also settled on a strategy that does not perform a prune on each merge.
+Instead, prunes are only performed once in a while, saving further expensive
+reads of the atomic item version and a second iteration of the entire block
+in which almost every item may be moved in the worst case.
 
 \section{Memory Management} \label{sec:mm_internals}
 \subsection{Items} \label{ssec:item_mm_internals}
