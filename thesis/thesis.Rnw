@@ -16,6 +16,8 @@
 \usepackage{xspace}
 \usepackage[acronym,toc]{glossaries} % Has to be last.
 
+% TODO: Sort citations numerically.
+
 % --- BEGIN copied setup.
 
 \newcommand{\authorname}{Jakob Gruber}
@@ -126,9 +128,9 @@
 \backmatter
 
 \listoffigures
-\listoftables
+%\listoftables
 
-% Use an optional list of alogrithms.
+% Use an optional list of algorithms.
 %\listofalgorithms
 %\addcontentsline{toc}{chapter}{List of Algorithms}
 
