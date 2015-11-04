@@ -15,11 +15,11 @@ Initially when we started work on the \klsm, we relied almost exlusively on
 a benchmark which we call the uniformly random throughput benchmark, in which
 the priority queue is prefilled with a certain number of elements, and each
 thread then performs an equal mixture of insertion/deletion operations.
-The operation type is chosen uniformly at random with a probability of $50\%$
-each, and key values for insertions are likewise chosen uniformly at random
+The operation type is chosen uniformly at random with a probability of $50\% / 50\%$
+insertions/deletions, and key values for insertions are likewise chosen uniformly at random
 within the range of 32-bit integers. The benchmark is run for a certain amount
-of time, and the number of performed operations is then reported as the resulting
-throughput
+of time, and the number of performed operations per second is then reported as the resulting
+throughput.
 
 This type of benchmark is hugely popular within priority queue research and
 has been used as the basis for performance evaluations in most publications,
@@ -30,15 +30,15 @@ easy to understand as well as to implement, and it allows for some form of
 consistency and comparability between different publications.
 
 However, within the course of this thesis, it has become clear that this benchmark
-has a significant drawback, since it causes priority queues degrades to
+has a significant drawback, since it causes priority queues to degrade to
 quasi-\ac{LIFO} queue performance over time and may severely distort obtained
 results. This is caused  by the fact that inserted keys are chosen uniformly at random ---
-over time, lower keys are removed from the priority queue and its contents become
+over time, as lower keys are removed from the priority queue its contents become
 biased towards higher keys. Newly inserted keys have a high chance of being within
 the lowest keys of the queue and quickly becoming a candidate for removal by
 \lstinline|delete_min|. Especially with queues having relaxed semantics such as
-the SprayList and the \klsm, this can lead to a situation which very closely
-approximates the behavior of a \ac{LIFO} queue.
+the SprayList and the \klsm, this can lead to a situation in which the behavior of
+a priority queue very closely approximates a \ac{LIFO} queue.
 
 In order to get a better picture of a queue's overall performance, we have introduced
 parameters to obtain variations on the random throughput benchmark. The goal
@@ -74,7 +74,80 @@ it is not an exact value, the average rank still provides a good feel for the
 quality of a queue's returned results.
 
 \section{Algorithms} \label{sec:algorithms}
-\section{Systems and Methodology} \label{sec:methodology}
+
+In our experiments, we compare the standalone \klsm against a selection of other
+priority queue algorithms, as well as the original Pheet implementation. The
+used algorithms are as follows:
+
+\begin{itemize}
+\item \textit{GlobalLock} (referred to in figures as \lstinline|globallock|)
+      An instance of the \lstinline|std::priority_queue<T>| class provided
+      by the C++ standard library, protected by a single global lock. This naive
+      algorithm is included as a baseline, and serves to show the minimal acceptable
+      performance of a concurrent priority queue.
+\item \textit{Linden} (\lstinline|linden|)
+      Code for the \citeauthor{linden2013skiplist} priority queue \cite{linden2013skiplist}
+      is provided by the authors under an open source license\footnote{\url{http://user.it.uu.se/~jonli208/priorityqueue}}.
+      It is lock-free and uses \citeauthor{fraser2004practical}'s lock-free
+      SkipList. The aim of this implementation is to minimize contention in
+      calls to \lstinline|DeleteMin|. We chose $32$ as the \lstinline|BoundOffset| in order to optimize
+      performance on a single socket. A \lstinline|BoundOffset| of $128$ performed only marginally better
+      at high thread counts. The \citeauthor{linden2013skiplist} queue represents
+      strict, lock-free and SkipList-based priority queues.
+\item \textit{SprayList} (\lstinline|spray|)
+      A relaxed concurrent priority queue based on \citeauthor{fraser2004practical}'s
+      SkipList using random walks to spread data accesses
+      incurred by \lstinline|DeleteMin| calls. Code provided by \citeauthor{alistarhspraylist} is
+      available on Github\footnote{\url{https://github.com/jkopinsky/SprayList}}. Unfortunately,
+      the implementation seems to be fairly unstable and data will be omitted for instances
+      in which the SprayList crashes.
+\item \textit{Multiqueues} (\lstinline|multiq|)
+      Another recent relaxed concurrent priority queue
+      design by \citeauthor{rihani2014multiqueues}. Contrary to the SprayList, the
+      Multiqueue implementation is lock-based. Since code for the SprayList is
+      not publically available, we use our own reimplementation for benchmarks.
+\item \textit{Pheet \klsm} (\lstinline|pheet16, pheet128, ...|)
+      \citeauthor{wimmer2015lock}'s original implementation
+      of the \klsm within the Pheet task scheduling framework is used mostly to
+      verify the behavior of the standalone reimplementation. We used a range
+      of values of $k$ to vary between fairly strict ($k = 16$) to fairly relaxed
+      ($k = 4096$) behavior. Unlike the other priority queues, the Pheet \klsm
+      was measured using the benchmarks integrated into Pheet. The code
+      was retrieved from their Launchpad site\footnote{\url{http://www.pheet.org}}.
+\item \textit{Standalone \klsm} (\lstinline|klsm16, klsm128, ...|)
+      The standalone \klsm
+      reimplementation was measured by using a variety of values for the
+      relaxation parameter $k$. Both the standalone and Pheet \klsm implementations
+      are linearizable, lock-free, and relaxed priority queues.
+% TODO: Include the mlsm?
+\end{itemize}
+
+Code for the standalone \klsm, as well as the entire benchmarking suite, is available
+on Github at \url{https://github.com/schuay/kpqueue}.
+
+\section{Environment and Methodology} \label{sec:methodology}
+
+Three different machines are used to run benchmarks:
+
+\begin{itemize}
+\item \lstinline|mars| An 80-core system consisting of 8 Intel Xeon E7-8850
+      processors with 10 cores each and 1 TB of RAM. The processors are clocked
+      at 2 GHz.
+\item \lstinline|saturn| A 48-core machine with 4 AMD Opteron 6168 processors
+      with 12 cores each, clocked at 1.9 GHz. \lstinline|saturn| has 125 GB of RAM.
+\item \lstinline|ceres| A 64-core SPARCv9-based machine with 4 processors
+      of 16 cores each. Cores are clocked at 3.6 GHz and have 8-way hardware
+      hyperthreading. \lstinline|ceres| has 1 TB of RAM.
+\end{itemize}
+
+All applications are compiled using \verb|gcc| --- version \verb|5.2.1|
+on \lstinline|mars| and \lstinline|saturn|, and version \verb|4.8.2| on
+\lstinline|ceres|. We use an optimization level of \verb|-O3| and enable
+link-time optimizations using \verb|-flto|.
+
+Each benchmark is executed 10 times, and we report on the mean values and
+confidence intervals.
+
 \section{Results} \label{sec:results}
 
 \begin{comment}
@@ -85,36 +158,6 @@ quality of a queue's returned results.
 * results - but how to structure these? for the random benchmark, we have different
   types: uniform/split, uniform/ascending; plus there are also quality numbers to present.
   all of these are correlated. perhaps pair quality + throughput side by side?
-
-In this section, we compare the performance of several different concurrent priority
-queue implementations:
-
-\begin{itemize}
-\item \textit{GlobalLock} An instance of the \lstinline|std::priority_queue<T>| class provided
-      by the C++ standard library, protected by a single global lock.
-\item \textit{Heap} \citeauthor{hunt1996efficient} provide an implementation
-      of their Heap-based design \cite{hunt1996efficient} at \url{ftp://ftp.cs.rochester.edu/pub/packages/concurrent_heap/}.
-      However, as the original code was written for the MIPS architecture, we chose to
-      use the alternative implementation in \emph{libcds}\footnote{\url{http://sourceforge.net/p/libcds/code/}}
-      instead. The heap capacity was $2^{18}$ --- lower values led to a quasi-deadlock situation under high concurrency
-      as described in \cite{dragicevic2008survey}.
-\item \textit{Noble} An implementation of the \citeauthor{sundell2003fast} priority queue \cite{sundell2003fast}
-      is available in the Noble library\footnote{\url{http://www.non-blocking.com/Eng/download-demo.aspx}}.
-      \textit{Noble} is lock-free, based on SkipLists, and limited to unique priorities.
-      According to the authors, the commercial Noble library includes a more efficient
-      version of this data structure that can also handle duplicate priority values.
-\item \textit{Linden} Code for the \citeauthor{linden2013skiplist} priority queue \cite{linden2013skiplist}
-      is provided by the authors under an open source license\footnote{\url{http://user.it.uu.se/~jonli208/priorityqueue}}.
-      It is lock-free and uses \citeauthor{fraser2004practical}'s lock-free
-      SkipList. The aim of this implementation is to minimize contention in
-      calls to \lstinline|DeleteMin|. We chose $32$ as the \lstinline|BoundOffset| in order to optimize
-      performance on a single socket. A \lstinline|BoundOffset| of $128$ performed only marginally better
-      at high thread counts.
-\item \textit{SprayList} A relaxed concurrent priority queue based on \citeauthor{fraser2004practical}'s
-      SkipList using random walks to spread data accesses
-      incurred by \lstinline|DeleteMin| calls. Code provided by \citeauthor{alistarhspraylist} is
-      available on Github\footnote{\url{https://github.com/jkopinsky/SprayList}}.
-\end{itemize}
 
 Unfortunately, we were not able to obtain an implementation of the \citeauthor{shavit2000skiplist}
 priority queue for benchmarking. The \citeauthor{wimmer2013data} data structure was omitted in the
