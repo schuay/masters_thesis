@@ -12,6 +12,7 @@
 \usepackage{listings}
 \usepackage{microtype}
 \usepackage{nag}
+\usepackage{subcaption}
 \usepackage[usenames,dvipsnames,table]{xcolor}
 \usepackage{xspace}
 \usepackage[acronym,toc]{glossaries} % Has to be last.
@@ -59,6 +60,9 @@
 \newcommand{\todo}[1]{{\color{red}\textbf{TODO: {#1}}}} % Comment for the final version, to raise errors.
 
 % --- END copied setup.
+
+% Set the default width for all figures to equal text width.
+\setkeys{Gin}{width=\textwidth}
 
 \newcommand{\klsm}{$k$-LSM\xspace}
 

@@ -5,7 +5,10 @@ thesis: thesis/thesis.tex
 
 thesis/thesis.tex: thesis/thesis.Rnw thesis/00_frontmatter.Rnw thesis/01_introduction.Rnw thesis/02_sequential.Rnw thesis/03_definitions.Rnw thesis/04_strict.Rnw thesis/05_relaxed.Rnw thesis/06_implementation.Rnw thesis/07_evaluation.Rnw thesis/08_conclusion.Rnw
 	# The Sweave package breaks title page formatting, disable it while we don't need it.
-	cd thesis && R CMD Sweave thesis.Rnw && sed -i '/\\usepackage{Sweave}/d' thesis.tex
+	#cd thesis && R CMD Sweave thesis.Rnw && sed -i '/\\usepackage{Sweave}/d' thesis.tex
+	cd thesis && R CMD Sweave thesis.Rnw
+	mkdir -p build/thesis
+	mv thesis/thesis-*.pdf thesis/Rplots.pdf build/thesis/
 
 clean:
 	rm -rf build

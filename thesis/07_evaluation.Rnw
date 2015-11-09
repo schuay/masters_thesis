@@ -80,33 +80,33 @@ priority queue algorithms, as well as the original Pheet implementation. The
 used algorithms are as follows:
 
 \begin{itemize}
-\item \textit{GlobalLock} (referred to in figures as \lstinline|globallock|)
-      An instance of the \lstinline|std::priority_queue<T>| class provided
+\item \textit{GlobalLock} (referred to in figures as \verb|globallock|)
+      An instance of the \verb|std::priority_queue<T>| class provided
       by the C++ standard library, protected by a single global lock. This naive
       algorithm is included as a baseline, and serves to show the minimal acceptable
       performance of a concurrent priority queue.
-\item \textit{Linden} (\lstinline|linden|)
+\item \textit{Linden} (\verb|linden|)
       Code for the \citeauthor{linden2013skiplist} priority queue \cite{linden2013skiplist}
       is provided by the authors under an open source license\footnote{\url{http://user.it.uu.se/~jonli208/priorityqueue}}.
       It is lock-free and uses \citeauthor{fraser2004practical}'s lock-free
       SkipList. The aim of this implementation is to minimize contention in
-      calls to \lstinline|DeleteMin|. We chose $32$ as the \lstinline|BoundOffset| in order to optimize
-      performance on a single socket. A \lstinline|BoundOffset| of $128$ performed only marginally better
+      calls to \verb|DeleteMin|. We chose $32$ as the \verb|BoundOffset| in order to optimize
+      performance on a single socket. A \verb|BoundOffset| of $128$ performed only marginally better
       at high thread counts. The \citeauthor{linden2013skiplist} queue represents
       strict, lock-free and SkipList-based priority queues.
-\item \textit{SprayList} (\lstinline|spray|)
+\item \textit{SprayList} (\verb|spray|)
       A relaxed concurrent priority queue based on \citeauthor{fraser2004practical}'s
       SkipList using random walks to spread data accesses
-      incurred by \lstinline|DeleteMin| calls. Code provided by \citeauthor{alistarhspraylist} is
+      incurred by \verb|DeleteMin| calls. Code provided by \citeauthor{alistarhspraylist} is
       available on Github\footnote{\url{https://github.com/jkopinsky/SprayList}}. Unfortunately,
       the implementation seems to be fairly unstable and data will be omitted for instances
       in which the SprayList crashes.
-\item \textit{Multiqueues} (\lstinline|multiq|)
+\item \textit{Multiqueues} (\verb|multiq|)
       Another recent relaxed concurrent priority queue
       design by \citeauthor{rihani2014multiqueues}. Contrary to the SprayList, the
       Multiqueue implementation is lock-based. Since code for the SprayList is
       not publically available, we use our own reimplementation for benchmarks.
-\item \textit{Pheet \klsm} (\lstinline|pheet16, pheet128, ...|)
+\item \textit{Pheet \klsm} (\verb|pheet16, pheet128, ...|)
       \citeauthor{wimmer2015lock}'s original implementation
       of the \klsm within the Pheet task scheduling framework is used mostly to
       verify the behavior of the standalone reimplementation. We used a range
@@ -114,7 +114,7 @@ used algorithms are as follows:
       ($k = 4096$) behavior. Unlike the other priority queues, the Pheet \klsm
       was measured using the benchmarks integrated into Pheet. The code
       was retrieved from their Launchpad site\footnote{\url{http://www.pheet.org}}.
-\item \textit{Standalone \klsm} (\lstinline|klsm16, klsm128, ...|)
+\item \textit{Standalone \klsm} (\verb|klsm16, klsm128, ...|)
       The standalone \klsm
       reimplementation was measured by using a variety of values for the
       relaxation parameter $k$. Both the standalone and Pheet \klsm implementations
@@ -146,11 +146,180 @@ on \lstinline|mars| and \lstinline|saturn|, and version \verb|4.8.2| on
 link-time optimizations using \verb|-flto|.
 
 Each benchmark is executed 10 times, and we report on the mean values and
-confidence intervals.
+confidence intervals. Priority queues are pre-filled with $10^6$ items
+before the benchmark is started.
 
 \section{Results} \label{sec:results}
 
+We first examine results for the random throughput benchmark with uniform
+workload (each thread does a roughly equal amount of insertions and deletions)
+and uniform key generation.
+
+<<echo = FALSE>>=
+\SweaveInput{pqplot.Rnw}
+@
+
+\begin{figure}[ht]
+\begin{center}
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151109_mars_uni_uni")
+@
+\end{center}
+\caption{Uniform workload, uniform keys on \lstinline|mars|.}
+\label{fig:mars_uni_uni}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151109_mars_uni_uni_slow")
+@
+\end{center}
+\caption{Uniform workload, uniform keys on \lstinline|mars| (detail view of slower queues).}
+\label{fig:mars_uni_uni_slow}
+\end{figure}
+
+Figures \ref{fig:mars_uni_uni} and \ref{fig:mars_uni_uni_slow}
+displays the throughput in operations per second
+over a range of threads. The \klsm dominates all other priority queues at
+medium to high relaxation ($k \in \{ 128, 256, 4096 \}$), reaching over 200
+\ac{MOps} and scaling up to 80 threads. The \klsm's scalability heavily depends on the value
+of $k$; at low values the \klsm behaves similar to other concurrent priority
+queues (see Figure \ref{fig:mars_uni_uni_slow} for a detail view of slower queues).
+At $k = 128$, the \klsm scales well until around 25 threads, and higher values
+of $k$ improve scalability up to 50 ($k = 256$) and 80 threads ($k = 4096$).
+
+Multiqueues (\verb|multiq|) perform
+the best out of all other data structures, reaching around 30 \ac{MOps} at 75
+threads. Although their performance suffers once cores on more than one socket
+are used (this occurs at 15 threads in our figure), they slowly recover and keep
+scaling until almost the maximal thread count.
+
+The SprayList shows similar (but slower) behavior to the Multiqueues at low thread
+counts, but does not scale further beyond 10 threads. As expected, the
+\citeauthor{linden2013skiplist} queue performs well while executed on a single
+socket, but throughput stays constant at just over 2 \ac{MOps} above 10 threads.
+The \verb|globallock| is the highest performer when executed sequentially, but
+throughput stays low at around 1 \ac{MOps} at higher thread counts.
+
+
+\begin{figure}[ht]
+\begin{center}
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151109_mars_uni_uni_pheet")
+@
+\end{center}
+\caption{Uniform workload, uniform keys on \lstinline|mars|.
+         Comparison of the standalone \klsm against Pheet's \klsm.}
+\label{fig:mars_uni_uni_pheet}
+\end{figure}
+
+Figure \ref{fig:mars_uni_uni_pheet} compares throughput of our new standalone
+\klsm to that of the Pheet \klsm implementation. Interestingly, their behavior
+differs significantly, with the Pheet \klsm performing stronger at lower
+thread counts but the standalone \klsm scaling better at high concurrency,
+and reaching higher absolute performance. It is not necessarily surprising
+that the two implementations beahve differently, since the standalone
+\klsm has various significant differences in implementation details (e.g.,
+pivot calculation based on binary-search, completely segregated \ac{DLSM}
+and \ac{SLSM}, \ldots).
+
+\begin{figure}[ht]
+\begin{center}
+<<fig = TRUE, echo = FALSE>>=
+pqplot("results/20151109_mars_uni_asc")
+@
+\end{center}
+\caption{Uniform workload, ascending keys on \lstinline|mars|.}
+\label{fig:mars_uni_asc}
+\end{figure}
+
+Figure \ref{fig:mars_uni_asc} shows results for the throughput benchmark with
+a uniform workload and ascending keys. The \klsm performs radically different
+to the previously discussed benchmark with uniform key generation in this scenario;
+instead of exceptional performance and scalability proportional to the degree
+of relaxation, the \klsm's throughput never manages to exceed that of the Multiqueues.
+instead, throughput fluctuates between a minimum of roughly 5 \ac{MOps} at
+socket boundaries and a maximum of around 12 \ac{MOps} otherwise. While not
+shown here, we verified that the Pheet \klsm behaves similarly to the standalone
+\klsm.
+
+Multiqueues, the \citeauthor{linden2013skiplist} queue, and the \verb|globallock|
+baseline perform similarly to uniform key generation, while the SprayList
+crashes and could not be measured.
+
+This result is both surprising and disappointing. Performance counters indicate
+that when using uniform key generation, $97\%$ of all deleted items are taken
+from the \ac{DLSM} --- and this is obviously the reason for the \klsm's high
+performance. But how is this kind of skewed balance between the \ac{SLSM} and the
+\ac{DLSM} possibly? Since \lstinline|k_lsm::delete_min| peeks at one item from
+the \ac{SLSM} and one from the \ac{DLSM}, wouldn't it be reasonable to expect
+a $50/50$ proportion of items taken from the either component?
+
+It turns out that the answer to this question is a definite "no" in the case of
+uniform key generation: initially, after prefill is completed, the \klsm
+contains a selection of keys randomly distributed over the range of integers.
+However, as time goes on, lower keys are removed and the \klsm's
+key range becomes skewed towards higher keys. At some point, when most low
+keys have been deleted from the \ac{SLSM}, a stable state is reached in which
+the global \ac{SLSM} contains mostly old, high keys while the local \acp{DLSM}
+contain new, low keys. Items are usually removed from the local \ac{DLSM}, and thus
+updates to the global \ac{SLSM} are infrequent; furthermore, since the
+best known item within the \ac{SLSM} is cached, most calls to \lstinline|shared_lsm::peek()|
+do no actual work.
+
+The ascending key generation benchmark is designed to prevent this situation
+in which priority queues behave similarly to a \ac{LIFO} queue. Since the values of inserted
+keys rise over time and a min-priority queue always removes the least key,
+a relaxed \ac{FIFO}-like behavior results. In the case of the \klsm, items will thus
+usually be initially inserted into the local \ac{DLSM}; then moved to the \ac{SLSM}
+over time, and finally deleted from the \ac{SLSM} once most lower items have
+been removed from the priority queue. Contrary to uniform key generation, emphasis
+is placed on the \ac{SLSM} and performance suffers.
+
 \begin{comment}
+Example composite figure:
+
+\begin{figure}[ht]
+\begin{center}
+
+\begin{minipage}[b]{.5\linewidth}
+\centering
+<<fig = TRUE, width = 8, echo = FALSE>>=
+\SweaveInput{pqplot.Rnw}
+pqplot("results/20151109_mars_uni_uni")
+@
+\subcaption{A subfigure}\label{fig:1a}
+\end{minipage}%
+\begin{minipage}[b]{.5\linewidth}
+\centering
+<<fig = TRUE, width = 8, echo = FALSE>>=
+pqplot("results/20151109_mars_uni_uni")
+@
+\subcaption{Another subfigure}\label{fig:1b}
+\end{minipage}
+
+\begin{minipage}[b]{.5\linewidth}
+\centering
+<<fig = TRUE, width = 8, echo = FALSE>>=
+\SweaveInput{pqplot.Rnw}
+pqplot("results/20151109_mars_uni_uni")
+@
+\subcaption{A subfigure}\label{fig:1a}
+\end{minipage}%
+\begin{minipage}[b]{.5\linewidth}
+\centering
+<<fig = TRUE, width = 8, echo = FALSE>>=
+pqplot("results/20151109_mars_uni_uni")
+@
+\subcaption{Another subfigure}\label{fig:1b}
+\end{minipage}
+
+\end{center}
+\caption{Some random data.}
+\label{fig:random_data}
+\end{figure}
+
 * introductory paragraph(s). roughly what this chapter will cover.
 * benchmarks.
 * algorithms.
@@ -183,7 +352,7 @@ benchmarking suite and is available at \url{https://github.com/schuay/seminar_in
 \begin{center}
 <<results = tex, echo = FALSE>>=
 \SweaveInput{pqplot.Rnw}
-pqplot("results/random.csv")
+pqplot("results/20151109_mars_uni_uni")
 @
 \end{center}
 
