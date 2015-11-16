@@ -6,6 +6,7 @@
 
 \usepackage{acronym}
 \usepackage[backend=bibtex]{biblatex}
+\usepackage{booktabs}
 \usepackage{comment}
 \usepackage{graphicx}
 \usepackage[pdfborder={0 0 0}]{hyperref}
@@ -132,7 +133,7 @@
 \backmatter
 
 \listoffigures
-%\listoftables
+\listoftables
 
 % Use an optional list of algorithms.
 %\listofalgorithms

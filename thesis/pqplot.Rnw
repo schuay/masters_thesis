@@ -1,5 +1,6 @@
 library(Rmisc)
 library(ggplot2)
+library(grid)
 library(plyr)
 library(scales)
 
@@ -40,7 +41,8 @@ pqplot <- function(csvfile) {
                       legend.title = element_text(size = 18),
                       legend.position = c(0, 1),
                       legend.justification = c(0, 1),
-                      legend.background = element_rect(fill = alpha("black", 0)))
+                      legend.background = element_rect(fill = alpha("black", 0)),
+                      plot.margin = unit(c(0,0,0,0), "mm"))
 
     plot(p)
 

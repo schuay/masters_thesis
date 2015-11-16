@@ -151,9 +151,12 @@ before the benchmark is started.
 
 \section{Results} \label{sec:results}
 
+\subsection{Generic throughput, uniform workload, uniform key generation}
+
 We first examine results for the random throughput benchmark with uniform
 workload (each thread does a roughly equal amount of insertions and deletions)
-and uniform key generation.
+and uniform key generation. Unless stated otherwise, performance measurements
+are reported for benchmarks on \lstinline|mars|.
 
 <<echo = FALSE>>=
 \SweaveInput{pqplot.Rnw}
@@ -161,12 +164,31 @@ and uniform key generation.
 
 \begin{figure}[ht]
 \begin{center}
+\begin{minipage}[b]{.5\textwidth}
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_saturn_uni_uni")
+@
+\subcaption{\lstinline|saturn|}
+\end{minipage}%
+\begin{minipage}[b]{.5\textwidth}
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151113_ceres_uni_uni")
+@
+\subcaption{\lstinline|ceres|}
+\end{minipage}
+
+\begin{minipage}[b]{\textwidth}
+\centering
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot("results/20151112_mars_uni_uni")
 @
+\subcaption{\lstinline|mars|}
+\end{minipage}
 \end{center}
-\caption{Uniform workload, uniform keys on \lstinline|mars|.}
-\label{fig:mars_uni_uni}
+\caption{Uniform workload, uniform keys.}
+\label{fig:uni_uni}
 \end{figure}
 
 \begin{figure}[ht]
@@ -179,7 +201,7 @@ pqplot("results/20151112_mars_uni_uni_slow")
 \label{fig:mars_uni_uni_slow}
 \end{figure}
 
-Figures \ref{fig:mars_uni_uni} and \ref{fig:mars_uni_uni_slow}
+Figures \ref{fig:uni_uni} and \ref{fig:mars_uni_uni_slow}
 displays the throughput in operations per second
 over a range of threads. The \klsm dominates all other priority queues at
 medium to high relaxation ($k \in \{ 128, 256, 4096 \}$), reaching over 200
@@ -192,16 +214,23 @@ of $k$ improve scalability up to 50 ($k = 256$) and 80 threads ($k = 4096$).
 Multiqueues (\verb|multiq|) perform
 the best out of all other data structures, reaching around 30 \ac{MOps} at 75
 threads. Although their performance suffers once cores on more than one socket
-are used (this occurs at 15 threads in our figure), they slowly recover and keep
+are used (this occurs at 15 threads in our figure), they eventually recover and keep
 scaling until almost the maximal thread count.
 
-The SprayList shows similar (but slower) behavior to the Multiqueues at low thread
-counts, but does not scale further beyond 10 threads. As expected, the
+Likewise, the SprayList initially peaks at 10 threads, loses performance
+at 15 threads, but then never manages to scale beyond the performance of a single
+socket. As expected, the
 \citeauthor{linden2013skiplist} queue performs well while executed on a single
 socket, but throughput stays constant at just over 2 \ac{MOps} above 10 threads.
 The \verb|globallock| is the highest performer when executed sequentially, but
 throughput stays low at around 1 \ac{MOps} at higher thread counts.
 
+While the general trends are consistent across machines, each of the
+measured machines clearly has different potential for scalability. For instance,
+on \lstinline|saturn| the \klsm with $k = 128$ only makes minor gains when
+utilizing more than one socket, while the Multiqueues barely scale at all.
+On \lstinline|ceres| on the other hand, even $k = 128$ seems to be able
+to scale further beyond the maximum number of cores.
 
 \begin{figure}[ht]
 \begin{center}
@@ -218,11 +247,54 @@ Figure \ref{fig:mars_uni_uni_pheet} compares throughput of our new standalone
 \klsm to that of the Pheet \klsm implementation. Interestingly, their behavior
 differs significantly, with the Pheet \klsm performing stronger at lower
 thread counts but the standalone \klsm scaling better at high concurrency,
-and reaching higher absolute performance. It is not necessarily surprising
-that the two implementations beahve differently, since the standalone
+reaching higher absolute performance, and having more predictable throughput (i.e.,
+less variance). It is not necessarily surprising
+that the two implementations behave differently, since the standalone
 \klsm has various significant differences in implementation details (e.g.,
 pivot calculation based on binary-search, completely segregated \ac{DLSM}
 and \ac{SLSM}, \ldots).
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{lrrrrrr}
+\toprule
+& \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
+\cmidrule(r){2-3}\cmidrule(r){4-5}\cmidrule(r){6-7}
+& Mean & Std. Dev. & Mean & Std. Dev & Mean & Std. Dev \\
+\midrule
+\lstinline|globallock| & 1.9 & 1.0 & 2.9 & 1.7 & 4.8 & 2.9 \\
+\lstinline|klsm16|   & 20 & 15 & 23 & 20 & 15 & 9 \\
+\lstinline|klsm128|  & 33 & 31 & 55 & 46 & 430 & 294 \\
+\lstinline|klsm256|  & 42 & 42 & 71 & 61 & 750 & 828 \\
+\lstinline|klsm4096| & 297 & 496 & 625 & 1014 & 10353 & 12667 \\
+\lstinline|multiq|   & 984 & 2899 & 2252 & 7433 & 3787 & 12549 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\caption{Rank error for the uniform workload, uniform key generation benchmark
+on \lstinline|mars|.}
+\label{tbl:mars_uni_uni_pheet_q}
+\end{table}
+
+We also evaluated the quality of the results using a rank error metric, shown
+in Table \ref{tbl:mars_uni_uni_pheet_q}. For each item that is removed from
+a priority queue, a rank of $r$ signifies that it is the $r$-lowest item within
+the queue. Therefore, by definition, a strict priority queue such as
+\lstinline|globallock| should have a mean rank of $1.0$ and a standard deviation
+of $0$. Unfortunately, our quality benchmark only reports approximate results ---
+measured timestamps may differ slightly between threads, and the timestamps cannot
+be read exactly at the linearization point of insertions and deletions.
+
+Rank errors for the strict \lstinline|globallock| queue are reported in order
+to show that the magnitude of the resulting inaccuracies is very low. Results
+returned by the \klsm usually far exceed the provided guarantees. Recall that the
+\klsm may return any of the $(k + 1) \cdot P$ minimal elements, where $P$ is the number
+of threads. While the \lstinline|klsm128| may, at 20 threads, return up
+to a rank error of $2580$, the actual mean rank error is merely $33$.
+Compared to the \klsm, Multiqueues have a high rank error at lower thread counts,
+but the error increases less rapidly at higher concurrency.
+
+\subsection{Generic throughput, uniform workload, ascending key generation}
 
 \begin{figure}[ht]
 \begin{center}
@@ -265,8 +337,9 @@ keys have been deleted from the \ac{SLSM}, a stable state is reached in which
 the global \ac{SLSM} contains mostly old, high keys while the local \acp{DLSM}
 contain new, low keys. Items are usually removed from the local \ac{DLSM}, and thus
 updates to the global \ac{SLSM} are infrequent; furthermore, since the
-best known item within the \ac{SLSM} is cached, most calls to \lstinline|shared_lsm::peek()|
-do no actual work.
+best known item within the \ac{SLSM} is cached, and items are usually taken
+from the \ac{DLSM}, the item cache is highly efficient and most calls to
+\lstinline|shared_lsm::peek()| do no actual work.
 
 The ascending key generation benchmark is designed to prevent this situation
 in which priority queues behave similarly to a \ac{LIFO} queue. Since the values of inserted
@@ -275,7 +348,8 @@ a relaxed \ac{FIFO}-like behavior results. In the case of the \klsm, items will 
 usually be initially inserted into the local \ac{DLSM}; then moved to the \ac{SLSM}
 over time, and finally deleted from the \ac{SLSM} once most lower items have
 been removed from the priority queue. Contrary to uniform key generation, emphasis
-is placed on the \ac{SLSM} and performance suffers.
+is placed on the \ac{SLSM} and the efficient \ac{DLSM} cannot be exploited
+for its full potential.
 
 \begin{comment}
 Example composite figure:
