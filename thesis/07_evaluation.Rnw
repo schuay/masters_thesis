@@ -162,7 +162,7 @@ and uniform key generation.
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot("results/20151109_mars_uni_uni")
+pqplot("results/20151112_mars_uni_uni")
 @
 \end{center}
 \caption{Uniform workload, uniform keys on \lstinline|mars|.}
@@ -172,7 +172,7 @@ pqplot("results/20151109_mars_uni_uni")
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot("results/20151109_mars_uni_uni_slow")
+pqplot("results/20151112_mars_uni_uni_slow")
 @
 \end{center}
 \caption{Uniform workload, uniform keys on \lstinline|mars| (detail view of slower queues).}
@@ -206,7 +206,7 @@ throughput stays low at around 1 \ac{MOps} at higher thread counts.
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot("results/20151109_mars_uni_uni_pheet")
+pqplot("results/20151112_mars_uni_uni_pheet")
 @
 \end{center}
 \caption{Uniform workload, uniform keys on \lstinline|mars|.
@@ -226,8 +226,8 @@ and \ac{SLSM}, \ldots).
 
 \begin{figure}[ht]
 \begin{center}
-<<fig = TRUE, echo = FALSE>>=
-pqplot("results/20151109_mars_uni_asc")
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_mars_uni_asc")
 @
 \end{center}
 \caption{Uniform workload, ascending keys on \lstinline|mars|.}
@@ -287,14 +287,14 @@ Example composite figure:
 \centering
 <<fig = TRUE, width = 8, echo = FALSE>>=
 \SweaveInput{pqplot.Rnw}
-pqplot("results/20151109_mars_uni_uni")
+pqplot("results/20151112_mars_uni_uni")
 @
 \subcaption{A subfigure}\label{fig:1a}
 \end{minipage}%
 \begin{minipage}[b]{.5\linewidth}
 \centering
 <<fig = TRUE, width = 8, echo = FALSE>>=
-pqplot("results/20151109_mars_uni_uni")
+pqplot("results/20151112_mars_uni_uni")
 @
 \subcaption{Another subfigure}\label{fig:1b}
 \end{minipage}
@@ -303,14 +303,14 @@ pqplot("results/20151109_mars_uni_uni")
 \centering
 <<fig = TRUE, width = 8, echo = FALSE>>=
 \SweaveInput{pqplot.Rnw}
-pqplot("results/20151109_mars_uni_uni")
+pqplot("results/20151112_mars_uni_uni")
 @
 \subcaption{A subfigure}\label{fig:1a}
 \end{minipage}%
 \begin{minipage}[b]{.5\linewidth}
 \centering
 <<fig = TRUE, width = 8, echo = FALSE>>=
-pqplot("results/20151109_mars_uni_uni")
+pqplot("results/20151112_mars_uni_uni")
 @
 \subcaption{Another subfigure}\label{fig:1b}
 \end{minipage}
@@ -352,7 +352,7 @@ benchmarking suite and is available at \url{https://github.com/schuay/seminar_in
 \begin{center}
 <<results = tex, echo = FALSE>>=
 \SweaveInput{pqplot.Rnw}
-pqplot("results/20151109_mars_uni_uni")
+pqplot("results/20151112_mars_uni_uni")
 @
 \end{center}
 

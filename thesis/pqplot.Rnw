@@ -25,10 +25,9 @@ pqplot <- function(csvfile) {
     #             ylab("throughput [Mops/s]") +
     #             xlab("number of threads")
 
-    # p <- ggplot(df2, aes(x = p, y = mean, color = kernel, shape = kernel)) +
-    p <- ggplot(df2, aes(x = p, y = mean, color = kernel)) +
+    p <- ggplot(df2, aes(x = p, y = mean, color = kernel, shape = kernel)) +
                 geom_line() +
-    #           geom_point(size = 2) +
+                geom_point(size = 3) +
                 geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.3) +
                 scale_y_continuous(limits = c(0, NA)) +
                 ylab("throughput in Mops/s") +
