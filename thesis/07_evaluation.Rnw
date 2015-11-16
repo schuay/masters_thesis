@@ -54,11 +54,14 @@ and we have experimented both with uniform key generation (uniformly at random
 within the range of 32-bit integers), and ascending key generation (uniformly at random
 within a smaller range that grows over time, i.e. selection from $[0, U] + t$).
 
+% TODO: Really? Should we include the sssp benchmark?
+\begin{comment}
 Besides the artificial throughput benchmark, we also experimented with a
 single source shortest paths benchmark as in \cite{wimmer2015lock}. The graphs
 are randomly generated for a given key and node degree. Each thread then repeatedly
 pops the queue (containing the next path portion to evaluate), generates successor
 subpaths, and adds them to the queue.
+\end{comment}
 
 Finally, the quality of the produced output is evaluated by using a variant of
 the throughput benchmark. Quality in this sense compares the output sequence of
@@ -98,9 +101,7 @@ used algorithms are as follows:
       A relaxed concurrent priority queue based on \citeauthor{fraser2004practical}'s
       SkipList using random walks to spread data accesses
       incurred by \verb|DeleteMin| calls. Code provided by \citeauthor{alistarhspraylist} is
-      available on Github\footnote{\url{https://github.com/jkopinsky/SprayList}}. Unfortunately,
-      the implementation seems to be fairly unstable and data will be omitted for instances
-      in which the SprayList crashes.
+      available on Github\footnote{\url{https://github.com/jkopinsky/SprayList}}.
 \item \textit{Multiqueues} (\verb|multiq|)
       Another recent relaxed concurrent priority queue
       design by \citeauthor{rihani2014multiqueues}. Contrary to the SprayList, the
@@ -119,11 +120,19 @@ used algorithms are as follows:
       reimplementation was measured by using a variety of values for the
       relaxation parameter $k$. Both the standalone and Pheet \klsm implementations
       are linearizable, lock-free, and relaxed priority queues.
-% TODO: Include the mlsm?
+      Code for the standalone \klsm, as well as the entire benchmarking suite, is available
+      on Github at \url{https://github.com/schuay/kpqueue}.
 \end{itemize}
 
-Code for the standalone \klsm, as well as the entire benchmarking suite, is available
-on Github at \url{https://github.com/schuay/kpqueue}.
+Unfortunately, we were not able to benchmark all algorithms on all machines and
+with all parameters. The SprayList implementation has been very unstable throughout
+our tests and crashes when using either split workload or ascending key generation.
+Both the Linden queue and the SprayList also require libraries which were not
+available on our Solaris machine, and thus could not be compiled there. Finally,
+neither the Linden queue nor the SprayList support insertion and deletion of
+key-value pairs, therefore it was not possible to evaluate them using our quality
+benchmark. In these cases, results are simply omitted for the affected data
+structures.
 
 \section{Environment and Methodology} \label{sec:methodology}
 
@@ -174,7 +183,7 @@ pqplot("results/20151112_saturn_uni_uni")
 \begin{minipage}[b]{.5\textwidth}
 \centering
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot("results/20151113_ceres_uni_uni")
+pqplot("results/20151116_ceres_uni_uni")
 @
 \subcaption{\lstinline|ceres|}
 \end{minipage}
@@ -273,11 +282,11 @@ and \ac{SLSM}, \ldots).
 \end{center}
 \caption{Rank error for the uniform workload, uniform key generation benchmark
 on \lstinline|mars|.}
-\label{tbl:mars_uni_uni_pheet_q}
+\label{tbl:mars_uni_uni_q}
 \end{table}
 
 We also evaluated the quality of the results using a rank error metric, shown
-in Table \ref{tbl:mars_uni_uni_pheet_q}. For each item that is removed from
+in Table \ref{tbl:mars_uni_uni_q}. For each item that is removed from
 a priority queue, a rank of $r$ signifies that it is the $r$-lowest item within
 the queue. Therefore, by definition, a strict priority queue such as
 \lstinline|globallock| should have a mean rank of $1.0$ and a standard deviation
@@ -298,15 +307,34 @@ but the error increases less rapidly at higher concurrency.
 
 \begin{figure}[ht]
 \begin{center}
+\begin{minipage}[b]{.5\textwidth}
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_saturn_uni_asc")
+@
+\subcaption{\lstinline|saturn|}
+\end{minipage}%
+\begin{minipage}[b]{.5\textwidth}
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151116_ceres_uni_asc")
+@
+\subcaption{\lstinline|ceres|}
+\end{minipage}
+
+\begin{minipage}[b]{\textwidth}
+\centering
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot("results/20151112_mars_uni_asc")
 @
+\subcaption{\lstinline|mars|}
+\end{minipage}
 \end{center}
-\caption{Uniform workload, ascending keys on \lstinline|mars|.}
-\label{fig:mars_uni_asc}
+\caption{Uniform workload, ascending keys.}
+\label{fig:uni_asc}
 \end{figure}
 
-Figure \ref{fig:mars_uni_asc} shows results for the throughput benchmark with
+Figure \ref{fig:uni_asc} shows results for the throughput benchmark with
 a uniform workload and ascending keys. The \klsm performs radically different
 to the previously discussed benchmark with uniform key generation in this scenario;
 instead of exceptional performance and scalability proportional to the degree
@@ -351,113 +379,196 @@ been removed from the priority queue. Contrary to uniform key generation, emphas
 is placed on the \ac{SLSM} and the efficient \ac{DLSM} cannot be exploited
 for its full potential.
 
-\begin{comment}
-Example composite figure:
+Again, behavior across the different machines differs significantly. On \lstinline|saturn|,
+no algorithm appears to scale well, with Multiqueues reaching maximal absolute
+performance at 48 threads with less then 10 MOps. On \lstinline|ceres|, Multiqueues
+dominate, reaching a peak of around 40 MOps, while the \klsm never exceeds 10 MOps.
+Finally, behavior on \lstinline|mars| is similar, but with Multiqueues reaching
+a lower initial peak at one socket, and a more pronounced oscillating behavior
+of the \klsm.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{lrrrrrr}
+\toprule
+& \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
+\cmidrule(r){2-3}\cmidrule(r){4-5}\cmidrule(r){6-7}
+& Mean & Std. Dev. & Mean & Std. Dev & Mean & Std. Dev \\
+\midrule
+\lstinline|globallock| & 4.5 & 4.2 & 10.3 & 8.8 & 19.6 & 16.9 \\
+\lstinline|klsm16|   & 7 & 5 & 11 & 9 & 20 & 18 \\
+\lstinline|klsm128|  & 21 & 18 & 22 & 19 & 25 & 22 \\
+\lstinline|klsm256|  & 38 & 33 & 38 & 33 & 49 & 37 \\
+\lstinline|klsm4096| & 505 & 474 & 465 & 436 & 483 & 457 \\
+\lstinline|multiq|   & 101 & 120 & 202 & 239 & 419 & 500 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\caption{Rank error for the uniform workload, ascending key generation benchmark
+on \lstinline|mars|.}
+\label{tbl:mars_uni_asc_q}
+\end{table}
+
+With ascending key generation, the rank error of all measured \klsm variants as
+well as the Multiqueues seems to be much more stable than when using uniform
+keygeneration (see Table \ref{tbl:mars_uni_asc_q}). On the other hand, the
+measured rank error of the strict \lstinline|globallock| queue is significantly
+higher. This can be explained by the nature of our ascending keygeneration, which
+results in more frequent key duplicates between items; and in the case of the
+\lstinline|globallock|, duplicate keys lead to higher rank errors because of the
+way rank error is measured within our benchmark.
+
+Keys are also generated in a smaller, more predictable range; for the Multiqueues,
+this results in queues on all threads with very similar contents, and thus
+rank errors are smaller.
+
+As explained above, using ascending key generation
+results in a bias in the \klsm such that more items are removed from the \ac{SLSM}
+than the \ac{DLSM}. And since the \ac{SLSM} has a lower rank guarantee than the
+\klsm ($k + 1$ instead of $(k + 1) \cdot P$), the resulting rank errors are low.
+
+\subsection{Generic throughput, split workload, uniform key generation}
 
 \begin{figure}[ht]
 \begin{center}
-
-\begin{minipage}[b]{.5\linewidth}
+\begin{minipage}[b]{.5\textwidth}
 \centering
-<<fig = TRUE, width = 8, echo = FALSE>>=
-\SweaveInput{pqplot.Rnw}
-pqplot("results/20151112_mars_uni_uni")
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_saturn_spl_uni")
 @
-\subcaption{A subfigure}\label{fig:1a}
+\subcaption{\lstinline|saturn|}
 \end{minipage}%
-\begin{minipage}[b]{.5\linewidth}
+\begin{minipage}[b]{.5\textwidth}
 \centering
-<<fig = TRUE, width = 8, echo = FALSE>>=
-pqplot("results/20151112_mars_uni_uni")
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151116_ceres_spl_uni")
 @
-\subcaption{Another subfigure}\label{fig:1b}
+\subcaption{\lstinline|ceres|}
 \end{minipage}
 
-\begin{minipage}[b]{.5\linewidth}
+\begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 8, echo = FALSE>>=
-\SweaveInput{pqplot.Rnw}
-pqplot("results/20151112_mars_uni_uni")
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_mars_spl_uni")
 @
-\subcaption{A subfigure}\label{fig:1a}
-\end{minipage}%
-\begin{minipage}[b]{.5\linewidth}
-\centering
-<<fig = TRUE, width = 8, echo = FALSE>>=
-pqplot("results/20151112_mars_uni_uni")
-@
-\subcaption{Another subfigure}\label{fig:1b}
+\subcaption{\lstinline|mars|}
 \end{minipage}
-
 \end{center}
-\caption{Some random data.}
-\label{fig:random_data}
+\caption{Split workload, uniform keys.}
+\label{fig:spl_uni}
 \end{figure}
 
-* introductory paragraph(s). roughly what this chapter will cover.
-* benchmarks.
-* algorithms.
-* methodology.
-* results - but how to structure these? for the random benchmark, we have different
-  types: uniform/split, uniform/ascending; plus there are also quality numbers to present.
-  all of these are correlated. perhaps pair quality + throughput side by side?
+In the case of a split workload, in which each thread is either a dedicated
+inserter or deleter, und uniform key generation,
+the benchmarked priority queues performed roughly as
+with uniform workload and ascending key generation (see Figure \ref{fig:spl_uni}).
+Multiqueues perform consistently
+as in other scenarios, while the \klsm does not scale at all. Surprisingly,
+the \lstinline|klsm16| performs at least as well as more relaxed \klsm variants;
+on \lstinline|ceres|, it even outperforms the other variants by more than a factor
+of two at low thread counts.
 
-Unfortunately, we were not able to obtain an implementation of the \citeauthor{shavit2000skiplist}
-priority queue for benchmarking. The \citeauthor{wimmer2013data} data structure was omitted in the
-following benchmarks since it is tightly coupled with the task-scheduling framework \emph{Pheet},
-and cannot directly be compared to other implementations in its current form.
-
-In each test run, the examined priority queue was initially filled with $2^{15}$
-elements. We then ran a tight loop of $50\%$ insertions and $50\%$ deletions
-for a total of $10$ seconds, where all \lstinline|Insert|
-operations within this context implicitly choose a key uniformly at random from
-the range of all 32-bit integers. This methodology seems to be the de facto standard for concurrent
-priority queue benchmarks
-\cite{alistarhspraylist,linden2013skiplist,shavit2000skiplist,sundell2003fast}.
-Each run was repeated for a total of $10$ times
-and we report on the average throughput.
-
-All benchmarks were compiled with \verb|-O3| using GCC 4.8.2, and executed with threads pinned to
-cores. Evaluations took place
-on an 80-core Intel Xeon E7-8850 machine with each processor clocked at 2 GHz.
-The benchmarking code was adapted from \citeauthor{linden2013skiplist}'s
-benchmarking suite and is available at \url{https://github.com/schuay/seminar_in_algorithms}.
-
+\begin{table}[ht]
 \begin{center}
-<<results = tex, echo = FALSE>>=
-\SweaveInput{pqplot.Rnw}
-pqplot("results/20151112_mars_uni_uni")
-@
+\begin{tabular}{lrrrrrr}
+\toprule
+& \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
+\cmidrule(r){2-3}\cmidrule(r){4-5}\cmidrule(r){6-7}
+& Mean & Std. Dev. & Mean & Std. Dev & Mean & Std. Dev \\
+\midrule
+\lstinline|globallock| & 1.9 & 1.0 & 2.7 & 1.6 & 4.5 & 2.7 \\
+\lstinline|klsm16|   & 23 & 10 & 52 & 20 & 120 & 55 \\
+\lstinline|klsm128|  & 134 & 74 & 258 & 158 & 700 & 416 \\
+\lstinline|klsm256|  & 235 & 140 & 821 & 448 & 1981 & 1112 \\
+\lstinline|klsm4096| & 3814 & 2176 & 11652 & 8924 & 35001 & 21352 \\
+\lstinline|multiq|   & 653 & 2559 & 478 & 1422 & 2111 & 6002 \\
+\bottomrule
+\end{tabular}
 \end{center}
+\caption{Rank error for the split workload, uniform key generation benchmark
+on \lstinline|mars|.}
+\label{tbl:mars_spl_uni_q}
+\end{table}
 
-The \textit{Linden} priority queue emerged as the clear winner of these benchmarks,
-with impressive scalability while all threads remain on the same socket. In fact, it is the only
-tested implementation to scale to any significant degree; \textit{Heap} achieves minor gains
-for up to 3 threads, while all others immediately lose throughput under concurrency.
-Performance of the \textit{Linden} queue drops significantly once it is executed on more than 10
-threads, thus incurring communication overhead across sockets. This effect is repeated to a lesser
-degree every time an additional socket becomes active. However, the \textit{Linden} queue has
-clearly superior throughput until the tested maximum of 80 threads.
+Rank errors (Table \ref{tbl:mars_spl_uni_q}) are generally higher for the
+\klsm than both the uniform workload/uniform key generation and uniform/ascending
+cases, possibly because the \ac{DLSM} component is often empty (or filled with
+only with outdated, spied elements from another thread); thus instead of comparing
+two items and returning the lesser, it simply returns the \ac{SLSM} item. Keys are
+generated uniformly, and the \ac{SLSM} is therefore biased towards larger keys.
 
-\textit{GlobalLock} also performs surprisingly well at high concurrency levels.
-It remains competitive when compared to \textit{Linden} at about $\frac{2}{3}$ of its throughput.
-For single-threaded execution, it achieves the highest throughput of all tested implementations.
-It is interesting to note that the \textit{GlobalLock} shows complementary behavior to
-\textit{Linden} when new sockets become active; we believe that the additional latency incurred
-by cross-socket communications might lead to reduced contention at the single lock.
+\subsection{Generic throughput, split workload, ascending key generation}
 
-All remaining implementations behave similarly, displaying very low throughput under concurrency.
-This is a surprise in the case of \textit{Noble}; the original benchmarks performed by
-\citeauthor{sundell2003fast} led us to expect improvements upon both \textit{GlobalLock}
-and \textit{Heap} \cite{sundell2003fast}. However, we are somewhat reassured in our benchmarks by
-the fact that \citeauthor{linden2013skiplist}'s results are similar.
+\begin{figure}[ht]
+\begin{center}
+\begin{minipage}[b]{.5\textwidth}
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_saturn_spl_asc")
+@
+\subcaption{\lstinline|saturn|}
+\end{minipage}%
+\begin{minipage}[b]{.5\textwidth}
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151116_ceres_spl_asc")
+@
+\subcaption{\lstinline|ceres|}
+\end{minipage}
 
-The \textit{SprayList} result is even more unexpected, and we believe that it may be caused by
-our use of \lstinline|malloc| instead of the included custom lock-free allocator, which we were
-unable to execute without errors.
+\begin{minipage}[b]{\textwidth}
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_mars_spl_asc")
+@
+\subcaption{\lstinline|mars|}
+\end{minipage}
+\end{center}
+\caption{Split workload, ascending keys.}
+\label{fig:spl_asc}
+\end{figure}
 
-As a final observation we note that even the most efficient strict concurrent priority queue
-never exceeds the throughput of the simple sequential heap executed on a single thread by more
-than a factor of two. There is hope however since relaxed data structures continue to scale
-beyond 10 threads (see the benchmarks performed in \cite{alistarhspraylist} for an example).
-\end{comment}
+Finally, results for split workload and ascending key generation are shown
+in Figure \ref{fig:spl_asc}. This setting combines the two variants which are
+especially detrimental for the \klsm; and as expected all \klsm variants
+do not perform well, never exceeding 5 \ac{MOps} on any machine and with any
+thread count.
+
+Contrary to the \klsm, Multiqueues seem to perform best in this benchmark
+scenario, reaching up to 50 MOps on \lstinline|ceres| and 17 MOps on \lstinline|saturn|.
+
+The biggest surprise, however, was that the strict Linden queue becomes quite
+competitive, outperforming all \klsm variants and scaling up to 80 threads
+on \lstinline|mars| and 48 threads on \lstinline|saturn|. We suspect that this
+is because of improved spacial cache locality: inserter threads insert at the
+back of the skiplist, and can keep the tail of the list as well as high-level
+shortcut nodes within their cache, while deleter threads only access the front
+of the skiplist.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{lrrrrrr}
+\toprule
+& \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
+\cmidrule(r){2-3}\cmidrule(r){4-5}\cmidrule(r){6-7}
+& Mean & Std. Dev. & Mean & Std. Dev & Mean & Std. Dev \\
+\midrule
+\lstinline|globallock| & 2.6 & 2.1 & 9.1 & 8.3 & 10.2 & 17.0 \\
+\lstinline|klsm16|   & 4 & 3 & 11 & 9 & 22 & 24 \\
+\lstinline|klsm128|  & 18 & 15 & 21 & 17 & 38 & 126 \\
+\lstinline|klsm256|  & 33 & 28 & 50 & 130 & 92 & 365 \\
+\lstinline|klsm4096| & 428 & 388 & 488 & 435 & 1578 & 4186 \\
+\lstinline|multiq|   & 133 & 417 & 317 & 726 & 1015 & 1946 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\caption{Rank error for the split workload, ascending key generation benchmark
+on \lstinline|mars|.}
+\label{tbl:mars_spl_asc_q}
+\end{table}
+
+As in the uniform workload, ascending key generation benchmark, rank errors (Table
+\ref{tbl:mars_spl_asc_q} are fairly low. However, the Multiqueues show very unpredictable
+behavior while within a single socket ($\leq 10$ threads), with high mean rank
+errors and a wide spread ($2452$ mean rank error and $8790$ standard deviation on
+10 threads).

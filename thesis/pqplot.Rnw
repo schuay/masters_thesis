@@ -30,7 +30,7 @@ pqplot <- function(csvfile) {
                 geom_line() +
                 geom_point(size = 3) +
                 geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.3) +
-                scale_y_continuous(limits = c(0, NA)) +
+                scale_y_continuous(limits = c(0, NA), oob = squish) +
                 ylab("throughput in Mops/s") +
                 xlab("number of threads") +
     # Themes
