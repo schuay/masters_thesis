@@ -1,5 +1,7 @@
 \chapter{Results \& Discussion} \label{ch:evaluation}
 
+% TODO: Possibly add a short figure + description for descending key generation.
+
 This chapter presents and discusses results for a variety of benchmarks, and executed
 on a number of different platforms. We evaluate both the \klsm
 together with a selection of other representative parallel priority queues.

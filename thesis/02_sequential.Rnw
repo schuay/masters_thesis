@@ -1,1 +1,14 @@
 \chapter{Sequential Priority Queues} \label{ch:sequential}
+
+\begin{comment}
+* What is a priority queue? Exact semantics.
+* Brief overview of important sequential pqs - check books and surveys.
+* More detailed explanation of relevant queue types: heaps, possibly binary
+  trees & skiplists.
+\end{comment}
+
+\section{Overview}
+
+\section{Heaps}
+\section{Binary Search Trees}
+\section{SkipLists}
