@@ -1,21 +1,89 @@
 \chapter{Conclusion} \label{ch:conclusion}
 
 Priority queues are one of the most important abstract data structures in computer science,
-and much effort has been put into parallelizing them efficiently. In this paper,
+and much effort has been put into parallelizing them efficiently. In this thesis,
 we have outlined the evolution of concurrent priority queues from initial heap-based designs,
-through a period of increasingly efficient SkipList queues, to current research into relaxed data structures.
+through a period of increasingly efficient SkipList queues, to current research
+in relaxed data structures.
 
-The switch from heaps to SkipLists as the backing data structure highlights how a simple change in
-direction can help revitalize an entire field of research. SkipList-based priority queues are the current
-state of the art in strict shared-memory concurrent priority queues: they provide strong guarantees
-and scale well to up to the tens of threads in practice. Important limiting factors are contention
-at the front of the list and the large number of \ac{CAS} failures.
-The \citeauthor{linden2013skiplist} queue is designed
-to minimize the latter; but the former is inherent to all strict priority queues, which could mean
-that the peak performance in such structures has been reached.
+We also developed a standalone version of the \klsm relaxed, lock-free priority
+queue and described its implementation in detail. The standalone \klsm follows
+the principles described in \cite{wimmer2015lock}, but does not rely on any external
+framework or non-standard library and is engineered to be easily integrated into
+any application, allowing direct comparability against other relaxed priority
+queue designs for the first time.
 
-Recently invented relaxed priority queues do not exhibit the inherent bottleneck at the front of the list,
-as they do not necessarily return the minimal element within the queue and are able to spread
-\lstinline|DeleteMin| accesses over a larger area of the structure. In consequence, relaxed queues scale noticeably
-better and to larger thread counts than strict designs. Further research is necessary in order to fully
-explore the possibilities provided by relaxed data structures.
+The standalone \klsm implementation also includes an extensive parameterizable
+benchmark suite with several other state-of-the-art queues such as the Linden
+queue, the Multiqueue, and the SprayList as comparisons. We not only test
+priority queues under the standard scenario of uniform workload and uniform
+key generation, but also examine combinations of split workloads (in which
+threads are either dedicated inserters or deleters) and ascending key generation
+(in which the value of generated item keys increases over time).
+
+As demonstrated previously \cite{wimmer2015lock}, the \klsm scales exceptionally
+well in the standard uniform workload, uniform throughput benchmark, outperforming
+other concurrent queues by up to a factor of 10 with sufficient relaxation.
+The \klsm with $k = 4096$ shows linear speedup up to the maximal number of threads
+on all test machines. This is a significant improvement over the Pheet \klsm implementation by
+\citeauthor{wimmer2015lock}, which does not scale beyond 40 threads.
+
+Unfortunately, this result does not carry over to the other benchmarking scenarios.
+Ascending key generation causes priority queues to behave in a quasi-\ac{FIFO}
+manner, which places more emphasis on the global, slower \ac{SLSM} component.
+Split workloads increases stress the \ac{SLSM} because the local \ac{DLSM} does
+not have a continual flow of new items. In both cases, performance of the \klsm
+drops dramatically; while the Multiqueues continues to perform reliably, delivering
+better performance than all \klsm variants in these altered benchmark environments.
+
+The distribution of item keys over time is critical to the \klsm; ascending keys
+result in quasi-\ac{FIFO} behavior, stressing the \ac{SLSM} and resulting in
+low throughput. Descending keys on the other hand cause quasi-\ac{LIFO} behavior,
+and causes most deletions to take items from the efficient, local \ac{DLSM}
+component and resulting in exceptional performance.
+
+The uniform workload, uniform key generation benchmark, which is used by most
+literature on concurrent priority queues, also causes priority queues to approximate
+the behavior of a \ac{LIFO} queue --- over time, lower keys are removed from the
+queue, and the uniformly generated newly inserted keys have a high chance of
+being within the minimal keys of the queue. This may distort results, and as
+we have seen with the \klsm, sometimes drastically. We would therefore strongly recommend
+the usage of a variety of different settings for priority queue performance
+evaluation.
+
+The strict Linden priority queue performs as expected in most cases; it scales
+decently while executed on a single socket, but performance drops with higher concurrency.
+However, to our surprise, the Linden queue is actually a relevant contender
+in the split workload, ascending key generation benchmark, scaling up to the maximal
+thread count. We expect that this is due to increased locality (inserter threads
+traverse the list tail while deleter threads travers its head) and decreased
+contention because of disjoint access between inserters and deleters.
+
+Multiqueues seem to be the most universal of the examined data structures,
+displaying stable performance throughout all benchmark scenarios. Their main
+drawback is that, by design, they do not provide any fixed quality guarantees,
+instead relying on randomization to provide results with acceptable rank errors.
+
+To our knowledge, we are also the first to report on quality metrics for the \klsm.
+These show that the standalone \klsm not only satisfies the provided guarantees
+of returning one of the $(k + 1) \cdot P$ least elements; the provided results are
+usually even of far better quality. At low concurrency, Multiqueues seem to be
+somewhat comparable to the \klsm with $k = 4096$, but the rank error of Multiqueues
+grows slower than the \klsm's with rising thread counts. However, a distinct
+advantage of the \klsm is that it can provide a fixed upper bound to the rank
+error.
+
+Despite the findings of this thesis, the \klsm remains an intensely interesting
+data structure. It is highly sensitive to key distribution over time and the mixture
+of performed operations, performing exceptionally well under ideal circumstances
+but only below average in others. Thus the \klsm might be an ideal candidate
+for some applications, while others might be better served by a more universal
+data structure such as the Multiqueue.
+
+The \klsm's throughput depends directly on the degree that the global \ac{SLSM}
+component is utilized. A crucial observation however, is that the \ac{SLSM} can
+easily be replaced by any other lock-free, relaxed priority queue which can handle
+batch insertions of entire blocks. There may be potential for further performance
+gains by replacing the \ac{SLSM} with other, more efficient central data structures.
+Another promising idea would be to combine the \ac{DLSM} with Multiqueue concept
+in order to create a lock-free Multiqueue. We leave these ideas to future work.
