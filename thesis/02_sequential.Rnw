@@ -30,11 +30,11 @@ public:
 };
 \end{lstlisting}
 \caption{A generic priority queue class.}
-\label{fig:priority_queue.h}
+\label{fig:priority_queue_interface}
 \end{figure}
 
 A priority queue is a data structure which holds a collection of key-value
-pairs, and provides two methods (see Figure \ref{fig:priority_queue.h}):
+pairs, and provides two methods (see Figure \ref{fig:priority_queue_interface}):
 \lstinline|insert|, which takes a key
 and a value argument, possibly of different types, and inserts them into the queue;
 and \lstinline|delete_min|,
@@ -151,6 +151,96 @@ binomial heap \cite{vuillemin1978data}; and many more. For further
 information, we refer the reader to reviews such as
 \cite{ronngren1997comparative,jones1986empirical}.
 
-\section{Heaps}
-\section{Binary Search Trees}
-\section{SkipLists}
+\section{Binary Heaps}
+
+Binary heaps  \cite{williams1964algorithm} are one of the most common (and also one of the simplest)
+methods of implementing priority queues. They are based on two concepts; first,
+that of balanced binary trees, composed of nodes with exactly two children each.
+And second, that of heap ordering, the notion that the priority of each child
+node is less than that of its parent node. Furthermore, instead of using an
+explicit representation of a binary tree, heaps implicitly encode the position
+of their contents.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V>
+class heap {
+public:
+    void insert(const K &key, const V &val);
+    bool delete_min(V &val);
+
+private:
+    std::pair<K, V> items[CAPACITY];
+    size_t n;
+};
+\end{lstlisting}
+\caption{A binary heap class.}
+\label{fig:heap_members}
+\end{figure}
+
+As shown in Figure \ref{fig:heap_members},
+the backing data structure of a binary heap is a flat array \lstinline|items| together
+with a variable tracking the number of items within the heap, \lstinline|n|. The root item,
+i.e. the item with the highest priority, is located at the head of the array
+\lstinline|items[1]|\footnote{For ease
+of presentation, we use 1-based indexing within this section.}. For each item
+at position \lstinline|items[i]|, its left child is located at \lstinline|items[2i]| and its right child
+at \lstinline|items[2i + 1]|. Vice versa, the parent item of position \lstinline|items[i]| can be found
+at \lstinline|items[i / 2]|.
+
+Insertions initially append the new item at the tail of array \lstinline|items[n + 1]|.
+Note that heap order might be violated at this point if the inserted item has a
+higher priority than its parent. If that is the case, the item and its parent
+are swapped. This operation is repeated until the entire heap again preserves
+heap order. It may be repeated once for each level in the implicit tree, i.e.
+at most $\lceil \log n \rceil$ times, and takes constant time in each iteration.
+
+Deletions first remove the root item, located at \lstinline|items[1]|, and store
+it as the eventual return value. The heap structure is then preserved by moving
+the item at the tail of the array (\lstinline|items[n + 1]|) into the root position,
+and then swapping it with its highest priority child until the item is again
+in a position in which it is of higher priority than both children. Like insertions,
+this operation takes constant effort in each iteration, and is repeated at most
+once for each level, resulting in a worst case of $O(\log n)$.
+
+Binary heaps are efficient in practice and conceptually simple as well as easy
+to implement. They are space-efficient since they do not store any overhead per
+item such as pointers (in \ac{BST}-based implementations). Their main drawbacks
+become apparent only in a concurrent setting, in which their tendency to
+modify large parts of the data structure during both insertions and deletions
+causes contention, high cache-coherence protocol traffic, and synchronization
+issues.
+
+\section{SkipList}
+
+As previously discussed, \acp{BST} are a viable approach to implementing
+priority queues with logarithmic worst-case bounds for insertions as well as
+deletions. SkipLists \cite{pugh1990skip} are very similar conceptually,
+but use a different approach to physically represent the data structure,
+and use randomization in order to avoid having to perform regular maintenance
+operations while preserving expected logarithmic time bounds.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V>
+class skiplist {
+public:
+    void insert(const K &key, const V &val);
+    bool delete_min(V &val);
+
+private:
+    skiplist_node<K, V> *head;
+};
+
+template <class K, class V>
+struct skiplist_node {
+    K key;
+    V val;
+
+    size_t level;
+    skiplist_node<K, V> *next[MAX_HEIGHT];
+};
+\end{lstlisting}
+\caption{A SkipList priority queue class.}
+\label{fig:skiplist_members}
+\end{figure}
