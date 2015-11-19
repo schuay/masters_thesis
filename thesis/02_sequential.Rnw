@@ -7,6 +7,96 @@
   trees & skiplists.
 \end{comment}
 
+Priority queues have a long history, having been extensively studied since the early
+days of the field of computer science. Some of the oldest designs, such as the
+heap, have remained popular in practical use up today. This chapter will
+provide an overview of important sequential priority queue types,
+going into further detail for those designs which are also relevant for
+use in a concurrent environment.
+
+\section{Syntax and Semantics}
+
+Before going further, we define syntax and semantics for strict, sequential
+priority queues as used in this thesis.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class K, class V>
+class priority_queue {
+public:
+    void insert(const K &key, const V &val);
+    bool delete_min(V &val);
+};
+\end{lstlisting}
+\caption{A generic priority queue class.}
+\label{fig:priority_queue.h}
+\end{figure}
+
+A priority queue is a data structure which holds a collection of key-value
+pairs, and provides two methods (see Figure \ref{fig:priority_queue.h}):
+\lstinline|insert|, which takes a key
+and a value argument, possibly of different types, and inserts them into the queue;
+and \lstinline|delete_min|,
+which writes the value of the least item within the queue into the given parameter,
+and returns true if the operation succeeded. \lstinline|delete_min| may fail if,
+for instance, the priority queue is empty.
+
+There are various further possible extensions to the given interface:
+\begin{itemize}
+\item \lstinline|empty| states whether the queue is empty.
+\item \lstinline|peek_min| returns the minimal item's value without removing
+      it from the queue.
+\item \lstinline|decrease_key| decreases the key of a given item. This operation
+      is vital e.g. for an efficient implementation of the Dijkstra shortest
+      paths algorithm\cite{dijkstra1959note}.
+\item \lstinline|meld| merges two priority queues.
+\end{itemize}
+However, these are outside the scope of this thesis.
+
+Each priority queue is associated with a priority function, which maps
+the key domain $K$ to a priority domain $P$, over which there exists
+a reflective, antisymmetric, and transitive ordering relation $\leq: P \times P$.
+
+When $K$ is the set of integers $\mathbb{Z}$, a priority queue is termed a
+"max-priority queue" if the priority function is the identity function $f(x) = x$,
+i.e., if higher keys have higher priority.
+It is called a "min-priority queue" if the priority function is the additive
+inverse $f(x) = -x$. All queues within this thesis are min-queues.
+
+We are interested mainly in general priority queues, i.e., data structures which
+allow arbitrary keys of a given, possibly infinite set, and furthermore can
+hold multiple distinct items with identical keys. General priority queues
+are congruent the sorting problem, and thus have a lower bound of $O(\log n)$
+complexity for at least one of the main operations
+(\lstinline|insert| and \lstinline|delete_min|). Note that these bounds do not
+hold for more specialized priority queues; for instance, queues which are limited
+to a small, previously known set of keys may use a bucket for each key and
+implement both insertions and deletions in constant time.
+
+The semantics of general sequential priority priority queues are as follows:
+\begin{itemize}
+\item The contents of a priority queue $PQ$ are a set of key-value pairs:
+      $PQ \subseteq K \times V$, where $K$ and $V$ are, respectively, the key
+      and value domains.
+\item Upon creation, at time $t = 0$, a priority queue is empty:
+      $PQ_{t = 0} = \emptyset$.
+\item Let $PQ^+_t$ be the set of all key-value pairs inserted into the priority
+      queue previously to time $t$, and let $PQ^-_t$ be the set of all items
+      removed previously to time $t$. At each instant in time $t$, the set of items
+      within the priority queue is then $PQ_t = PQ^+_t \setminus PQ^-_t$.
+\item An insertion of key $k$ and value $v$ simply adds the pair to the set of
+      inserted items.
+\item A deletion at time $t$ finds the item $(k, v) \in PQ_t$ such that
+      $\forall (x, y) \in PQ_t: f(x) \leq f(k)$ according to the priority function defined
+      above.
+      If such an item does not exist, i.e. the queue is empty, false is returned.
+      Otherwise, $(k, v)$ is added to the set of deleted items, and $(\text{true}, v)$
+      is returned to the caller.
+\end{itemize}
+
+Note that we do not define an order within items of identical keys, and thus the
+priority queue is allowed to choose freely among items of equal priority.
+
 \section{Overview}
 
 \section{Heaps}

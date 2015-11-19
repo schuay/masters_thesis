@@ -11,6 +11,7 @@
 \usepackage{graphicx}
 \usepackage[pdfborder={0 0 0}]{hyperref}
 \usepackage{listings}
+\usepackage{amsfonts}
 \usepackage{microtype}
 \usepackage{nag}
 \usepackage{subcaption}
