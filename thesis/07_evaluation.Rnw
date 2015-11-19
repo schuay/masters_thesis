@@ -65,6 +65,9 @@ pops the queue (containing the next path portion to evaluate), generates success
 subpaths, and adds them to the queue.
 \end{comment}
 
+% TODO: At least briefly mention our use of the specialized tree and post-processing
+% in contrast to Multiqueues' naive multiset + disruptive interweaved processing.
+
 Finally, the quality of the produced output is evaluated by using a variant of
 the throughput benchmark. Quality in this sense compares the output sequence of
 the measured priority queue against a strict sequential queue. Each insertion

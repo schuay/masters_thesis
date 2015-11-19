@@ -10,7 +10,8 @@
 Priority queues have a long history, having been extensively studied since the early
 days of the field of computer science. Some of the oldest designs, such as the
 heap, have remained popular in practical use up today. This chapter will
-provide an overview of important sequential priority queue types,
+detail syntax and semandics of general shared memory priority queues,
+and provide an overview of important sequential priority queue types,
 going into further detail for those designs which are also relevant for
 use in a concurrent environment.
 
@@ -63,9 +64,10 @@ i.e., if higher keys have higher priority.
 It is called a "min-priority queue" if the priority function is the additive
 inverse $f(x) = -x$. All queues within this thesis are min-queues.
 
-We are interested mainly in general priority queues, i.e., data structures which
+We are interested mainly in general priority queues within the context of shared
+memory systems. General priority queues are data structures which
 allow arbitrary keys of a given, possibly infinite set, and furthermore can
-hold multiple distinct items with identical keys. General priority queues
+hold multiple distinct items with identical keys. They are
 are congruent the sorting problem, and thus have a lower bound of $O(\log n)$
 complexity for at least one of the main operations
 (\lstinline|insert| and \lstinline|delete_min|). Note that these bounds do not
@@ -81,8 +83,8 @@ The semantics of general sequential priority priority queues are as follows:
 \item Upon creation, at time $t = 0$, a priority queue is empty:
       $PQ_{t = 0} = \emptyset$.
 \item Let $PQ^+_t$ be the set of all key-value pairs inserted into the priority
-      queue previously to time $t$, and let $PQ^-_t$ be the set of all items
-      removed previously to time $t$. At each instant in time $t$, the set of items
+      queue up to time $t$, and let $PQ^-_t$ be the set of all items
+      removed up to time $t$. At each instant in time $t$, the set of items
       within the priority queue is then $PQ_t = PQ^+_t \setminus PQ^-_t$.
 \item An insertion of key $k$ and value $v$ simply adds the pair to the set of
       inserted items.
@@ -93,11 +95,61 @@ The semantics of general sequential priority priority queues are as follows:
       Otherwise, $(k, v)$ is added to the set of deleted items, and $(\text{true}, v)$
       is returned to the caller.
 \end{itemize}
-
 Note that we do not define an order within items of identical keys, and thus the
 priority queue is allowed to choose freely among items of equal priority.
 
+In the following, we assume a min-priority queue and do not distinguish precisely
+between keys and their associated priority function. For instance, we simply
+use "the minimal item" to refer to the item within the queue of highest priority.
+
+% TODO: Fix all quotes in entire thesis.
+
 \section{Overview}
+
+A naive implementation of a priority queue could be realized by using an cyclical array
+sorted according to the priority function. Access to the minimal element is
+possible in constant time since it is located at the head of the array. However,
+insertions need to insert the new item into its correct position within the
+array, and move all larger items back by one position, resulting in a worst-case
+complexity of $O(n)$.
+
+More efficient implementation techniques have been known for over a half century.
+Binary heaps \cite{williams1964algorithm} were invented as part of a sorting
+algorithm in \citedate{williams1964algorithm} and are still arguable the most
+popular design for general purpose priority queues. For example, the priority queue
+container class contained in the C++ \ac{STL} implements a binary heap on top of
+any compatible backing structure. Both deletions and insertions have logarithmic
+worst-case complexity.
+
+While heaps use an implicit tree structure, it is also possible to use explicit
+balanced \acp{BST} as priority queues with identical worst case bounds as heaps.
+Popular \ac{BST} variants are e.g. Red-black trees \cite{bayer1972symmetric} and
+AVL trees \cite{adelsonvelskii1963algorithm}.
+Insertions use the standard \ac{BST} insert algorithm, while deletions remove
+the tree's leftmost item. Alternatively, SkipLists \cite{pugh1990skip} also
+provide logarithmic complexity but do not require periodic balancing operations
+since they rely on randomization to preserve a beneficial data structure.
+
+Fibonacci heaps \cite{fredman1987fibonacci} were invented by
+\citeauthor{fredman1987fibonacci} and are based on a collection of
+heap-sorted trees. In addition to the standard insertion and deletion operations
+(in amortized logarithmic time),
+they also support efficient \lstinline|merge| and \lstinline|decrease_key|
+operations in constant time, thus decreasing the complexity of Dijkstra's shortest
+path algorithm to $O(|E| + |V| \log |V|)$. However, due to the programming complexity
+and involved constant factors, they are not widely used in practise.
+Subsequent publications have proposed various alternatives to Fibonacci heaps
+such as relaxed heaps \cite{driscoll1988relaxed} and strict Fibonacci heaps
+\cite{brodal2012strict}.
+
+Other well-known priority queue designs are the Skew Heap \cite{sleator1986self}
+based on a heap-ordered binary tree and the \lstinline|meld| operation;
+the Splay Tree \cite{sleator1985self}, a heuristically balanced \ac{BST}
+which attempts to move frequently used sections towards the root of the tree;
+pairing heaps \cite{fredman1986pairing}, a self-adjusting version of the
+binomial heap \cite{vuillemin1978data}; and many more. For further
+information, we refer the reader to reviews such as
+\cite{ronngren1997comparative,jones1986empirical}.
 
 \section{Heaps}
 \section{Binary Search Trees}
