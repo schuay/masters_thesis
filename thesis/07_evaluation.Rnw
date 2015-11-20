@@ -2,8 +2,10 @@
 
 % TODO: Possibly add a short figure + description for descending key generation.
 
-This chapter presents and discusses results for a variety of benchmarks, and executed
-on a number of different platforms. We evaluate both the \klsm
+This chapter presents and discusses results for a variety of benchmarks which
+have been executed
+on a number of different platforms. We evaluate both the standalone and
+Pheet \klsm's
 together with a selection of other representative parallel priority queues.
 
 Section \ref{sec:benchmarks} covers the different benchmark types we used, while
@@ -88,7 +90,7 @@ priority queue algorithms, as well as the original Pheet implementation. The
 used algorithms are as follows:
 
 \begin{itemize}
-\item \textit{GlobalLock} (referred to in figures as \verb|globallock|)
+\item \textit{GlobalLock} (\verb|globallock|)
       An instance of the \verb|std::priority_queue<T>| class provided
       by the C++ standard library, protected by a single global lock. This naive
       algorithm is included as a baseline, and serves to show the minimal acceptable
