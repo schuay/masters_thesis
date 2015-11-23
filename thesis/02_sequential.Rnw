@@ -229,7 +229,7 @@ public:
     bool delete_min(V &val);
 
 private:
-    skiplist_node<K, V> *head;
+    skiplist_node<K, V> *head[MAX_HEIGHT];
 };
 
 template <class K, class V>
@@ -244,3 +244,45 @@ struct skiplist_node {
 \caption{A SkipList priority queue class.}
 \label{fig:skiplist_members}
 \end{figure}
+
+A SkipList is essentially a linked list of specialized nodes, each of which
+contains a key-value pair, an associated node level, and a list of pointers to
+the next node (Figure \ref{fig:skiplist_members}).
+The node's level determines how many pointers to the next node
+exist, and a pointer at level $l$ links to the next node of level $\geq l$
+within the data structure. Higher level pointers thus act as shortcuts into the
+list, avoiding the usual linear cost search operation of linked lists.
+
+Insertions create a new node, assigning the level according to a geometric
+distribution. The correct position for the new node is determined
+by searching for the given key within the list.
+Finally, the new node is physically
+inserted by modifying pointers of previous nodes and the new node.
+
+A search proceeds by starting
+at the maximal level, and and repeatedly walking along its associated pointer list
+until a node is found with a higher key than the desired one. The inspected level is
+then decremented, and the operation is repeated (if $level > 0$), or the current
+location returned as the correct position (otherwise).
+
+\lstinline|delete_min| simply removes the head node of the list by setting its
+successor at level 0 as the new head node, and then returns the previous head's value.
+
+Note that since node levels are distributed geometrically, we expect each level $l$
+to contain twice as many nodes as level $l + 1$. Thus both the expected maximal level
+of all nodes, as well as the number of steps required to find any given key within
+the SkipList is $O(\log n)$.
+
+The SkipList has increasingly gained in popularity in recent research into
+parallel priority queues, since it does not require the frequent rebalancing
+operations of \acp{BST}, and operations on nodes of different keys usually access
+spacially disjoint parts of the data structure. In the context of concurrent
+operations, both of these properties are very desirable: if several concurrent
+insertions modify disjoint parts of the SkipList, contention is reduced;
+and since the SkipList does not require balancing, both insertions and deletions
+are simpler and more efficient to implement.
+
+Unfortunately, and as we will see in Chapter \ref{ch:evaluation}, SkipLists
+have turned out to be rather slow in practice. This is most likely due to the fact
+that each node is usually dynamically allocated, and located in non-contiguous
+parts of memory, resulting in very bad cache locality.
