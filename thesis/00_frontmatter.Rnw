@@ -18,8 +18,13 @@ of threads. In particular, lock-free structures promise superior scalability by 
 the use of blocking synchronization primitives.
 
 Concurrent priority queues have been extensively researched over the past decades.
-In this paper, we discuss three major ideas within the field: fine-grained locking
-employs multiple locks to avoid a single bottleneck within the queue; SkipLists
-are search structures which use randomization and therefore do not require elaborate reorganization
-schemes; and relaxed data structures trade semantic guarantees for improved scalability.
+In recent years, most research within the field has focused on SkipList-based structures,
+based mainly on the fact that they exhibit very high disjoint access parallelism, i.e.,
+modifications on different elements access disjoint parts of the data structure.
+Contention between threads and traffic through the cache-coherency protocol
+is therefore reduced.
+
+However, SkipLists have less than optimal cache locality since each node is
+usually allocated dynamically, which in turn results in fairly low throughput
+for SkipList-based designs.
 \end{abstract}
