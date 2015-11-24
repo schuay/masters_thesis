@@ -806,7 +806,7 @@ dist_lsm_local<K, V, Rlx>::peek(typename block<K, V>::peek_t &best)
 {
     /* Short-circuit. */
     if (!m_cached_best.empty() && !m_cached_best.taken()) {
-        best = m_cached_best;
+        best = m_cached_best;(@* \label{ln:dist_lsm_local::peek.cached} *@)
         return;
     }
 
@@ -820,19 +820,19 @@ dist_lsm_local<K, V, Rlx>::peek(typename block<K, V>::peek_t &best)
         auto candidate = i->peek();
         if (best.empty() ||
                 (!candidate.empty() && candidate.m_key < best.m_key)) {
-            best = candidate;
+            best = candidate;(@* \label{ln:dist_lsm_local::peek.std} *@)
         }
     }
 
     if (best.empty() && m_spied != nullptr) {
-        best = m_spied->peek();
+        best = m_spied->peek();(@* \label{ln:dist_lsm_local::peek.spied} *@)
     }
 
     m_cached_best = best;
 }
 \end{lstlisting}
-\caption{The local \ac{DLSM} header.}
-\label{fig:dist_lsm_local.h}
+\caption{The \lstinline|dist_lsm_local::peek| implementation.}
+\label{fig:dist_lsm_local::peek}
 \end{figure}
 
 Code for the \lstinline|peek| function is shown in Figure
@@ -872,10 +872,35 @@ into the global \ac{SLSM}.
 
 \section{Linearizability, Lock-freedom \& Complexity}
 
+The \ac{DLSM} is linearizable, lock-free, and its operations have an amortized
+complexity of $O(\log n)$.
 \begin{itemize}
-\item \emph{Linearizability}.
-\item \emph{Lock-freedom}.
-\item \emph{Complexity}.
+\item \emph{Linearizability}. Insertions into the \ac{DLSM} are linearizable
+      when the \lstinline|m_next| pointer, accessible from other threads,
+      is set atomically. Within the context of the \klsm, insertions into the
+      \ac{DLSM} may also overflow the data structure, in which case the operation
+      is linearized at the linearization point of \lstinline|shared_lsm::insert|.
+
+      Peeks are linearized when \lstinline|best| is set for the last
+      time (this could occur in Figure \ref{fig:dist_lsm_local::peek},
+      Lines \ref{ln:dist_lsm_local::peek.cached}, \ref{ln:dist_lsm_local::peek.std},
+      or \ref{ln:dist_lsm_local::peek.spied}).
+\item \emph{Lock-freedom}. Both insertions and deletions use only
+      non-blocking primitives and execute
+      at most $\log n$ loop iterations for block merges and are thus lock-free.
+\item \emph{Complexity}. An insertion executes at most a logarithmic number
+      of merges. As in the \ac{SLSM}, this incurs an amortized complexity of
+      $O(\log n)$ per item, since in a size $n$ \ac{LSM} each item has been
+      merged at most $\log n$ times and each merge uses constant overhead per item.
+
+      In the standard case, a peek operation inspects each of the $\log n$
+      blocks once, and determines its minimal item in constant time for a
+      total complexity of $O(\log n)$. Additionally, whenever a block is found
+      to be less than half-full, it is shrunk and possibly merged with its successor
+      block. Assume this occurs for a block of capacity $c$; then there must
+      have been at least $\frac{c}{2}$ delete operations from the current block
+      previously. The shrink-merge would incur an overhead of at most $\frac{c}{2}$ (shrinking)
+      plus $c$ (merging), for an amortized total of $O(1)$ per peek operation.
 \end{itemize}
 
 \section{Component Internals} \label{sec:component_internals}
