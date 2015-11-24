@@ -68,9 +68,7 @@ The following sections describe the \klsm implementation in top-down order ---
 Section \ref{sec:klsm_internals} begins with the \klsm itself, Sections \ref{sec:slsm_internals}
 and \ref{sec:dlsm_internals} descend to the component queues \ac{SLSM} and \ac{DLSM},
 while several other components are covered in Section \ref{sec:component_internals}.
-The various applied methods of lock-free memory management are covered in Section \ref{sec:mm_internals};
-and finally, aspects of the implementation which have proven especially relevant
-for performance are highlighted in Section \ref{sec:implementation_impact}.
+The various applied methods of lock-free memory management are covered in Section \ref{sec:mm_internals}.
 
 \section{\klsm Internals} \label{sec:klsm_internals}
 
@@ -196,6 +194,45 @@ of two identical \ac{CAS} calls by different threads, only one will succeed
 while the other must fail. The thread which has seen a \ac{CAS} failure will
 return from from \lstinline|delete_min| with a so-called spurious failure,
 returning \lstinline|false| even though the queue might be non-empty.
+
+The \klsm is lock-free and linearizable, and both insertions as well as
+deletions have an amortized complexity of $O(\log n)$ (complexities are analyzed
+by ignoring artifacts such as retries caused by concurrent operations).
+We do not rigorously
+prove these statements but attempt to give a rough sketch for each:
+\begin{itemize}
+\item \emph{Linearizability}. \lstinline|delete_min| is linearizable at the point
+      when the returned item is taken, successfully or unsuccessfully. \lstinline|item::take|
+      consists of a \ac{CAS} call on the item's version; previously to the successful
+      \ac{CAS} the item is available. Afterwards, it is taken. \lstinline|insert|
+      is linearizable at the linearization points of \lstinline|shared_lsm::insert|
+      and \lstinline|dist_lsm::insert|, which will be discussed in the following
+      sections.
+\item \emph{Lock-freedom}. Assuming the corresponding operations on the \ac{SLSM}
+      and \ac{DLSM} are lock-free, \lstinline|k_lsm::insert| is obviously lock-free
+      since it merely calls \lstinline|dist_lsm::insert|. To show that
+      \lstinline|delete_min| is lock-free, consider Figure \ref{fig:k_lsm::delete_min}.
+      As long as either
+      the \ac{SLSM} or \ac{DLSM} are non-empty, the loop body is executed exactly once.
+      If, on the other hand,
+      both are empty, then \lstinline|spy| attempts to copy items from another
+      local \ac{DLSM}. If no items are copied, the \lstinline|k_lsm::delete_min|
+      method returns; otherwise, the loop body is re-executed. If it is,
+      note that the local \ac{DLSM} must be nonempty (we have just copied items from
+      another thread). There are now
+      two possibilities: either the second loop iteration successfully finds
+      an item and returns; or we again find both the \ac{DLSM} and \ac{SLSM}
+      empty --- but if that is the case, then another thread must have made
+      progress in the meantime and deleted all items which we have spied at the
+      end of the previous iteration. \lstinline|delete_min| is thus lock-free.
+\item \emph{Complexity}. Assuming the corresponding operations on the \ac{SLSM}
+      and \ac{DLSM} have amortized logarithmic complexity, then \lstinline|k_lsm::insert|
+      and \lstinline|k_lsm::delete_min| are also in amortized $O(\log n)$. Insertions
+      consist simply of calls to \lstinline|dist_lsm::insert|. Deletions
+      find a minimal element in both the \ac{SLSM} and \ac{DLSM} and take it in
+      constant time, repeating the operation at most once (ignoring retries caused by
+      concurrent deletes) when both components are empty.
+\end{itemize}
 
 \section{\acl{SLSM} Internals} \label{sec:slsm_internals} 
 
