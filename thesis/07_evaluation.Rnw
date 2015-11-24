@@ -577,3 +577,59 @@ As in the uniform workload, ascending key generation benchmark, rank errors (Tab
 behavior while within a single socket ($\leq 10$ threads), with high mean rank
 errors and a wide spread ($2452$ mean rank error and $8790$ standard deviation on
 10 threads).
+
+\subsection{Generic throughput, uniform workload, descending key generation}
+
+We have attempted to be unbiased in these benchmarks, examining both situations
+beneficial to the \klsm (e.g., the uniform/uniform benchmark) as well
+as less well suited scenarios (split workloads and ascending key generation).
+Furthermore, we have determined throughput of the \klsm is proportional
+to the degree that the distributed component is utilized.
+
+\begin{figure}[ht]
+\begin{center}
+\begin{minipage}[b]{.5\textwidth}
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151120_saturn_uni_desc")
+@
+\subcaption{\lstinline|saturn|}
+\end{minipage}%
+\begin{minipage}[b]{.5\textwidth}
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151117_ceres_uni_desc")
+@
+\subcaption{\lstinline|ceres|}
+\end{minipage}
+
+\begin{minipage}[b]{\textwidth}
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151123_mars_uni_desc")
+@
+\subcaption{\lstinline|mars|}
+\end{minipage}
+\end{center}
+\caption{Uniform workload, descending keys.}
+\label{fig:uni_desc}
+\end{figure}
+
+Ascending key generation,
+which induces \ac{FIFO}-like behavior, and split workloads are on one end of the spectrum,
+and place high stress on the \ac{SLSM}. The uniform workload, uniform key generation
+benchmark places high emphasis on the \ac{DLSM} and results in greatly increased throughput.
+
+In this final section, we would like to examine the most beneficial
+of these situations, and induce \ac{LIFO}-like behavior by using descending key generation.
+As new keys are very likely to be within the least keys of the queue, the \ac{DLSM}
+is very highly utilized, and contents of the \ac{SLSM} are fairly static (with sufficient relaxation).
+
+Results are displayed in Figure \ref{fig:uni_desc}. As expected, peak throughput
+of the \klsm reaches new heights of around 150 MOps/s on \lstinline|saturn| and around 300 MOps/s
+on \lstinline|ceres| and \lstinline|mars|. Multiqueue performance remains stable
+and is comparable to the uniform/uniform case.
+
+Surprisingly, lower relaxation \klsm's actually have deteriorated scalability
+on \lstinline|mars|, possibly since a higher amount of low-key items enter the
+\ac{SLSM} when local \acp{DLSM} overflow.
