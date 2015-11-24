@@ -9,7 +9,7 @@ that take advantage of concurrent execution on multiple threads and processors.
 
 % The priority queue - semantics and usage summary.
 
-This paper focuses on the priority queue data structure, consisting of two operations
+This thesis focuses on the priority queue data structure, consisting of two operations
 traditionally called \lstinline|insert| and \lstinline|delete_min|. \lstinline|insert|
 places an item into the queue together with its priority, while \lstinline|delete_min|
 removes and returns the highest priority item. Both of these operations are expected to have

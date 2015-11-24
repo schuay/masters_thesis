@@ -26,5 +26,17 @@ is therefore reduced.
 
 However, SkipLists have less than optimal cache locality since each node is
 usually allocated dynamically, which in turn results in fairly low throughput
-for SkipList-based designs.
+for SkipList-based designs. Furthermore, strict priority queues incur an inherent
+bottleneck at the minimal (maximal) element.
+
+The \klsm is a novel design which
+addresses these issues by using arrays as backing data structures and the standard
+merge algorithm as its central operation (for high cache locality); and by relaxing
+semantic guarantees to allow the \lstinline|delete_min| operation to allow one
+of the $(k + 1) \cdot P$ elements, where $P$ is the number of threads.
+
+During the course of this thesis, we have implemented a standalone version of
+the \klsm and explain its design and implementation in detail. We finally evaluate the
+the \klsm against a collection of other state-of-the-art concurrent priority queues
+using a set of throughput benchmarks.
 \end{abstract}
