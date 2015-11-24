@@ -195,6 +195,8 @@ while the other must fail. The thread which has seen a \ac{CAS} failure will
 return from from \lstinline|delete_min| with a so-called spurious failure,
 returning \lstinline|false| even though the queue might be non-empty.
 
+\section{Linearizability, Lock-freedom \& Complexity}
+
 The \klsm is lock-free and linearizable, and both insertions as well as
 deletions have an amortized complexity of $O(\log n)$ (complexities are analyzed
 by ignoring artifacts such as retries caused by concurrent operations).
@@ -208,6 +210,7 @@ prove these statements but attempt to give a rough sketch for each:
       is linearizable at the linearization points of \lstinline|shared_lsm::insert|
       and \lstinline|dist_lsm::insert|, which will be discussed in the following
       sections.
+      \todo{delete incorrect: linearized at snapshot verification in shared.}
 \item \emph{Lock-freedom}. Assuming the corresponding operations on the \ac{SLSM}
       and \ac{DLSM} are lock-free, \lstinline|k_lsm::insert| is obviously lock-free
       since it merely calls \lstinline|dist_lsm::insert|. To show that
@@ -351,7 +354,7 @@ shared_lsm_local<K, V, Rlx>::insert_block(
 
         block_array<K, V, Rlx> *observed_packed;
         version_t observed_version;
-        refresh_local_array_copy(observed_packed, observed_version, global_array);
+        refresh_local_array_copy(observed_packed, observed_version, global_array);(@* \label{ln:shared_lsm_local::insert_block.refresh} *@)
 
         /* Create a new version which we will attempt to push globally. */
 
@@ -363,7 +366,7 @@ shared_lsm_local<K, V, Rlx>::insert_block(
 
         /* Try to update the global array. */
 
-        if (global_array.compare_exchange_strong(observed_packed, (@* \label{ln:shared_lsm_local::insert_block.cas} *@)
+        if (global_array.compare_exchange_strong(observed_packed,(@* \label{ln:shared_lsm_local::insert_block.cas} *@)
                                                  new_blocks)) {
             break;
         }
@@ -429,11 +432,11 @@ shared_lsm_local<K, V, Rlx>::peek(
     version_t observed_version;
 
     do {
-        refresh_local_array_copy(observed_packed,
+        refresh_local_array_copy(observed_packed,(@* \label{ln:shared_lsm_local::peek.refresh} *@)
                                  observed_version,
                                  global_array);
         best = m_cached_best = m_local_array_copy.peek();
-    } while (global_array.load()->version() != observed_version);
+    } while (global_array.load()->version() != observed_version);(@* \label{ln:shared_lsm_local::peek.version} *@)
 }
 \end{lstlisting}
 \caption{The \lstinline|shared_lsm_local::peek| implementation.}
@@ -643,6 +646,62 @@ bound is stored and reused as a lower bound for the binary search in \lstinline|
 operations (in which the new upper bound must be higher than its previous value)
 and as upper bounds in \lstinline|shrink| calls.
 
+\section{Linearizability, Lock-freedom \& Complexity}
+
+The \ac{SLSM} is linearizable, lock-free, and its operations have an amortized
+complexity of $O(\log n)$.
+\begin{itemize}
+\item \emph{Linearizability}. Insertions into the \ac{SLSM} have a single
+      linearization point at Line \ref{ln:shared_lsm_local::insert_block.cas}
+      in Figure \ref{fig:shared_lsm_local::insert_block}. Once the \ac{CAS}
+      operation has successfully set the block, it is visible globally.
+
+      The \lstinline|peek| operation is linearized when the local copy of
+      the global array is verified for the last time in Line \ref{ln:shared_lsm_local::peek.version}
+      of Figure \ref{fig:shared_lsm_local::peek}.
+\item \emph{Lock-freedom}. Insertions are lock free: they exclusively use non-blocking
+      primitives, and retries are triggered only if another thread has
+      made progress (Figure \ref{fig:shared_lsm_local::insert_block}, Lines
+      \ref{ln:shared_lsm_local::insert_block.refresh} and \ref{ln:shared_lsm_local::insert_block.cas}).
+
+      It is slightly more difficult to argue lock-freedom for peeks. As in the
+      case of insertions, non-blocking primitives are used and retries
+      are only triggered by progress of other threads (Figure \ref{fig:shared_lsm_local::peek},
+      Lines \ref{ln:shared_lsm_local::peek.refresh} and \ref{ln:shared_lsm_local::peek.version}).
+      But what happens if if \lstinline|block_array::peek| picks a taken item?
+      Due to readability, code handling that case has been omitted from Figure
+      \ref{fig:block_array::peek}; but for each picked taken item,
+      we iterate from the beginning of the pivot range of the current block,
+      mark encountered taken items as taken (by decreasing the pivot range size),
+      and return the first nontaken item within the range. If such an item
+      does not exist, we backtrack and select another random item within
+      the random range. This process is repeated until the \ac{SLSM}
+      is determined to be empty, or an item is found.
+\item \emph{Complexity}. Insertions essentially copy the given block ($O(1)$
+      per item), refresh the local array and create a copy of it in logarithmic
+      time, and insert the given block into, possibly triggering a number
+      of merge operations. These merges are of amortized logarithmic complexity:
+      intuitively, note that any item in an array of size $2^l$ has been merged
+      at most $l$ times, and each merge incurs constant overhead per item.
+      Insertions are thus in amortized $O(\log n)$.
+
+      Peeks create a copy of the global array in logarithmic time and then
+      call \lstinline|block_array::peek| on the local copy. In the simplest case,
+      \lstinline|block_array::peek| randomly selects an item, finds it in
+      logarithmic time (since it iterates through blocks), and returns it.
+      If the selected item is taken, it scans the block pivot range,
+      removes observed taken items from the pivot range, and returns the first untaken item.
+      Since each item is
+      removed from the pivot range at most once, this overhead can be charged
+      to its deletion cost. The pivot range also needs to be updated when
+      its size sinks below $\frac{k}{2}$, i.e. once every $\frac{k}{2}$ deletions
+      from the \ac{SLSM}. Pivot maintenance is done through binary search over
+      a subset of the key domain. In the case of 32-bit integers, it therefore
+      has at most 32 iterations, and each iteration considers at most $k$ items,
+      for a complexity of $O(k)$. Since pivot maintenance is executed once every
+      $O(k)$ deletions, it has amortized constant complexity per peek.
+\end{itemize}
+
 \section{\acl{DLSM} Internals} \label{sec:dlsm_internals}
 
 The \ac{DLSM} is a completely distributed priority queue without any
@@ -810,6 +869,14 @@ that block separately from the main local block linked list. This change
 makes \lstinline|spy| more efficient since only a single block needs to be copied
 and no merges must be performed, and additionally prevents insertion of duplicates
 into the global \ac{SLSM}.
+
+\section{Linearizability, Lock-freedom \& Complexity}
+
+\begin{itemize}
+\item \emph{Linearizability}.
+\item \emph{Lock-freedom}.
+\item \emph{Complexity}.
+\end{itemize}
 
 \section{Component Internals} \label{sec:component_internals}
 
