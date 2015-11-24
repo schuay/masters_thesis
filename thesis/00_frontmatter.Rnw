@@ -1,5 +1,6 @@
 \begin{acknowledgements*}
-\todo{Enter your text here.}
+To Martin and Jesper --- without your enthusiasm, ideas, and support, this thesis
+would not have been possible.
 \end{acknowledgements*}
 
 \begin{kurzfassung}
