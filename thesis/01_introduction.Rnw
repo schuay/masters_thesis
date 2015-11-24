@@ -13,8 +13,9 @@ This thesis focuses on the priority queue data structure, consisting of two oper
 traditionally called \lstinline|insert| and \lstinline|delete_min|. \lstinline|insert|
 places an item into the queue together with its priority, while \lstinline|delete_min|
 removes and returns the highest priority item. Both of these operations are expected to have
-a complexity of at most $O(\log n)$. Priority queues are used in a large variety
-of situations such as shortest path algorithms and scheduling. % See liu2012lock for more.
+a complexity of at most $O(\log n)$. Priority queues are essential data structures and
+are used as basic building blocks in a large variety
+of situations such as shortest path algorithms and scheduling.
 
 % Concurrent priority queues - heaps, trees, skiplists.
 
@@ -25,14 +26,80 @@ While early efforts have focused mostly on parallelizing Heap structures
 \cite{hunt1996efficient},
 more recently priority queues based on \citeauthor{pugh1990skip}'s SkipLists
 \cite{pugh1990skip} seem to show more potential \cite{shavit2000skiplist,
-sundell2003fast,herlihy2012art,linden2013skiplist}. Current research has also begun to examine
-relaxed data structures \cite{wimmer2013data,alistarhspraylist,rihani2014multiqueues} which trade
-strictness of provided guarantees against improved scalability.
+sundell2003fast,herlihy2012art,linden2013skiplist}.
+
+% Relaxed queues.
+
+Current research has also begun to examine
+relaxed data structures which trade
+strictness of provided guarantees against improved scalability. The SprayList \cite{alistarhspraylist} is
+an extension of SkipList-based priority queue designs which allows \lstinline|delete_min|
+to randomly return one of the $O(P \log^3 P)$ minimal elements, where $P$ is the number
+of threads. Multiqueues \cite{rihani2014multiqueues} are a simple and elegant design, which uses a number
+of sequential priority queues --- items are inserted into a random queue,
+and deletions return the minimal element of two random queues. Finally,
+the \klsm \cite{wimmer2015lock} is a composition of two complementing priority queues: a relaxed queue
+called the \ac{SLSM} which can offer global guarantees; and the \ac{DLSM},
+which has extremely high throughput but only observes local guarantees.
+
+% The klsm in particular.
+
+The \klsm in particular has shown very high scalability; but since it
+has only been implemented as part of the task-scheduling
+framework Pheet (\url{www.pheet.org}), direct comparisons against other
+state-of-the-art priority queues have been difficult so far. During the course of
+this thesis, we have implemented a standalone \klsm variant in order to verify the findings of
+\cite{wimmer2015lock} outside the context of the Pheet framework.
+
+% Benching.
+
+Recent literature on concurrent priority queues
+\cite{hunt1996efficient,alistarhspraylist,linden2013skiplist,shavit2000skiplist,sundell2003fast,wimmer2015lock,cbpq}
+has overwhelmingly relied on a uniform workload, uniform key generation throughput benchmark for evaluation,
+in which all threads perform a roughly equal mix of insertions and deletions,
+and item keys are generated uniformly at random within some domain. It is, however,
+important to realize that this style of benchmarking induces a near-\ac{LIFO}-like
+behavior in a priority queue: over time as minimal elements are removed from the
+queue, the queue becomes biased towards higher keys. Newly inserted items have
+a high probability of being one of the minimal items, thus soon becoming candidates
+for pending deletion.
+
+% Our benchmark suite.
+
+We do not believe that the uniform workload, uniform key generation benchmark
+provides sufficient information about the properties of a priority queue.
+Consequently, we extended our benchmarks with two parameters: key generation
+may be either uniformly at random, descending (for \ac{LIFO}-like behavior)
+or ascending (\ac{FIFO}-like). Workload may be either uniform, or split (in which
+half of all threads are dedicated inserters while the other half are deleters).
+
+% Results preview.
+
+Our measurements show that while some data structures such as Multiqueues
+perform roughly equally in all situations, others seem
+to be more specialized and behave very well in some cases, and worse in others.
+The \klsm in particular does extremely well in the standard uniform/uniform
+benchmark, outperforming the best other queue by almost a factor of ten. However,
+its throughput drops rapidly rapidly in other cases.
+
+% Quality benchmarks.
+
+Finally, quality of returned results are yet another facet in evaluation of
+relaxed data structures. Neither the Multiqueues, nor the SprayList offer
+fixed quality bounds; and while the \klsm does guarantee that each returned
+item is one of the $(k + 1) \cdot P$ minimal elements, it would also be useful
+to determine how well the data structure performs on average.
+
+In addition to the throughput benchmarks, we have also performed such quality
+measurements on the \klsm and other compatible priority queues.
+Quality is measured through the rank of returned items, where the rank is
+the position of an item within the sorted contents of the queue.
+The \klsm seems to return much better results than guaranteed, averaging at
+a rank of around $\frac{1}{20}$ of the upper quality bound.
 
 % Thesis structure.
 
-In the following, we investigate the evolution of concurrent priority queues suitable for general use,
-i.e. unbounded range queues based on widely available atomic primitives such as \ac{CAS}.
+The thesis is structure as follows:
 Chapter \ref{ch:sequential} provides an outline of sequential priority queues, with a focus
 on designs which have also been relevant to concurrent algorithms.
 Chapter \ref{ch:definitions} outlines basic concepts and definitions. In Chapter \ref{ch:strict},
@@ -42,5 +109,6 @@ fine-grained locking to avoid the bottleneck of a single global lock; lock-free 
 structures offering better disjoint-access parallelism; and a very recent design called the CBPQ \cite{cbpq}.
 Chapter \ref{ch:relaxed} presents three novel relaxed priority queues: the SprayList \cite{alistarhspraylist},
 Multiqueues \cite{rihani2014multiqueues}, and the \klsm \cite{wimmer2015lock}.
+The implementation of the standalone \klsm is examined in-depth in Chapter \ref{ch:implementation}.
 Finally, experimental results are shown and discussed in Chapter \ref{ch:evaluation},
 and the thesis is concluded in Chapter \ref{ch:conclusion}.
