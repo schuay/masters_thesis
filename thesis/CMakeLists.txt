@@ -1,9 +1,7 @@
 latex_get_output_path(OUTPUT_DIR)
-    
+
 add_latex_document(thesis.tex
-    INPUTS graphics/fig.eps
-           acronyms.tex
+    INPUTS acronyms.tex
+           titlepage.pdf
     BIBFILES bibliography.bib
-    IMAGE_DIRS graphics
-    USE_GLOSSARY
-    USE_INDEX)
+    IMAGE_DIRS graphics)

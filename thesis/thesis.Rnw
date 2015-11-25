@@ -3,6 +3,7 @@
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage[usenames,dvipsnames,table]{xcolor}
 
 \usepackage{acronym}
 \usepackage[backend=bibtex]{biblatex}
@@ -14,8 +15,8 @@
 \usepackage{amsfonts}
 \usepackage{microtype}
 \usepackage{nag}
+\usepackage{pdfpages}
 \usepackage{subcaption}
-\usepackage[usenames,dvipsnames,table]{xcolor}
 \usepackage{xspace}
 \usepackage[acronym,toc]{glossaries} % Has to be last.
 
@@ -32,8 +33,8 @@
     linkbordercolor = {Melon},                % The color of the borders of boxes around crosslinks (optional).
     pdfauthor       = {\authorname},          % The author's name in the document properties (optional).
     pdftitle        = {\thesistitle},         % The document's title in the document properties (optional).
-    pdfsubject      = {Subject},              % The document's subject in the document properties (optional).
-    pdfkeywords     = {a, list, of, keywords} % The document's keywords in the document properties (optional).
+    pdfsubject      = {},                     % The document's subject in the document properties (optional).
+    pdfkeywords     = {}                      % The document's keywords in the document properties (optional).
 }
 
 \setsecnumdepth{subsection} % Enumerate subsections.
@@ -94,9 +95,8 @@
 
 \frontmatter
 
-\addtitlepage{naustrian}
-\addtitlepage{english}
-\addstatementpage
+\includepdf[pages = {1-6}, fitpaper = true]{titlepage.pdf}
+\setcounter{page}{7}
 
 \SweaveInput{00_frontmatter.Rnw}
 
