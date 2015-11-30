@@ -260,6 +260,8 @@ If it has not yet been taken by another thread, it is removed and the call retur
 successfully. Otherwise, the same procedure is repeated (possibly updating the range of minimal items)
 until the queue is either empty or an untaken item is found and returned. 
 
+% TODO: Reevaluate the bound guarantees. Is (k+1)P really the best we can provide?
+
 From the previous description, it almost seems as if the \ac{SLSM} were a simple
 data structure; however, rest assured that this is not the case. Chapter \ref{ch:implementation}
 covers its implementation in great detail.
