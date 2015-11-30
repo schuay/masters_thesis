@@ -2,7 +2,7 @@
 
 The body of work discussed in previous sections
 creates the impression that the outer limits of strict, deterministic priority queues have been reached.
-In particular, \citeauthor{linden2013skiplist} conclude that scalability is solely limited by \lstinline|DeleteMin|,
+In particular, \citeauthor{linden2013skiplist} conclude that scalability is solely limited by \lstinline|delete_min|,
 and that less than one modified memory location per thread and operation would have to be read
 in order to achieve improved performance \cite{linden2013skiplist} through SkipLists. 
 The CBPQ \cite{cbpq} manages to improve on the Linden queue using a novel concept,
@@ -21,18 +21,18 @@ sections we discuss three such approaches.
 
 The SprayList is a recent approach towards a relaxed priority queue by \citeauthor{alistarhspraylist}
 \cite{alistarhspraylist}. Instead of taking a distributed approach,
-the SprayList is based on a central data structure, and uses a random walk in \lstinline|DeleteMin|
+the SprayList is based on a central data structure, and uses a random walk in \lstinline|delete_min|
 in order to spread accesses over the $O(P \log^3 P)$ first elements with high probability, where $P$
 is the number of participating threads.
 
 \citeauthor{fraser2004practical}'s lock-free SkipList \cite{fraser2004practical} again serves as the
 basis for the priority queue implementation. The full source code is available online at 
-\url{https://github.com/jkopinsky/SprayList}. In the SprayList, \lstinline|Insert| calls are simply
+\url{https://github.com/jkopinsky/SprayList}. In the SprayList, \lstinline|insert| calls are simply
 forwarded to the underlying SkipList.
 
-The \lstinline|DeleteMin| operation however executes a random walk, also called a \emph{spray}, the
+The \lstinline|delete_min| operation however executes a random walk, also called a \emph{spray}, the
 purpose of which is to spread accesses over a certain section of the SkipList uniformly such that
-collisions between multiple concurrent \lstinline|DeleteMin| calls are unlikely. This is achieved by
+collisions between multiple concurrent \lstinline|delete_min| calls are unlikely. This is achieved by
 starting at some initial height, walking a randomized number of steps, descending a randomized number of levels,
 and repeating this procedure until a node $n$ is reached on the lowest level. If $n$ is not deleted,
 it is logically deleted and returned. Otherwise, a \emph{spray} is either reattempted, or the thread
@@ -52,7 +52,7 @@ sequential semantics are given.
 
 Benchmarks show promising results: the SprayList scales well at least up to 80 threads,
 and performs close (within a constant factor) to an implementation using a random remove instead
-of \lstinline|DeleteMin|, which the authors consider as the performance ideal (although it might be
+of \lstinline|delete_min|, which the authors consider as the performance ideal (although it might be
 more fair to narrow that statement down to SkipList-based structures).
 
 \section{Multiqueue} \label{sec:multiq}

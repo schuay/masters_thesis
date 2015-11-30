@@ -3,8 +3,9 @@
 % Blocking, lock-free and wait-free data structures.
 
 Concurrent data structures are intended to be accessed simultaneously by several processes
-at once. \emph{Lock-based} structures ensure that only a limited number of processes may enter
-a critical section at once. \emph{Lock-free} data structures eschew the use of locks, and guarantee
+at at the same time. \emph{Lock-based} structures ensure that only a limited number of processes may enter
+a critical section at once through the use of locks.
+\emph{Lock-free} data structures eschew the use of locks, and guarantee
 that at least a single process makes progress at all times. Since lock-free structures are
 non-blocking, they are not susceptible to priority inversion, deadlock, and livelock.
 \emph{Wait-freedom} further guarantees that every process finishes each operation in a bounded number of steps.
@@ -40,7 +41,7 @@ relaxation} is recent model, which relaxes semantic guarantees such that
 operations may occur out of order in relation to a valid sequential operation sequence.
 
 Quasi-linearizability \cite{afek2010quasi}, proposed in \citeyear{afek2010quasi},
-was the first such correctness condition and sets a fixed upper bound to the distance
+was the first relaxed correctness condition and sets a fixed upper bound to the distance
 to a valid sequential operation sequence. Quantitative relaxation
 \cite{henzinger2013quantitative} is a closely related concept but is based
 on the semantics of a data structure, e.g., allowing a priority queue to return

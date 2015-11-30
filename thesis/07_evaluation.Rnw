@@ -100,14 +100,14 @@ used algorithms are as follows:
       is provided by the authors under an open source license\footnote{\url{http://user.it.uu.se/~jonli208/priorityqueue}}.
       It is lock-free and uses \citeauthor{fraser2004practical}'s lock-free
       SkipList. The aim of this implementation is to minimize contention in
-      calls to \verb|DeleteMin|. We chose $32$ as the \verb|BoundOffset| in order to optimize
+      calls to \verb|delete_min|. We chose $32$ as the \verb|BoundOffset| in order to optimize
       performance on a single socket. A \verb|BoundOffset| of $128$ performed only marginally better
       at high thread counts. The \citeauthor{linden2013skiplist} queue represents
       strict, lock-free and SkipList-based priority queues.
 \item \textit{SprayList} (\verb|spray|)
       A relaxed concurrent priority queue based on \citeauthor{fraser2004practical}'s
       SkipList using random walks to spread data accesses
-      incurred by \verb|DeleteMin| calls. Code provided by \citeauthor{alistarhspraylist} is
+      incurred by \verb|delete_min| calls. Code provided by \citeauthor{alistarhspraylist} is
       available on Github\footnote{\url{https://github.com/jkopinsky/SprayList}}.
 \item \textit{Multiqueues} (\verb|multiq|)
       Another recent relaxed concurrent priority queue
