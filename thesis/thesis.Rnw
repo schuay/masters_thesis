@@ -6,7 +6,7 @@
 \usepackage[usenames,dvipsnames,table]{xcolor}
 
 \usepackage{acronym}
-\usepackage[backend=bibtex]{biblatex}
+\usepackage[backend=bibtex,sortcites=true]{biblatex}
 \usepackage{booktabs}
 \usepackage{comment}
 \usepackage{graphicx}
@@ -19,8 +19,6 @@
 \usepackage{subcaption}
 \usepackage{xspace}
 \usepackage[acronym,toc]{glossaries} % Has to be last.
-
-% TODO: Sort citations numerically.
 
 % --- BEGIN copied setup.
 
