@@ -5,8 +5,8 @@ creates the impression that the outer limits of strict, deterministic priority q
 In particular, \citeauthor{linden2013skiplist} conclude that scalability is solely limited by \lstinline|delete_min|,
 and that less than one modified memory location per thread and operation would have to be read
 in order to achieve improved performance \cite{linden2013skiplist} through SkipLists. 
-The CBPQ \cite{cbpq} manages to improve on the Linden queue using a novel concept,
-but only up to a factor of two, and only while on one socket.
+Through a novel concept, the CBPQ \cite{cbpq} manages to improve on the Linden queue
+by up to a factor of two, but only scales while executed on a single socket.
 
 Recently, relaxation of provided guarantees have been investigated as another method of reducing
 contention and improving disjoint-access parallelism.
@@ -50,7 +50,7 @@ The authors do not provide any statement as to the linearizability (or other con
 criteria) of the SprayList, and it is not completely clear how to define it since no
 sequential semantics are given.
 
-Benchmarks show promising results: the SprayList scales well at least up to 80 threads,
+Their benchmarks show promising results: the SprayList scales well at least up to 80 threads,
 and performs close (within a constant factor) to an implementation using a random remove instead
 of \lstinline|delete_min|, which the authors consider as the performance ideal (although it might be
 more fair to narrow that statement down to SkipList-based structures).
@@ -82,10 +82,8 @@ again updating the cached key. This technique is somewhat similar load balancing
 through random selection \cite{richa2001power}, but no definite quality analysis
 has yet been given due to the complications arising through priority queue semantics.
 
-While the Multiqueue is inherently lock-based, it can easily be made lock-free
-by simply using lock-free queues as its backing structures. We have implemented
-a version using \acp{LSM} as the local queues and present the results in Chapter
-\ref{ch:evaluation}.
+While the Multiqueue is inherently lock-based, it could be made lock-free
+by simply using lock-free queues as its backing structures.
 
 % TODO: It might be nice to have one long-form example within each chapter
 % (sequential, strict, relaxed). In this chapter, the multiq seems to be a great
@@ -149,7 +147,7 @@ advantages and disadvantages which motivates their composition.
 
 Throughout this section, we gloss over the complexities of lock-free memory management and simply
 assume the existence of a garbage collector. The implementation by \citeauthor{wimmer2013data}
-uses their own lock-free memory allocator for to handle items, while blocks and block arrays are
+uses their own lock-free memory allocator to handle items, while blocks and block arrays are
 allocated in a pool and reused. Memory management will be discussed in further detail in Chapter
 \ref{ch:implementation}.
 
@@ -180,7 +178,7 @@ public:
 \label{fig:lsm_interface}
 \end{figure}
 
-In more detail, the \ac{LSM} consists of an ordered set of sorted arrays fulfilling a set of
+In more detail, the \ac{LSM} consists of an ordered set of sorted arrays (called blocks) fulfilling a set of
 invariants after the completion of each operation:
 
 \begin{itemize}
@@ -209,7 +207,7 @@ The \ac{DLSM} is a priority queue with purely thread-local guarantees. It adhere
 interface as the \klsm as given in Figure \ref{fig:klsm_interface}, but with subtly altered semantics
 in that there is no relaxation parameter $k$ --- the \ac{DLSM}'s \lstinline|delete_min| simply
 removes the thread-locally minimal item. If the local queue is empty an operation called \lstinline|spy|
-is performed, which attempts to copy all items from a randomly chosen thread's queue.
+is performed, which attempts to copy items from a randomly chosen thread's queue.
 
 The implementation is essentially a thin wrapper on top of a thread-local \ac{LSM} with some complicating
 factors. Items store both the key-value pair as well as an atomic flag indicating whether an item
@@ -246,8 +244,8 @@ in the \klsm in order to amend this point.
 The \acl{SLSM} could be considered the polar opposite of the previous section's
 \ac{DLSM}: it consists of a single, global \ac{LSM} whereas the \ac{DLSM} has a local \ac{LSM}
 for each thread; it is relaxed, returning one of the $k$ minimal items from \lstinline|delete_min|
-whereas the \ac{DLSM} is strict; and it has fairly limited scalability while the \ac{DLSM} is
-embarassingly parallel.
+whereas the \ac{DLSM} is strict on a local basis; and unfortunately,
+it has fairly limited scalability while the \ac{DLSM} is embarassingly parallel.
 
 The \ac{SLSM}'s interface is once again identical to Figure \ref{fig:klsm_interface}.
 Insertion semantics are as expected, and deletions may either succeed, removing and returning one of the $k$
@@ -257,9 +255,9 @@ At a high level, the concept of its implementation is simple: it consists of a s
 \ac{LSM} with an associated item range containing the (approximately) $k$ minimal 
 items within the queue. Insertions first add the new item to a local copy of the
 queue and then atomically replace the global copy with the modified local version.
-Deletions query the pivot range size, and then randomly select one of the contained
-items. If it has not yet been taken by another thread, it is removed and the call returns
-successfully. Otherwise, the same procedure is repeated (possibly growing the pivot range)
+Deletions randomly select one of the $k + 1$ minimal items and attempt to delete it.
+If it has not yet been taken by another thread, it is removed and the call returns
+successfully. Otherwise, the same procedure is repeated (possibly updating the range of minimal items)
 until the queue is either empty or an untaken item is found and returned. 
 
 From the previous description, it almost seems as if the \ac{SLSM} were a simple
@@ -278,7 +276,7 @@ to be able to offer global quality guarantees, the thread-local \ac{DLSM} are
 limited to a capacity of $k$ each, and \lstinline|delete_min| returns the minimal
 item returned from the \ac{DLSM} and \ac{SLSM}. Note that we skip up to $k (P - 1)$
 potentially smaller items located within other thread's local \ac{DLSM} and up to
-$k - 1$ items through relaxation of the \ac{SLSM}. We therefore still stay comfortably
+$k$ items through relaxation of the \ac{SLSM}. We therefore still stay comfortably
 within the claimed guarantees of returning one of the $(k + 1) \cdot P$ minimal items.
 
 The remaining issue of the \ac{SLSM}'s scalability is ultimately caused by updates
