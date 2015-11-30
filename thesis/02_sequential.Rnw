@@ -10,7 +10,7 @@
 Priority queues have a long history, having been extensively studied since the early
 days of the field of computer science. Some of the oldest designs, such as the
 heap, have remained popular in practical use up today. This chapter will
-detail syntax and semandics of general shared memory priority queues,
+detail syntax and semantics of general shared memory priority queues,
 and provide an overview of important sequential priority queue types,
 going into further detail for those designs which are also relevant for
 use in a concurrent environment.

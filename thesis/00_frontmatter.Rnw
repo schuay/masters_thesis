@@ -25,19 +25,30 @@ modifications on different elements access disjoint parts of the data structure.
 Contention between threads and traffic through the cache-coherency protocol
 is therefore reduced.
 
-However, SkipLists have less than optimal cache locality since each node is
+However, scalability improvements have been very limited. On the one hand,
+strict priority queues have an inherent sequential bottleneck since each \lstinline|delete_min|
+operation attempts to access the single minimal (maximal) element. On the other,
+SkipLists have less than optimal cache locality since each node is
 usually allocated dynamically, which in turn results in fairly low throughput
-for SkipList-based designs. Furthermore, strict priority queues incur an inherent
-bottleneck at the minimal (maximal) element.
+for SkipList-based designs.
 
-The \klsm is a novel design which
-addresses these issues by using arrays as backing data structures and the standard
-merge algorithm as its central operation (for high cache locality); and by relaxing
-semantic guarantees to allow the \lstinline|delete_min| operation to allow one
+Relaxed data structures are a new and promising approach in which quality
+guarantees are weakened in return for improved scalability.
+The \klsm is a concurrent, lock-free, and relaxed priority queue design which
+aims to improve scalability by 1) using arrays as backing data structures and the standard
+merge algorithm as its central operation (for high cache locality); and 2) by relaxing
+semantic guarantees to allow the \lstinline|delete_min| operation to return one
 of the $(k + 1) \cdot P$ elements, where $P$ is the number of threads.
 
-During the course of this thesis, we have implemented a standalone version of
+During the course of this thesis, we have implemented an improved standalone version of
 the \klsm and explain its design and implementation in detail. We finally evaluate the
-the \klsm against a collection of other state-of-the-art concurrent priority queues
-using a set of throughput benchmarks.
+the \klsm against other state-of-the-art concurrent priority queues including
+the Spraylist, the \citeauthor{linden2013skiplist} queue, and
+\citeauthor{rihani2014multiqueues}'s Multiqueues.
+
+In some benchmarking scenarios, including
+the popular generic throughput benchmark, the \klsm shows exceptional scalability,
+outperforming all other queues by up to a factor of ten; in others however,
+its throughput drops dramatically. Out of the other designs, Multiqueues are the
+clear winner, performing consistently across all benchmarks.
 \end{abstract}
