@@ -150,11 +150,12 @@ struct node_t {
 \label{fig:sundellsl}
 \end{figure}
 
-The structure of each node is basically identical to Figure \ref{fig:basicsl}. However, \citeauthor{sundell2003fast}
+The structure of each node is basically identical to Figure \ref{fig:skiplist_members}.
+However, \citeauthor{sundell2003fast}
 exploit the fact that the two least significant bits of pointers on 32- and 64-bit systems
 are unused and reuse these as deletion marks. A set least significant bit on a pointer signifies
 that the current node is about to be deleted.
-Reuse of \lstinline|node.next[i]| pointers
+This packed use of \lstinline|node.next[i]| pointers
 prevents situations in which a new node is inserted while its predecessor is being removed,
 effectively deleting both nodes from the list. Likewise, the reuse of the \lstinline|node.value|
 pointer ensures that updates of pointer values (which occur when a node with the inserted priority already exists)
@@ -257,7 +258,7 @@ up to $80\%$.
 
 \section{\acl{CBPQ}} \label{sec:cbpq}
 
-The latest strict priority of interest, called the \ac{CBPQ}, was published very recently in a dissertation
+The latest strict priority queue of interest, called the \ac{CBPQ}, was published very recently in a dissertation
 by \citeauthor{cbpq} \cite{cbpq}. It is primarily based on two ideas: the chunk linked list
 \cite{braginsky2011locality} replaces SkipLists and heaps as the backing data structure,
 and use of the more efficient \ac{FAA} instruction is preferred over the more powerful
@@ -293,9 +294,9 @@ for a short amount of time in order to possibly batch together insertions
 from several threads. All participating threads then cooperate to create a new
 initial chunk.
 
-Benchmarks compare the \ac{CBPQ} against the \cite{linden2013skiplist} queue and 
+Benchmarks compare the \ac{CBPQ} against the \citeauthor{linden2013skiplist} queue and
 lock-free as well as lock-based versions of the Mound priority queue \cite{liu2012lock}
-for different workloads. The \ac{CBPQ} clearly outperforms the other queues mixed workloads 
+for different workloads. The \ac{CBPQ} clearly outperforms the other queues in mixed workloads
 ($50\%$ insertions, 50\% insertions) and deletion workloads, and exhibits similar
-behavior as the \cite{linden2013skiplist} queue in insertion workloads, where Mounds
+behavior as the \citeauthor{linden2013skiplist} queue in insertion workloads, where Mounds
 are dominant.
