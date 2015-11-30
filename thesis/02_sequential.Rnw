@@ -62,22 +62,22 @@ When $K$ is the set of integers $\mathbb{Z}$, a priority queue is termed a
 ``max-priority queue'' if the priority function is the identity function $f(x) = x$,
 i.e., if higher keys have higher priority.
 It is called a ``min-priority queue'' if the priority function is the additive
-inverse $f(x) = -x$. All queues within this thesis are min-queues.
+inverse $f(x) = -x$.
 
 We are interested mainly in general priority queues within the context of shared
 memory systems. General priority queues are data structures which
 allow arbitrary keys of a given, possibly infinite set, and furthermore can
-hold multiple distinct items with identical keys. They are
+hold multiple distinct items with identical keys. Such priority queues
 are congruent the sorting problem, and thus have a lower bound of $O(\log n)$
-complexity for at least one of the main operations
-(\lstinline|insert| and \lstinline|delete_min|). Note that these bounds do not
+complexity for either \lstinline|insert| or \lstinline|delete_min| (or both).
+Note that these bounds do not
 hold for more specialized priority queues; for instance, queues which are limited
 to a small, previously known set of keys may use a bucket for each key and
 implement both insertions and deletions in constant time.
 
 The semantics of general sequential priority priority queues are as follows:
 \begin{itemize}
-\item The contents of a priority queue $PQ$ are a set of key-value pairs:
+\item The contents of a priority queue $PQ$ are a set of key-value pairs called items:
       $PQ \subseteq K \times V$, where $K$ and $V$ are, respectively, the key
       and value domains.
 \item Upon creation, at time $t = 0$, a priority queue is empty:
@@ -109,14 +109,15 @@ sorted according to the priority function. Access to the minimal element is
 possible in constant time since it is located at the head of the array. However,
 insertions need to insert the new item into its correct position within the
 array, and move all larger items back by one position, resulting in a worst-case
-complexity of $O(n)$.
+complexity of $\Theta(n)$.
 
-More efficient implementation techniques have been known for over a half century.
-Binary heaps \cite{williams1964algorithm} were invented as part of a sorting
-algorithm in \citedate{williams1964algorithm} and are still arguable the most
+More efficient implementation techniques have been known for over half a century.
+Binary heaps \cite{williams1964algorithm} were invented as part of the sorting
+algorithm Heapsot in \citedate{williams1964algorithm} and are still arguable the most
 popular design for general purpose priority queues. For example, the priority queue
 container class contained in the C++ \ac{STL} implements a binary heap on top of
-any compatible backing structure. Both deletions and insertions have logarithmic
+any compatible backing structure. When using a heap, both deletions and insertions require
+reorganization of the data structure and have logarithmic
 worst-case complexity.
 
 While heaps use an implicit tree structure, it is also possible to use explicit
@@ -125,8 +126,8 @@ Popular \ac{BST} variants are e.g. Red-black trees \cite{bayer1972symmetric} and
 AVL trees \cite{adelsonvelskii1963algorithm}.
 Insertions use the standard \ac{BST} insert algorithm, while deletions remove
 the tree's leftmost item. Alternatively, SkipLists \cite{pugh1990skip} also
-provide logarithmic complexity but do not require periodic balancing operations
-since they rely on randomization to preserve a beneficial data structure.
+provide logarithmic complexity but do not require periodic maintenance operations
+since they rely on randomization to preserve a balanced data structure.
 
 Fibonacci heaps \cite{fredman1987fibonacci} were invented by
 \citeauthor{fredman1987fibonacci} and are based on a collection of
@@ -134,7 +135,7 @@ heap-sorted trees. In addition to the standard insertion and deletion operations
 (in amortized logarithmic time),
 they also support efficient \lstinline|merge| and \lstinline|decrease_key|
 operations in constant time, thus decreasing the complexity of Dijkstra's shortest
-path algorithm to $O(|E| + |V| \log |V|)$. However, due to the programming complexity
+path algorithm to $O(|E| + |V| \log |V|)$. However, due to their programming complexity
 and involved constant factors, they are not widely used in practise.
 Subsequent publications have proposed various alternatives to Fibonacci heaps
 such as relaxed heaps \cite{driscoll1988relaxed} and strict Fibonacci heaps
@@ -149,13 +150,15 @@ binomial heap \cite{vuillemin1978data}; and many more. For further
 information, we refer the reader to reviews such as
 \cite{ronngren1997comparative,jones1986empirical}.
 
+% TODO: Possibly extend this section, more detail.
+
 \section{Binary Heaps}
 
 Binary heaps  \cite{williams1964algorithm} are one of the most common (and also one of the simplest)
 methods of implementing priority queues. They are based on two concepts; first,
-that of balanced binary trees, composed of nodes with exactly two children each.
+that of complete balanced binary trees, composed of nodes with exactly two children each.
 And second, that of heap ordering, the notion that the priority of each child
-node is less than that of its parent node. Furthermore, instead of using an
+node is less or equal to that of its parent node. Furthermore, instead of using an
 explicit representation of a binary tree, heaps implicitly encode the position
 of their contents.
 
@@ -178,7 +181,7 @@ private:
 
 As shown in Figure \ref{fig:heap_members},
 the backing data structure of a binary heap is a flat array \lstinline|items| together
-with a variable tracking the number of items within the heap, \lstinline|n|. The root item,
+with a variable \lstinline|n| tracking the number of items within the heap. The root item,
 i.e. the item with the highest priority, is located at the head of the array
 \lstinline|items[1]|\footnote{For ease
 of presentation, we use 1-based indexing within this section.}. For each item
@@ -276,11 +279,11 @@ parallel priority queues, since it does not require the frequent rebalancing
 operations of \acp{BST}, and operations on nodes of different keys usually access
 spacially disjoint parts of the data structure. In the context of concurrent
 operations, both of these properties are very desirable: if several concurrent
-insertions modify disjoint parts of the SkipList, contention is reduced;
-and since the SkipList does not require balancing, both insertions and deletions
+insertions modify disjoint parts of the SkipList, contention is reduced.
+And since the SkipList does not require balancing, both insertions and deletions
 are simpler and more efficient to implement.
 
-Unfortunately, and as we will see in Chapter \ref{ch:evaluation}, SkipLists
+Unfortunately, and as we will see in our results in Chapter \ref{ch:evaluation}, SkipLists
 have turned out to be rather slow in practice. This is most likely due to the fact
-that each node is usually dynamically allocated, and located in non-contiguous
+that each node is usually dynamically allocated in non-contiguous
 parts of memory, resulting in very bad cache locality.
