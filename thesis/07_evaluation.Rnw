@@ -78,7 +78,7 @@ approximate linear sequence of insertions and deletions. This sequence is then
 replayed using a strict sequential queue, and the rank of each deleted item
 within the queue at the time of deletion is recorded (with the rank of the least
 item being $1$). Theoretically, strict queues should result in an average rank
-of $1$, but in practice we can expect deviations of this value due to 'simultaneous'
+of $1$, but in practice we can expect deviations of this value due to `simultaneous'
 operations between threads and imprecise timestamps. However, even though
 it is not an exact value, the average rank still provides a good feel for the
 quality of a queue's returned results.
@@ -363,7 +363,7 @@ performance. But how is this kind of skewed balance between the \ac{SLSM} and th
 the \ac{SLSM} and one from the \ac{DLSM}, wouldn't it be reasonable to expect
 a $50/50$ proportion of items taken from the either component?
 
-It turns out that the answer to this question is a definite "no" in the case of
+It turns out that the answer to this question is a definite ``no'' in the case of
 uniform key generation: initially, after prefill is completed, the \klsm
 contains a selection of keys randomly distributed over the range of integers.
 However, as time goes on, lower keys are removed and the \klsm's

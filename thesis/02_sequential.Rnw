@@ -59,9 +59,9 @@ the key domain $K$ to a priority domain $P$, over which there exists
 a reflective, antisymmetric, and transitive ordering relation $\leq: P \times P$.
 
 When $K$ is the set of integers $\mathbb{Z}$, a priority queue is termed a
-"max-priority queue" if the priority function is the identity function $f(x) = x$,
+``max-priority queue'' if the priority function is the identity function $f(x) = x$,
 i.e., if higher keys have higher priority.
-It is called a "min-priority queue" if the priority function is the additive
+It is called a ``min-priority queue'' if the priority function is the additive
 inverse $f(x) = -x$. All queues within this thesis are min-queues.
 
 We are interested mainly in general priority queues within the context of shared
@@ -100,9 +100,7 @@ priority queue is allowed to choose freely among items of equal priority.
 
 In the following, we assume a min-priority queue and do not distinguish precisely
 between keys and their associated priority function. For instance, we simply
-use "the minimal item" to refer to the item within the queue of highest priority.
-
-% TODO: Fix all quotes in entire thesis.
+use ``the minimal item'' to refer to the item within the queue of highest priority.
 
 \section{Overview}
 

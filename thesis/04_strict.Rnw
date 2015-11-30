@@ -271,7 +271,7 @@ and a skiplist is used to efficiently index into the available set of chunks dur
 A chunk itself consists of an element array, the upper bound for keys within the chunk, the index of
 the first unused field within the array, and several further fields related to memory management 
 (which we ignore in this context --- for further details about the utilized 
-lock-free memory management scheme called 'Drop the Anchor', refer to \cite{braginsky2011locality,braginsky2013drop}).
+lock-free memory management scheme called `Drop the Anchor', refer to \cite{braginsky2011locality,braginsky2013drop}).
 
 One of the key elements of the \ac{CBPQ} is that in general, items within chunks are not
 ordered and can thus be inserted in a lock-free manner by simply fetching and incrementing

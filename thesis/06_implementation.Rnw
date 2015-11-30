@@ -1219,7 +1219,7 @@ queue uses the memory management method by \citeauthor{valois1996lock}
 \cite{valois1995lock,valois1996lock} which does not require a separate
 garbage collector thread. \citeauthor{linden2013skiplist} use
 \citeauthor{fraser2004practical}'s epoch-based reclamation scheme
-\cite{fraser2004practical}, and the CBPQ makes use of the author's 'Drop the Anchor'
+\cite{fraser2004practical}, and the CBPQ makes use of the author's `Drop the Anchor'
 lock-free memory management scheme \cite{braginsky2011locality,braginsky2013drop}.
 The SprayList does not have any robust memory management at the time of writing;
 it simply preallocates a set amount of memory in advance and fails in case it runs
