@@ -157,9 +157,10 @@ and return the lesser of both items in the standard case. In case both queues
 are empty, the local \ac{DLSM} attempts to copy items from another thread by
 triggering a call to \lstinline|spy|, and finally retrying deletion.
 
-These implementations seem simple, even basic; but that is because details are
+These implementations seem simple; but that is because details are
 delegated to responsible classes. The best example in this case is the act of
-item removal --- how can we ensure that an item is taken only a single thread? 
+item removal --- how can we ensure that an item is taken only by a single thread
+and that no items are lost?
 And since memory for items is reused (see Section \ref{sec:mm_internals}),
 how can we prevent the ABA problem in which memory is reused after being
 retrieved (i.e. the thread reads data different than had been intended)?
@@ -362,7 +363,8 @@ context of the \klsm (but essentially, they simply create a singleton block
 and insert it).
 
 Block insertions initially ensure that the local
-array copy (a shallow copy of the global array) is up to date by retrieving
+array copy (a shallow copy of the global array, containing only pointers to the
+original blocks) is up to date by retrieving
 the current global block array and comparing versions, then updating the copy
 if necessary. It is then possible to access the local copy without fear of
 concurrent modifications (as long as one is careful when reading blocks

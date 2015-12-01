@@ -1,8 +1,13 @@
 \chapter{Strict Concurrent Priority Queues} \label{ch:strict}
 
-% TODO: What's in this section? What's a strict cpq?
 % TODO: Below: clarify technical details that might not be apparent to reader.
 %       Possibly more code & figures.
+
+This chapter deals with priority queues with strict semantics which guarantee
+that deletions return the minimal element within the queue. We provide an overview
+of the development of such priority queues, from early locking heap-based designs,
+through more recent lock-free queues backed by SkipList, to one of the latest
+designs called the CBPQ.
 
 \section{Fine-grained Locking Heaps} \label{sec:hunt}
 
@@ -69,7 +74,7 @@ SkipList \cite{pugh1998concurrent}, which uses one lock per node per level.
 
 A crucial observation is that nodes which are only partially connected (in the sense
 that while the lowest level has been connected but not necessarily all other levels)
-do not affect correctness of the data structure. As soon as the first level (i.e. \lstinline|node.level[0]|)
+do not affect correctness of the data structure. As soon as the first level (i.e. \lstinline|node.next[0]|)
 has been successfully connected, a node is considered to be in the SkipList.
 Therefore, both insertions and deletions can be split into steps --- insertions
 proceed bottom-up while deletions proceed top-down. Locks are held only for the current level
@@ -219,7 +224,7 @@ In this implementation, most \lstinline|delete_min| operations only perform logi
 the deletion flag with a single \ac{FAO} call; nodes are only deleted physically once a certain
 threshold of logically deleted nodes is reached.
 
-This mechanism requires a new invariant, in that the set of all logically deleted nodes must always
+This mechanism guarantees that the set of all logically deleted nodes must always
 form a prefix of the SkipList. Recall that in the \citeauthor{sundell2003fast} queue, deletion flags
 for node \lstinline|n| were packed into \lstinline|n.next| pointers, preventing insertion of new
 nodes \emph{after} deleted nodes. This implementation instead places the deletion flag into the
@@ -243,7 +248,7 @@ authors recommending a prefix length bound of 128 for 32 threads.
 % TODO: Clarify pseudocode below.
 
 The actual \lstinline|delete_min| and \lstinline|insert| implementations are surprisingly simple.
-Deletions simply traverse the list until the first node for which \lstinline|(ptr, d) = FAO((node.next[0], d), 1)|
+Deletions simply traverse the list until the first node for which \lstinline|(ptr, d) = FAO(node.next[0], 1)|
 returns a previously unset deletion flag (\lstinline|d = 0|) and then return \lstinline|ptr|.
 Insertions occur bottom-up and follow the basic \citeauthor{fraser2004practical} algorithm \cite{fraser2004practical},
 taking the separation of deletion flags and nodes into account. The \lstinline|node.inserting| flag

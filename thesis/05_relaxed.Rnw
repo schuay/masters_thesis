@@ -19,7 +19,7 @@ sections we discuss three such approaches.
 
 \section{SprayList} \label{sec:spraylist}
 
-The SprayList is a recent approach towards a relaxed priority queue by \citeauthor{alistarhspraylist}
+The SprayList is a recent relaxed priority queue design by \citeauthor{alistarhspraylist}
 \cite{alistarhspraylist}. Instead of taking a distributed approach,
 the SprayList is based on a central data structure, and uses a random walk in \lstinline|delete_min|
 in order to spread accesses over the $O(P \log^3 P)$ first elements with high probability, where $P$
@@ -32,8 +32,8 @@ forwarded to the underlying SkipList.
 
 The \lstinline|delete_min| operation however executes a random walk, also called a \emph{spray}, the
 purpose of which is to spread accesses over a certain section of the SkipList uniformly such that
-collisions between multiple concurrent \lstinline|delete_min| calls are unlikely. This is achieved by
-starting at some initial height, walking a randomized number of steps, descending a randomized number of levels,
+collisions between multiple concurrent \lstinline|delete_min| calls become unlikely. This is achieved by
+starting at some initial level, walking a randomized number of steps, descending a randomized number of levels,
 and repeating this procedure until a node $n$ is reached on the lowest level. If $n$ is not deleted,
 it is logically deleted and returned. Otherwise, a \emph{spray} is either reattempted, or the thread
 becomes a cleaner, traversing the lowest level of the SkipList and physically removing logically deleted
@@ -52,7 +52,8 @@ sequential semantics are given.
 
 Their benchmarks show promising results: the SprayList scales well at least up to 80 threads,
 and performs close (within a constant factor) to an implementation using a random remove instead
-of \lstinline|delete_min|, which the authors consider as the performance ideal (although it might be
+of \lstinline|delete_min|, which the authors consider as the performance ideal since contention
+is minimized (although it might be
 more fair to narrow that statement down to SkipList-based structures).
 
 \section{Multiqueue} \label{sec:multiq}
@@ -145,7 +146,7 @@ and \ac{DLSM} are based on the \ac{LSM} \cite{o1996log} data structure which wil
 upon below. Both structures may be used as standalone priority queues, but have complementing
 advantages and disadvantages which motivates their composition.
 
-Throughout this section, we gloss over the complexities of lock-free memory management and simply
+Throughout this section, we ignore over the complexities of lock-free memory management and simply
 assume the existence of a garbage collector. The implementation by \citeauthor{wimmer2013data}
 uses their own lock-free memory allocator to handle items, while blocks and block arrays are
 allocated in a pool and reused. Memory management will be discussed in further detail in Chapter
@@ -223,7 +224,7 @@ the block is shrunk and \ac{LSM} invariants are reasserted.
 
 So far, all operations have been exclusively thread-local, and thus no attention had to be given
 to concurrency complications. Unfortunately, \lstinline|spy| does access other thread's \acp{LSM}
-and we cannot ignore these issues entirely. The set of blocks in the \ac{LSM} is modelled
+and we cannot ignore these issues entirely. The set of blocks in the \ac{LSM} is implemented
 as a doubly-linked list of blocks. The set of pointers to the previous element may be accessed
 exclusively by the owning thread, while the set of pointers to the next element can by read by
 all threads (but written only by the owning thread). When a maintenance operation triggers
@@ -239,9 +240,12 @@ is very efficient, and most, if not all operations are thread-local. However, it
 is the lack of global quality guarantees. The next section discusses the \ac{SLSM}, which is utilized
 in the \klsm in order to amend this point.
 
+Insertions and deletions are again of amortized logarithmic complexity and benefit
+from high cache locality as well as mostly thread-local operations.
+
 \subsection{\acl{SLSM}} \label{ssec:slsm}
 
-The \acl{SLSM} could be considered the polar opposite of the previous section's
+The \acl{SLSM} could be considered the antipole of the previous section's
 \ac{DLSM}: it consists of a single, global \ac{LSM} whereas the \ac{DLSM} has a local \ac{LSM}
 for each thread; it is relaxed, returning one of the $k$ minimal items from \lstinline|delete_min|
 whereas the \ac{DLSM} is strict on a local basis; and unfortunately,
@@ -274,8 +278,8 @@ cannot offer any guarantees as to the quality of returned items, while the \ac{S
 has a significant global bottleneck.
 
 The \klsm combines both of these designs to reduce these drawbacks. In order
-to be able to offer global quality guarantees, the thread-local \ac{DLSM} are
-limited to a capacity of $k$ each, and \lstinline|delete_min| returns the minimal
+to be able to offer global quality guarantees, the thread-local \acp{DLSM} are
+limited to a capacity of $k$ per thread, and \lstinline|delete_min| returns the minimal
 item returned from the \ac{DLSM} and \ac{SLSM}. Note that we skip up to $k (P - 1)$
 potentially smaller items located within other thread's local \ac{DLSM} and up to
 $k$ items through relaxation of the \ac{SLSM}. We therefore still stay comfortably
@@ -290,6 +294,6 @@ a local \ac{DLSM} exceeds its maximal size, the largest block is simply inserted
 into the \ac{SLSM}.
 
 The \klsm as presented in \cite{wimmer2015lock} exhibits varying behavior according
-to the parameter $k$; at low values ($k \in \{0, 4\}$) scalability is somewhat comparable
+to the parameter $k$; at low values ($k \in \{0, 4\}$) scalability and throughput are somewhat comparable
 the the \citeauthor{linden2013skiplist} queue. At higher relaxation values of $k \in \{256, 4096\}$,
 the \klsm approaches linear speedup up to high thread counts.
