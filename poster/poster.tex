@@ -4,25 +4,22 @@
 
 \usepackage[backend=bibtex,sortcites=true]{biblatex}
 \usepackage{lipsum}
- 
-%\title[Computational Intelligence]{Interactive Computer Generated Architecture}
-% if you have a long title looking squeezed on the poster, just force
-% some distance:
-\title[Computational Intelligence]{%
-  Integration of Conjunctive Queries over \\[0.2\baselineskip]%
-  Description Logics into HEX-Programs %\\[0.2\baselineskip]%
+
+\title[Software Engineering \& Internet Computing]{%
+  KLSM:\\[0.2\baselineskip]%
+  A Relaxed Lock-Free Priority Queue
 }
-\author[martina.muster@alumni.tuwien.ac.at]{Martina Muster}
+\author[gruber@par.tuwien.ac.at]{Jakob Gruber}
 \institute[]{%
   Technische Universit{\"a}t Wien\\[0.25\baselineskip]
   Institut f{\"u}r Informationssysteme\\[0.25\baselineskip]
-  Arbeitsbereich: Wissensbasierte Systeme\\[0.25\baselineskip]
-  BetreuerIn: Ao.Univ.-Prof. Dr. Maxima Musterfrau
+  Arbeitsbereich: Parallel Computing\\[0.25\baselineskip]
+  Betreuer: Prof. Dr. Scient. Jesper Larsson Tr\"aff
 }
-\titlegraphic{\includegraphics[height=52mm]{logo_KBS_2_CMYK}}
+\titlegraphic{\includegraphics[height=52mm]{parcomp_logo}}
 \date[\today]{\today}
 \subject{epilog}
-\keywords{my kwd1, my kwd2}
+\keywords{concurrency, algorithms, lock-free, relaxed, priority queue}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -39,7 +36,7 @@
 
 % play around with block colors
 \setbeamercolor{block body}{fg=black,bg=white}
-\setbeamercolor{block title}{fg=TuWienBlue,bg=white}
+\setbeamercolor{block title}{fg=white,bg=TuWienBlue}
 
 \setbeamertemplate{block begin}{
   \begin{beamercolorbox}{block title}%
@@ -66,7 +63,6 @@
 {\begin{beamercolorbox}[sep=1em,wd=7cm]{postit}}
 {\end{beamercolorbox}}
 
-
 % for crop marks, uncomment the following line
 \usepackage[cross,width=88truecm,height=123truecm,center]{crop}
 
@@ -75,8 +71,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-
-% We have a single poster frame.
 \begin{frame}
   \begin{columns}[t]
     % ---------------------------------------------------------%
@@ -107,7 +101,7 @@
       \end{block}
 
       \begin{block}{Some citations}
-        \alert{Watch out for } \cite{ff2010}
+        \alert{Watch out for } \cite{wimmer2015lock}
       \end{block}
 
       \begin{block}{References}
@@ -125,7 +119,6 @@
       \end{postit}%
     }; 
   \end{tikzpicture}
-  
-\end{frame}
 
+\end{frame}
 \end{document}
