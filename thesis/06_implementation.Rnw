@@ -705,15 +705,15 @@ private:
 \end{figure}
 
 Its interface, shown in Figure \ref{fig:dist_lsm.h}, consists of the standard
-\lstinline|insert| (not shown) and \lstinline|find_min|, as well as a special
-insertion function used from the \klsm which includes a \ac{SLSM} argument,
-and a \lstinline|spy| function. Again, a thread-local pointer contains the local
+\lstinline|insert| (not shown) and \lstinline|find_min|, a \lstinline|spy| function,
+as well as a special insertion function used from the \klsm which includes an
+\ac{SLSM} argument. Again, a thread-local pointer contains the local
 part of the data structure.
 
 The local component, called \lstinline|dist_lsm_local| and shown in Figure
 \ref{fig:dist_lsm_local.h}, contains the actual \ac{LSM} representation,
-memory management pools for blocks and items, a cached item similar to the
-\ac{SLSM}, and a random number generator used to determine a victim during
+memory management pools for blocks and items, a cached item (as in the
+\ac{SLSM}), and a random number generator used to determine a victim during
 \lstinline|spy| calls.
 
 \begin{figure}[ht]
@@ -747,7 +747,8 @@ private:
 \end{figure}
 
 Contrary to the \ac{SLSM}, the \ac{DLSM} uses a linked list of blocks to represent
-the local \ac{LSM}. Blocks (covered further in Section \ref{sec:component_internals})
+the local \ac{LSM} (this is due to historical reasons).
+Blocks (covered further in Section \ref{sec:component_internals})
 contain \lstinline|next| pointers accessible by all threads, and \lstinline|prev|
 pointers which may only be used by the owning thread. Insertions proceed
 similar to the \ac{SLSM}: a singleton block is created which is then inserted
@@ -809,7 +810,7 @@ dist_lsm_local<K, V, Rlx>::peek(typename block<K, V>::peek_t &best)
 \end{figure}
 
 Code for the \lstinline|peek| function is shown in Figure
-\ref{fig:dist_lsm_local.h}. Similar to the \ac{SLSM}, the \ac{DLSM}
+\ref{fig:dist_lsm_local::peek}. Similar to the \ac{SLSM}, the \ac{DLSM}
 keeps a local cache of the previously determined item with the least key,
 which is updated both during calls to \lstinline|peek| and during insertions
 (in case the newly inserted item is smaller than the previously known least item).
@@ -819,7 +820,7 @@ simply returned and no further work is done.
 Otherwise, we iterate through each block in the \ac{LSM} and inspect its least item.
 Since that item is located at the head of the block, access to it can be done
 in constant time. If the \ac{LSM} is nonempty, the minimal such item is returned;
-alternatively, we fall back to the minimal item of the spied block. There is
+alternatively, we fall back to the minimal item of the spied block. In total, there are
 a logarithmic number of blocks, and thus the complexity of \lstinline|peek| is
 $O(\log n)$.
 
@@ -829,19 +830,19 @@ entire contents of another thread's local \ac{LSM}, and adds the copied items
 to its own linked list of blocks.
 
 However, this has the disadvantage of raising
-the frequency of $k$ boundary overflows coupled with resulting block insertions
-into the \ac{SLSM}, as well as the insertion of duplicate items into the \ac{SLSM}.
+the frequency of \ac{DLSM} overflows coupled with resulting block insertions
+into the \ac{SLSM}, as well as causing the insertion of duplicate items into the \ac{SLSM}.
 Semantics of the \ac{SLSM} remain valid even in the presence of duplicates ---
 recall that the \acp{LSM} store as pointers to items, and each item may only
-be taken atomically by a single thread; but such duplicate items waste both space
+be taken atomically by a single thread; however, such duplicate items waste both space
 and time.
 
-On the other hand, the standalone \klsm simplifies \lstinline|spy| to only
+The standalone \klsm simplifies \lstinline|spy| to only
 copy the largest block from another thread's local \ac{LSM}, and storing
 that block separately from the main local block linked list. This change
 makes \lstinline|spy| more efficient since only a single block needs to be copied
 and no merges must be performed, and additionally prevents insertion of duplicates
-into the global \ac{SLSM}.
+into the global \ac{SLSM} because the spied block is never merged.
 
 \subsection{Linearizability, Lock-freedom \& Complexity}
 
@@ -860,7 +861,7 @@ The \ac{DLSM} is linearizable, lock-free, and \lstinline|insert| as well as
       or \ref{ln:dist_lsm_local::peek.spied}).
 \item \emph{Lock-freedom}. Both insertions and deletions use only
       non-blocking primitives and execute
-      at most $\log n$ loop iterations for block merges and are thus lock-free.
+      at most $\lceil \log n \rceil$ loop iterations for block merges and are thus lock-free.
 \item \emph{Complexity}. An insertion executes at most a logarithmic number
       of merges. As in the \ac{SLSM}, this incurs an amortized complexity of
       $O(\log n)$ per item, since in a size $n$ \ac{LSM} each item has been
@@ -873,7 +874,7 @@ The \ac{DLSM} is linearizable, lock-free, and \lstinline|insert| as well as
       block. Assume this occurs for a block of capacity $c$; then there must
       have been at least $\frac{c}{2}$ delete operations from the current block
       previously. The shrink-merge would incur an overhead of at most $\frac{c}{2}$ (shrinking)
-      plus $c$ (merging), for an amortized total of $O(1)$ per peek operation.
+      plus $c$ (merging), for an amortized total of $O(1)$ per item.
 \end{itemize}
 
 \section{Component Internals} \label{sec:component_internals}
@@ -887,13 +888,13 @@ still granting access to other threads' data on demand.
 \subsection{Thread-Local Pointers} \label{ssec:thread_local_ptr_internals}
 
 Thread-local memory is a core requirement of the \klsm: the \ac{DLSM} is
-inherently distributed and has one separate \ac{LSM} per thread, while the
+inherently distributed and has one separate \ac{LSM} per thread, and the
 \ac{SLSM} also caches data such as a copy of the global block array on
 a per-thread basis.
 
 There are several mechanisms and libraries which offer thread-local storage,
 the most popular being the C++11 \lstinline|thread_local| keyword and
-\ac{pthreads}' \lstinline|pthread_getspecific, pthread_setspecific| functions.
+\ac{pthreads} \lstinline|pthread_getspecific|, \lstinline|pthread_setspecific| functions.
 
 We have evaluated both of these for use in the \klsm; unfortunately,
 neither are suitable. \lstinline|thread_local| is only usable at namespace and
@@ -966,14 +967,16 @@ private:
 \end{figure}
 
 The lock-free vector itself is based on the simple idea of an array of
-logarithmically growing arrays. The full implementation is shown in Figure
+exponentially growing arrays with capacities of $2^i, i \in \mathbb{N}$.
+The full implementation is shown in Figure
 \ref{fig:lockfree_vector.h}. If the array containing the desired item
 does not yet exist, a new array is created and added to the array of arrays
 using a \ac{CAS} instruction.
 
-Benchmarks have shown that the \lstinline|thread_local| outperforms both \ac{pthreads}
+Micro-benchmarks comparing the different thread-local storage mechanisms
+have shown that the \lstinline|thread_local| outperforms both \ac{pthreads}
 and our custom implementation by roughly a factor of $2$. However, the increased
-cost is dominated by actual work within the priority queues' \lstinline|insert|
+cost is dominated by actual work within the \klsm's \lstinline|insert|
 and \lstinline|delete_min| functions, and does not contribute meaningfully to
 \klsm benchmark results.
 
@@ -984,6 +987,7 @@ store key-value pairs, blocks store items, and blocks in turn are stored
 by the different \ac{LSM} variants --- linked-list \acp{LSM} in the \ac{DLSM},
 and array-based \acp{LSM} in the \ac{SLSM}.
 
+% TODO: Relaxed mem order is most probably not correct below.
 \begin{figure}[ht]
 \begin{lstlisting}
 template <class K, class V>
@@ -1018,18 +1022,18 @@ private:
 \end{figure}
 
 Items are conceptually simple, consisting only of the key-value pair
-and a version number (see Figure \ref{fig:item.h}). Even version numbers
+and a version number (see Figure \ref{fig:item.h}). Even numbered versions
 are considered reusable and may be reclaimed at any time by the memory manager,
 while odd versions are in
-use. Thus both \lstinline|initialize| and \lstinline|take| increment
+use. Both \lstinline|initialize| and \lstinline|take| increment
 the version by one and thereby both invalidate other concurrent \ac{CAS}
 instructions and set the item's taken status.
 
 In their most basic form (Figure \ref{fig:block.h}),
 blocks are likewise simple constructs. A block
 contains an array of items of a certain capacity which is always equal
-to $2^n$ for some $n$. The array stores \lstinline|block_item| instances,
-which store an expected version and a cached key together with a pointer
+to $2^n$ for some $n \in \mathbb{N}$. The array stores \lstinline|block_item| instances,
+which consists of an expected version and a cached key together with a pointer
 to the actual item.
 
 \begin{figure}[ht]
@@ -1055,8 +1059,8 @@ public:
 private:
     const size_t m_capacity;
     block_item *m_block_items;
-    size_t m_first;
-    size_t m_last;
+    size_t m_first; /* The first untaken item index. */
+    size_t m_last;  /* The first index beyond the last item. */
 
     static constexpr size_t MAX_SKIPPED_PRUNES = 16;
     size_t m_skipped_prunes;
@@ -1071,15 +1075,15 @@ the remaining data structure in order to guarantee atomic access to each
 item. Upon insertion, while the item and its version are only visible to
 a single thread, the current item version (together with the item's key)
 is copied into the \lstinline|block_item|. From this point on, the
-\lstinline|block_item| may be copied multiple times, but remains read-only
-and its values are never altered. Thus when a thread attempts to take
+\lstinline|block_item| may be copied multiple times, but remains read-only and immutable.
+Thus when a thread attempts to take
 an item using a \ac{CAS} instruction with the \lstinline|block_item|'s
 version, it is guaranteed that \lstinline|block_item.m_version|
 has remained unchanged from the time the item has been inserted.
 If any thread has taken that particular item, then any further attempts to
 take it must fail.
 
-Insertions into a block simply copy the given item's key version into a
+Insertions into a block simply copy the given item's key and version into a
 \lstinline|block_item| instance which is then appended to the block item array
 by incrementing the \lstinline|m_last| field. \lstinline|peek| iterates
 through the block beginning at index \lstinline|m_first|, and returns
@@ -1176,7 +1180,7 @@ in which almost every item may be moved in the worst case.
 \section{Memory Management} \label{sec:mm_internals}
 
 Any lock-free data structure such as the \klsm also requires lock-free
-memory management, and unlike standard single-threaded memory management,
+memory management, and unlike standard sequential memory management,
 its lock-free counterpart is not a solved problem.
 
 To illustrate, the lock-free priority queues briefly discussed in Chapters
@@ -1219,7 +1223,8 @@ are.
 
 As explained previously, the ABA problem is handled by linking each item with
 a specific integral version, with even versions representing unused items and
-odd versions being in use. Marking items used can thus use an \ac{FAA} instruction,
+odd versions being in use. Marking items used can thus use an \ac{FAA} instruction
+(since it can only be allocated by its owner thread),
 while taking an item (i.e. marking it unused) can be done with an atomic \ac{CAS}.
 
 \subsection{Blocks} \label{ssec:block_mm_internals}
@@ -1231,8 +1236,8 @@ simply pre-allocate the required number of blocks.
 
 Handling of block allocations has subtly different requirements in the \ac{SLSM}
 and \ac{DLSM}: in the \ac{DLSM}, blocks have a simple lifecycle in which
-they are either used or unused. In the \ac{SLSM}, blocks may be used short-term locally,
-long-term globally, or unused. We thus use two separate mechanisms for managing
+they are either used or unused. In the \ac{SLSM}, blocks may be in short-term use locally;
+in long-term global use; or unused. We thus use two separate mechanisms for managing
 block memory.
 
 \begin{figure}[ht]
@@ -1259,7 +1264,7 @@ private:
 The \ac{DLSM} uses the more primitive memory manager, called \lstinline|block_storage|
 (Figure \ref{fig:block_storage.h}). It consists of an array of block $N$-tuples,
 which are dynamically allocated by \lstinline|get_block| whenever a block
-of an as-of-yet unused capacity is requested and set by a single \ac{CAS} instruction.
+of an as-of-yet unused capacity is requested.
 The first unused block within the requested capacity $N$-tuple is then returned.
 In the case of the \ac{DLSM}, at most four blocks of the same capacity may be
 used during a single operation.
@@ -1304,9 +1309,9 @@ private:
 \end{figure}
 
 Block management within the \ac{SLSM} is complicated by the fact that blocks
-go through additional lifecycle stages. During \lstinline|shared_lsm::insert|,
+go through an additional lifecycle stage. During \lstinline|shared_lsm::insert|,
 the new merged blocks are first created locally, during which allocated blocks
-are marked as in local use. If the newcly created block array is published
+are marked as in local use. If the newly created block array is published
 successfully, all blocks it contains are then marked as in global use. If,
 on the other hand, publishing fails, then all locally used blocks are marked
 as unused and the operation is restarted.
@@ -1337,6 +1342,6 @@ array at a time. Each thread has two preallocated block arrays. Which one of the
 is chosen for allocation depends on the version of the to-be-constructed array ---
 one for odd versions, the other for even versions.
 
-Like items, block arrays are associated with an integral version. The full version
+Like items, block arrays are associated with an integral version as previously described. The full version
 is included in the block array itself, while a truncated version is packed into
 the published block array pointer to prevent the ABA problem.
