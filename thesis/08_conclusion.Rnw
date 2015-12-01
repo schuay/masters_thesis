@@ -9,7 +9,7 @@ in relaxed data structures.
 We also developed a standalone version of the \klsm relaxed, lock-free priority
 queue and described its implementation in detail. The standalone \klsm follows
 the principles described in \cite{wimmer2015lock}, but does not rely on any external
-framework or non-standard library and is engineered to be easily integrated into
+framework or non-standard library. It is engineered to be easily integrated into
 any application, allowing direct comparability against other relaxed priority
 queue designs for the first time.
 
@@ -18,22 +18,24 @@ benchmark suite with several other state-of-the-art queues such as the Linden
 queue, the Multiqueue, and the SprayList as comparisons. We not only test
 priority queues under the standard scenario of uniform workload and uniform
 key generation, but also examine combinations of split workloads (in which
-threads are either dedicated inserters or deleters) and ascending key generation
-(in which the value of generated item keys increases over time).
+threads are either dedicated inserters or deleters) and ascending/descending key generation
+(in which the value of generated item keys increases/decreases over time).
 
-As demonstrated previously \cite{wimmer2015lock}, the \klsm scales exceptionally
+As demonstrated previously by \citeauthor{wimmer2015lock} in \cite{wimmer2015lock},
+the \klsm scales exceptionally
 well in the standard uniform workload, uniform throughput benchmark, outperforming
 other concurrent queues by up to a factor of 10 with sufficient relaxation.
-The \klsm with $k = 4096$ shows linear speedup up to the maximal number of threads
+Our standalone implementation improves further upon this result, with the
+\klsm ($k = 4096$) showing linear speedup up to the maximal number of threads
 on all test machines. This is a significant improvement over the Pheet \klsm implementation by
-\citeauthor{wimmer2015lock}, which does not scale beyond 40 threads.
+\citeauthor{wimmer2015lock}, which does not scale beyond 40 threads in our measurements.
 
 Unfortunately, this result does not carry over to the other benchmarking scenarios.
 Ascending key generation causes priority queues to behave in a quasi-\ac{FIFO}
 manner, which places more emphasis on the global, slower \ac{SLSM} component.
 Split workloads increases stress the \ac{SLSM} because the local \ac{DLSM} does
 not have a continual flow of new items. In both cases, performance of the \klsm
-drops dramatically; while the Multiqueues continues to perform reliably, delivering
+drops dramatically while the Multiqueues continues to perform reliably, delivering
 better performance than all \klsm variants in these altered benchmark environments.
 
 The distribution of item keys over time is critical to the \klsm; ascending keys
@@ -63,6 +65,7 @@ Multiqueues seem to be the most universal of the examined data structures,
 displaying stable performance throughout all benchmark scenarios. Their main
 drawback is that, by design, they do not provide any fixed quality guarantees,
 instead relying on randomization to provide results with acceptable rank errors.
+Additionally, their average degree of relaxation is fairly high.
 
 To our knowledge, we are also the first to report on quality metrics for the \klsm.
 These show that the standalone \klsm not only satisfies the provided guarantees
@@ -73,10 +76,10 @@ grows slower than the \klsm's with rising thread counts. However, a distinct
 advantage of the \klsm is that it can provide a fixed upper bound to the rank
 error.
 
-Despite the findings of this thesis, the \klsm remains an intensely interesting
+The \klsm remains an intensely interesting
 data structure. It is highly sensitive to key distribution over time and the mixture
 of performed operations, performing exceptionally well under ideal circumstances
-but only below average in others. Thus the \klsm might be an ideal candidate
+but below average in others. Thus the \klsm might be an ideal candidate
 for some applications, while others might be better served by a more universal
 data structure such as the Multiqueue.
 

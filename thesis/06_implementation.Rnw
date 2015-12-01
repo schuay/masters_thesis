@@ -276,7 +276,7 @@ array allocated at a 2048 byte boundary (i.e., the least 11 bits are zeroed).
 The thread-local \ac{SLSM} component is wrapped within the \lstinline|thread_local_ptr|
 class (see Section \ref{sec:component_internals}), which allows lock-free retrieval
 of a thread-local instance of the given class. Contrary to the standard thread-local
-mechanisms provided by e.g. POSIX threads (\lstinline|pthread_getspecific|) or
+mechanisms provided by e.g. \ac{pthreads} (\lstinline|pthread_getspecific|) or
 C++ (the \lstinline|thread_local| keyword), \lstinline|thread_local_ptr| allows
 usage as a class member, and access to other threads' local instances.
 
@@ -894,7 +894,7 @@ a per-thread basis.
 
 There are several mechanisms and libraries which offer thread-local storage,
 the most popular being the C++11 \lstinline|thread_local| keyword and
-\ac{pthreads} \lstinline|pthread_getspecific|, \lstinline|pthread_setspecific| functions.
+\acs{pthreads} \lstinline|pthread_getspecific|, \lstinline|pthread_setspecific| functions.
 
 We have evaluated both of these for use in the \klsm; unfortunately,
 neither are suitable. \lstinline|thread_local| is only usable at namespace and

@@ -1,11 +1,9 @@
 \chapter{Results \& Discussion} \label{ch:evaluation}
 
-% TODO: Possibly add a short figure + description for descending key generation.
-
 This chapter presents and discusses results for a variety of benchmarks which
 have been executed
 on a number of different platforms. We evaluate both the standalone and
-Pheet \klsm's
+Pheet \klsm's in various degrees of relaxation
 together with a selection of other representative parallel priority queues.
 
 Section \ref{sec:benchmarks} covers the different benchmark types we used, while
@@ -42,7 +40,7 @@ biased towards higher keys. Newly inserted keys have a high chance of being with
 the lowest keys of the queue and quickly becoming a candidate for removal by
 \lstinline|delete_min|. Especially with queues having relaxed semantics such as
 the SprayList and the \klsm, this can lead to a situation in which the behavior of
-a priority queue very closely approximates a \ac{LIFO} queue.
+a priority queue very closely approximates a relaxed \ac{LIFO} queue.
 
 In order to get a better picture of a queue's overall performance, we have introduced
 parameters to obtain variations on the random throughput benchmark. The goal
@@ -52,20 +50,12 @@ a benchmark to run without resulting in either an empty or an ever-growing queue
 
 The first introduced parameter is called the \emph{workload}; a balanced workload
 performs a roughly equal amount of insertions and deletions on each thread, while
-an unbalanced workload performs only insertions on half of all threads, and only
+a split workload performs only insertions on half of all threads, and only
 deletions on the other half. The second parameter concerns \emph{key generation},
 and we have experimented both with uniform key generation (uniformly at random
 within the range of 32-bit integers), and ascending key generation (uniformly at random
-within a smaller range that grows over time, i.e. selection from $[0, U] + t$).
-
-% TODO: Really? Should we include the sssp benchmark?
-\begin{comment}
-Besides the artificial throughput benchmark, we also experimented with a
-single source shortest paths benchmark as in \cite{wimmer2015lock}. The graphs
-are randomly generated for a given key and node degree. Each thread then repeatedly
-pops the queue (containing the next path portion to evaluate), generates successor
-subpaths, and adds them to the queue.
-\end{comment}
+within a smaller range that grows over time, i.e. selection from $[0, U] + t$),
+as well as descending generation.
 
 % TODO: At least briefly mention our use of the specialized tree and post-processing
 % in contrast to Multiqueues' naive multiset + disruptive interweaved processing.
@@ -73,14 +63,14 @@ subpaths, and adds them to the queue.
 Finally, the quality of the produced output is evaluated by using a variant of
 the throughput benchmark. Quality in this sense compares the output sequence of
 the measured priority queue against a strict sequential queue. Each insertion
-and deletion is tagged with a timestamp, which is then used to reconstruct an
+and deletion is tagged with a timestamp, which is then used to reconstruct a global,
 approximate linear sequence of insertions and deletions. This sequence is then
 replayed using a strict sequential queue, and the rank of each deleted item
 within the queue at the time of deletion is recorded (with the rank of the least
 item being $1$). Theoretically, strict queues should result in an average rank
 of $1$, but in practice we can expect deviations of this value due to `simultaneous'
 operations between threads and imprecise timestamps. However, even though
-it is not an exact value, the average rank still provides a good feel for the
+we note that the average rank is not an exact value, it still provides a good feel for the
 quality of a queue's returned results.
 
 \section{Algorithms} \label{sec:algorithms}
@@ -99,21 +89,21 @@ used algorithms are as follows:
       Code for the \citeauthor{linden2013skiplist} priority queue \cite{linden2013skiplist}
       is provided by the authors under an open source license\footnote{\url{http://user.it.uu.se/~jonli208/priorityqueue}}.
       It is lock-free and uses \citeauthor{fraser2004practical}'s lock-free
-      SkipList. The aim of this implementation is to minimize contention in
+      SkipList design. The aim of this implementation is to minimize contention in
       calls to \verb|delete_min|. We chose $32$ as the \verb|BoundOffset| in order to optimize
       performance on a single socket. A \verb|BoundOffset| of $128$ performed only marginally better
       at high thread counts. The \citeauthor{linden2013skiplist} queue represents
       strict, lock-free and SkipList-based priority queues.
 \item \textit{SprayList} (\verb|spray|)
-      A relaxed concurrent priority queue based on \citeauthor{fraser2004practical}'s
+      A relaxed, lock-free concurrent priority queue based on \citeauthor{fraser2004practical}'s
       SkipList using random walks to spread data accesses
       incurred by \verb|delete_min| calls. Code provided by \citeauthor{alistarhspraylist} is
       available on Github\footnote{\url{https://github.com/jkopinsky/SprayList}}.
 \item \textit{Multiqueues} (\verb|multiq|)
-      Another recent relaxed concurrent priority queue
+      A simple, elegant recent relaxed concurrent priority queue
       design by \citeauthor{rihani2014multiqueues}. Contrary to the SprayList, the
       Multiqueue implementation is lock-based. Since code for the SprayList is
-      not publically available, we use our own reimplementation for benchmarks.
+      not publicly available, we use our own reimplementation for benchmarks.
 \item \textit{Pheet \klsm} (\verb|pheet16, pheet128, ...|)
       \citeauthor{wimmer2015lock}'s original implementation
       of the \klsm within the Pheet task scheduling framework is used mostly to
@@ -245,7 +235,7 @@ While the general trends are consistent across machines, each of the
 measured machines clearly has different potential for scalability. For instance,
 on \lstinline|saturn| the \klsm with $k = 128$ only makes minor gains when
 utilizing more than one socket, while the Multiqueues barely scale at all.
-On \lstinline|ceres| on the other hand, even $k = 128$ seems to be able
+On the other hand, on \lstinline|ceres| even $k = 128$ seems to be able
 to scale further beyond the maximum number of cores.
 
 \begin{figure}[ht]
@@ -376,8 +366,8 @@ best known item within the \ac{SLSM} is cached, and items are usually taken
 from the \ac{DLSM}, the item cache is highly efficient and most calls to
 \lstinline|shared_lsm::peek()| do no actual work.
 
-The ascending key generation benchmark is designed to prevent this situation
-in which priority queues behave similarly to a \ac{LIFO} queue. Since the values of inserted
+The ascending key generation benchmark is designed to move outside of the comfort
+zone of the \klsm in which the \ac{DLSM} is highly utilized. Since the values of inserted
 keys rise over time and a min-priority queue always removes the least key,
 a relaxed \ac{FIFO}-like behavior results. In the case of the \klsm, items will thus
 usually be initially inserted into the local \ac{DLSM}; then moved to the \ac{SLSM}
@@ -418,7 +408,7 @@ on \lstinline|mars|.}
 
 With ascending key generation, the rank error of all measured \klsm variants as
 well as the Multiqueues seems to be much more stable than when using uniform
-keygeneration (see Table \ref{tbl:mars_uni_asc_q}). On the other hand, the
+key generation (see Table \ref{tbl:mars_uni_asc_q}). On the other hand, the
 measured rank error of the strict \lstinline|globallock| queue is significantly
 higher. This can be explained by the nature of our ascending keygeneration, which
 results in more frequent key duplicates between items; and in the case of the
@@ -537,8 +527,8 @@ pqplot("results/20151112_mars_spl_asc")
 
 Finally, results for split workload and ascending key generation are shown
 in Figure \ref{fig:spl_asc}. This setting combines the two variants which are
-especially detrimental for the \klsm; and as expected all \klsm variants
-do not perform well, never exceeding 5 \ac{MOps} on any machine and with any
+especially detrimental for the \klsm; and as expected no \klsm variants
+perform well, and never exceed 5 \ac{MOps} on any machine and with any
 thread count.
 
 Contrary to the \klsm, Multiqueues seem to perform best in this benchmark
@@ -617,8 +607,8 @@ pqplot("results/20151123_mars_uni_desc")
 \label{fig:uni_desc}
 \end{figure}
 
-Ascending key generation,
-which induces \ac{FIFO}-like behavior, and split workloads are on one end of the spectrum,
+Ascending key generation
+(which induces \ac{FIFO}-like behavior) and split workloads are on one end of the spectrum,
 and place high stress on the \ac{SLSM}. The uniform workload, uniform key generation
 benchmark places high emphasis on the \ac{DLSM} and results in greatly increased throughput.
 
