@@ -10,8 +10,8 @@ would not have been possible.
 \begin{abstract}
 Priority queues are abstract data structures which store a set of key/value pairs
 and allow efficient access to the item with the minimal (maximal) key. Such queues are an important
-element in various areas of computer science such as algorithmics (i.e. Dijkstra's shortest
-path algorithm) and operating system (i.e. priority schedulers).
+element in various areas of computer science such as algorithmics (e.g. Dijkstra's shortest
+path algorithm) and operating system (e.g. priority schedulers).
 
 The recent trend towards multiprocessor computing requires new implementations of basic
 data structures which are able to be used concurrently and scale well to a large number
