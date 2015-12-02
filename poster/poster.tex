@@ -81,7 +81,7 @@ Priority queues are abstract data structures which store a set of key/value pair
 and allow efficient access to the item with the minimal (maximal) key.
 
 Due to the recent trend towards multiprocessor computing, it is becoming ever
-more vital to develop data structure designs which scale well to a large number
+more vital to develop data structure designs that scale well to a large number
 of threads.
 
 However, priority queues with traditional semantics incur an inherent sequential
@@ -90,15 +90,29 @@ item.
 \end{block}
 
 \begin{block}{Problem Statement}
+\begin{itemize}
 \justifying
-While some gains can be made by optimizing access to the minimal (maximal)
+\item \emph{Priority queues} are abstract data structures which store a set of key/value pairs
+and allow efficient access to the item with the minimal (maximal) key.
+
+\item \emph{Concurrency}. Due to the recent trend towards multiprocessor computing, it is becoming ever
+more vital to develop data structure designs that scale well to a large number
+of threads.
+
+\item \emph{Sequential bottleneck}.
+However, priority queues with traditional semantics incur an inherent sequential
+bottleneck since each concurrent deletion attempts to remove the same minimal (maximal)
+item.
+
+\item \emph{Optimizing deletions}. While some gains can be made by optimizing access to the minimal (maximal)
 element, results have shown limited scalability.
 
-However, recently another promising approach based on weakening of
+\item \emph{Relaxation}. However, recently another promising approach based on weakening of
 semantic guarantees has been gaining in popularity. Contrary to traditional,
 strict priority queues, relaxed priority queues allow deletions to
 return one of several potential candidate items, thus eliminating the
 bottleneck at the minimal (maximal) item.
+\end{itemize}
 \end{block}
 \end{column}
 % ---------------------------------------------------------%
