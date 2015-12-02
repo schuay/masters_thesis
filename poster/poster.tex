@@ -2,6 +2,7 @@
 
 \usepackage{TUINFPST}
 
+\usepackage{acronym}
 \usepackage[backend=bibtex,sortcites=true]{biblatex}
 \usepackage{comment}
 \usepackage{hyperref}
@@ -54,6 +55,7 @@
 % for crop marks, uncomment the following line
 \usepackage[cross,width=88truecm,height=123truecm,center]{crop}
 
+\input{acronyms}
 \bibliography{bibliography.bib}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,12 +76,12 @@ and allow efficient access to the item with the minimal (maximal) key.
 more vital to develop data structure designs that scale well to a large number
 of threads.
 
-\item \emph{Sequential bottleneck}.
+\item \emph{Challenges}.
 However, priority queues with traditional semantics incur an inherent sequential
 bottleneck since each concurrent deletion attempts to remove the same item,
 resulting in high contention at the minimal (maximal) item.
 
-\item \emph{Optimizing deletions}. While some gains can be made by optimizing access to the minimal (maximal)
+\item \emph{The traditional approach}. While some gains can be made by optimizing access to the minimal (maximal)
 element, results have shown limited scalability.
 
 \item \emph{Relaxation}. However, recently another promising approach based on weakening of
@@ -88,8 +90,7 @@ strict priority queues, relaxed priority queues allow deletions to
 return one of several potential candidate items, thus eliminating the
 bottleneck at the minimal (maximal) item.
 
-\item The \emph{\klsm} is a relaxed and lock-free priority queue design by
-\citeauthor{wimmer2015lock} \cite{wimmer2015lock}. It offers strong and
+\item The \emph{\klsm} is a relaxed priority queue design offering strong and
 parameterizable quality guarantees, and is both highly performant as well
 as scalable to a large number of threads. We present a standalone implementation
 of the \klsm and evaluate its throughput and quality against other state of the art
@@ -101,7 +102,10 @@ priority queues.
 \begin{block}{The \klsm}
 \justifying
 The \emph{\klsm} is a relaxed, linearizable and lock-free priority queue design by
-\citeauthor{wimmer2015lock} \cite{wimmer2015lock}. It is:
+\citeauthor{wimmer2015lock} \cite{wimmer2015lock}, composed of two independent but
+complementary priority queues: the \ac{SLSM}, a centralized queue with strong
+guarantees but limited performance; and the \ac{DLSM}, a distributed design without
+global guarantees but having very high performance. The \klsm is:
 \begin{itemize}
 \justifying
 \item \emph{Linearizable}: Each operation appears to take effect at some instant
@@ -144,10 +148,7 @@ the SprayList \cite{alistarhspraylist} (relaxed, lock-free, SkipList-based, prob
 the Multiqueues \cite{rihani2014multiqueues} (relaxed, lock-based, no guarantees).
 
 \item \emph{Benchmarks}. Throughput benchmarks measure the millions of operations per second.
-In addition to the standard benchmark (equal mixture of operations on each thread,
-uniform key generation), we experimented with split workloads (threads are either
-dedicated inserters or deleters) and ascending/descending key generation.
-q
+
 \vspace{1cm}
 
 
@@ -158,6 +159,19 @@ q
 \caption{Uniform workload, uniform key generation.}
 \label{fig:mars_uni_uni}
 \end{figure}
+
+In addition to the standard benchmark (equal mixture of operations on each thread,
+uniform key generation), we experimented with split workloads (threads are either
+dedicated inserters or deleters) and ascending/descending key generation.
+
+The \klsm demonstrates exceptional performance under the standard uniform/uniform
+benchmark.
+Unfortunately, the \klsm is less successful under split workloads and ascending
+key generation, since both place more stress on the centralized \ac{SLSM} component.
+
+We also present the first evaluation of result quality, demonstrating that
+on average, the \klsm's results are within the best $5\%$ of their guaranteed
+range.
 
 \end{itemize}
 
