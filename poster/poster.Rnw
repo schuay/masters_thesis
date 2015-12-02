@@ -58,7 +58,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{Sweave}
 \begin{document}
 \begin{frame}
 \begin{columns}[t]
@@ -147,13 +146,18 @@ the Multiqueues \cite{rihani2014multiqueues} (relaxed, lock-based, no guarantees
 In addition to the standard benchmark (equal mixture of operations on each thread,
 uniform key generation), we experimented with split workloads (threads are either
 dedicated inserters or deleters) and ascending/descending key generation.
-q
+
 \vspace{1cm}
 
+<<echo = FALSE>>=
+\SweaveInput{pqplot.Rnw}
+@
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics{poster-002}
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_mars_uni_uni")
+@
 \end{center}
 \caption{Uniform workload, uniform key generation.}
 \label{fig:mars_uni_uni}
