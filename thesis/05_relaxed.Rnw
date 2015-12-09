@@ -118,7 +118,7 @@ Chapter \ref{ch:implementation} covers our implementation and improvements.
 Taken as a black box, the $k$-LSM conforms to the interface as shown in Figure \ref{fig:klsm_interface}.
 It is a template data structure in the sense that it has a configuration parameter $k$, which
 determines how far quality guarantees may be relaxed. Given $k$, the \lstinline|delete_min| operation
-may return one of the $(k + 1) \cdot P$ minimal items, where $P$ is the number of threads.
+may return one of the $kP$ minimal items, where $P$ is the number of threads.
 
 \begin{figure}[ht]
 \begin{lstlisting}
@@ -135,7 +135,7 @@ public:
 
 The semantics are as follows: when \lstinline|insert| completes, the given key-value pair has been
 inserted into the queue. \lstinline|delete_min| can either complete successfully, in which case
-it returns \lstinline|true|, one of the $(k + 1) \cdot P$ minimal items is removed from the queue
+it returns \lstinline|true|, one of the $kP$ minimal items is removed from the queue
 and its value is written into the given argument; or it can fail, in which case no item is removed
 from the queue and the \lstinline|false| is returned. Failures of \lstinline|delete_min| may occur
 spuriously even if the queue is non-empty, but the number of such failures are low in practice.
@@ -264,8 +264,6 @@ If it has not yet been taken by another thread, it is removed and the call retur
 successfully. Otherwise, the same procedure is repeated (possibly updating the range of minimal items)
 until the queue is either empty or an untaken item is found and returned. 
 
-% TODO: Reevaluate the bound guarantees. Is (k+1)P really the best we can provide?
-
 From the previous description, it almost seems as if the \ac{SLSM} were a simple
 data structure; however, rest assured that this is not the case. Chapter \ref{ch:implementation}
 covers its implementation in great detail.
@@ -282,8 +280,8 @@ to be able to offer global quality guarantees, the thread-local \acp{DLSM} are
 limited to a capacity of $k$ per thread, and \lstinline|delete_min| returns the minimal
 item returned from the \ac{DLSM} and \ac{SLSM}. Note that we skip up to $k (P - 1)$
 potentially smaller items located within other thread's local \ac{DLSM} and up to
-$k$ items through relaxation of the \ac{SLSM}. We therefore still stay comfortably
-within the claimed guarantees of returning one of the $(k + 1) \cdot P$ minimal items.
+$k$ items through relaxation of the \ac{SLSM}. We therefore satisfy
+the claimed guarantees of returning one of the $kP$ minimal items.
 
 The remaining issue of the \ac{SLSM}'s scalability is ultimately caused by updates
 to the global \ac{LSM}, which in turn mostly occur through item insertions.

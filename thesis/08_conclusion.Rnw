@@ -69,7 +69,7 @@ Additionally, their average degree of relaxation is fairly high.
 
 To our knowledge, we are also the first to report on quality metrics for the \klsm.
 These show that the standalone \klsm not only satisfies the provided guarantees
-of returning one of the $(k + 1) \cdot P$ least elements; the provided results are
+of returning one of the $kP$ least elements; the provided results are
 usually even of far better quality. At low concurrency, Multiqueues seem to be
 somewhat comparable to the \klsm with $k = 4096$, but the rank error of Multiqueues
 grows slower than the \klsm's with rising thread counts. However, a distinct

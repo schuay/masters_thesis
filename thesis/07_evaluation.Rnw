@@ -294,7 +294,7 @@ be read exactly at the linearization point of insertions and deletions.
 Rank errors for the strict \lstinline|globallock| queue are reported in order
 to show that the magnitude of the resulting inaccuracies is very low. Results
 returned by the \klsm usually far exceed the provided guarantees. Recall that the
-\klsm may return any of the $(k + 1) \cdot P$ minimal elements, where $P$ is the number
+\klsm may return any of the $kP$ minimal elements, where $P$ is the number
 of threads. While the \lstinline|klsm128| may, at 20 threads, return up
 to a rank error of $2580$, the actual mean rank error is merely $33$.
 Compared to the \klsm, Multiqueues have a high rank error at lower thread counts,
@@ -422,7 +422,7 @@ rank errors are smaller.
 As explained above, using ascending key generation
 results in a bias in the \klsm such that more items are removed from the \ac{SLSM}
 than the \ac{DLSM}. And since the \ac{SLSM} has a lower rank guarantee than the
-\klsm ($k + 1$ instead of $(k + 1) \cdot P$), the resulting rank errors are low.
+\klsm ($k$ instead of $kP$), the resulting rank errors are low.
 
 \subsection{Generic throughput, split workload, uniform key generation}
 

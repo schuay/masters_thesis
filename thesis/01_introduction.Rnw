@@ -91,7 +91,7 @@ its throughput drops in other cases.
 Finally, quality of returned results are yet another facet in evaluation of
 relaxed data structures. Neither the Multiqueues, nor the SprayList offer
 fixed quality bounds; and while the \klsm does guarantee that each returned
-item is one of the $(k + 1) \cdot P$ minimal elements, it would also be useful
+item is one of the $kP$ minimal elements, it would also be useful
 to determine how well the data structure performs on average.
 
 In addition to the throughput benchmarks, we have also performed such quality
