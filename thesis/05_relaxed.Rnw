@@ -108,7 +108,7 @@ detail.
 
 We now finally come to the main topic of this thesis, the relaxed, linearizable, and lock-free
 $k$-LSM priority queue.
-\citeauthor{wimmer2013data} first presented this data structure in \citedate{wimmer2013data}
+\citeauthor{wimmerphd} first presented this data structure in \citedate{wimmer2013data}
 \cite{wimmer2013data} and have improved on it continuously since, with the most recent results
 being published in \cite{wimmer2015lock}. The original $k$-LSM queue is integrated as a priority scheduler
 into their \emph{Pheet} task-scheduling system, and an open-source implementation is
@@ -147,7 +147,7 @@ upon below. Both structures may be used as standalone priority queues, but have 
 advantages and disadvantages which motivates their composition.
 
 Throughout this section, we ignore over the complexities of lock-free memory management and simply
-assume the existence of a garbage collector. The implementation by \citeauthor{wimmer2013data}
+assume the existence of a garbage collector. The implementation by \citeauthor{wimmerphd}
 uses their own lock-free memory allocator to handle items, while blocks and block arrays are
 allocated in a pool and reused. Memory management will be discussed in further detail in Chapter
 \ref{ch:implementation}.
@@ -155,7 +155,7 @@ allocated in a pool and reused. Memory management will be discussed in further d
 \subsection{\aclp{LSM}} \label{ssec:lsm}
 
 \aclp{LSM} were introduced to the database community in \citedate{o1996log} \cite{o1996log}
-and reinvented indepently by \citeauthor{wimmer2013data} based on the requirements of concurrent
+and reinvented indepently by \citeauthor{wimmerphd} based on the requirements of concurrent
 priority queues. \acp{LSM} are the basic building blocks of the \ac{SLSM} and \ac{DLSM}
 and hence also the \klsm.
 

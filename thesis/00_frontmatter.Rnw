@@ -14,8 +14,8 @@ element in various areas of computer science such as algorithmics (e.g. Dijkstra
 path algorithm) and operating system (e.g. priority schedulers).
 
 The recent trend towards multiprocessor computing requires new implementations of basic
-data structures which are able to be used concurrently and scale well to a large number
-of threads. In particular, lock-free structures promise superior scalability by avoiding
+data structures which are able to be used concurrently and scale well to large numbers
+of threads. Lock-free structures promise such scalability by avoiding
 the use of blocking synchronization primitives.
 
 Concurrent priority queues have been extensively researched over the past decades.
@@ -23,11 +23,11 @@ In recent years, most research within the field has focused on SkipList-based st
 based mainly on the fact that they exhibit very high disjoint access parallelism, i.e.,
 modifications on different elements access disjoint parts of the data structure.
 Contention between threads and traffic through the cache-coherency protocol
-is therefore reduced.
+can therefore be reduced.
 
-However, scalability improvements have been very limited. On the one hand,
+However, so far scalability improvements have been very limited. On the one hand,
 strict priority queues have an inherent sequential bottleneck since each \lstinline|delete_min|
-operation attempts to access the single minimal (maximal) element. On the other,
+operation attempts to access a single minimal (maximal) element. On the other,
 SkipLists have less than optimal cache locality since each node is
 usually allocated dynamically, which in turn results in fairly low throughput
 for SkipList-based designs.

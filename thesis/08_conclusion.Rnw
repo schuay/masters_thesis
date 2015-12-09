@@ -28,7 +28,7 @@ other concurrent queues by up to a factor of 10 with sufficient relaxation.
 Our standalone implementation improves further upon this result, with the
 \klsm ($k = 4096$) showing linear speedup up to the maximal number of threads
 on all test machines. This is a significant improvement over the Pheet \klsm implementation by
-\citeauthor{wimmer2015lock}, which does not scale beyond 40 threads in our measurements.
+\citeauthor{wimmerphd}, which does not scale beyond 40 threads in our measurements.
 
 Unfortunately, this result does not carry over to the other benchmarking scenarios.
 Ascending key generation causes priority queues to behave in a quasi-\ac{FIFO}

@@ -1209,13 +1209,13 @@ in the following sections.
 
 \subsection{Items} \label{ssec:item_mm_internals}
 
-The standalone \klsm (as well as the Pheet \klsm) use \citeauthor{wimmer2013data}'s
+The standalone \klsm (as well as the Pheet \klsm) use \citeauthor{wimmerphd}'s
 wait-free memory management \cite{wimmer2013data,wimmerphd} for items. A detailed
 presentation of the scheme is omitted and is presented in detail in
 \cite{wimmerphd}.
 
 A general overview is as follows: each thread owns a thread-local copy of
-\citeauthor{wimmer2013data}'s block-based memory manager. The memory manager
+\citeauthor{wimmerphd}'s block-based memory manager. The memory manager
 has a single function called \lstinline|acquire|, which returns a pointer to
 an available item. Internally, \lstinline|acquire| operates on a list of arrays
 of items. An amortized complexity of $O(1)$ per allocation is guaranteed by

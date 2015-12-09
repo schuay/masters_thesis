@@ -65,13 +65,21 @@ the throughput benchmark. Quality in this sense compares the output sequence of
 the measured priority queue against a strict sequential queue. Each insertion
 and deletion is tagged with a timestamp, which is then used to reconstruct a global,
 approximate linear sequence of insertions and deletions. This sequence is then
-replayed using a strict sequential queue, and the rank of each deleted item
-within the queue at the time of deletion is recorded (with the rank of the least
+replayed using a strict sequential queue\footnote{}, and ranks of each deleted item
+within the queue at the time of deletion are then recorded (with the rank of the least
 item being $1$). Theoretically, strict queues should result in an average rank
 of $1$, but in practice we can expect deviations of this value due to `simultaneous'
 operations between threads and imprecise timestamps. However, even though
 we note that the average rank is not an exact value, it still provides a good feel for the
 quality of a queue's returned results.
+
+The strict priority queue used within the quality benchmark supports an operation which
+deletes a specific element and its rank. Contrary to similar benchmarks by
+\citeauthor{rihani2014multiqueues} \cite{rihani2014multiqueues}, we use a custom
+data structure based on a \ac{BST} which supports the required operation in logarithmic time.
+Additionally, we minimize interference with the actual benchmark by storing the
+thread-local sequences temporarily and processing them offline, while \citeauthor{rihani2014multiqueues}
+determine ranks during ....
 
 \section{Algorithms} \label{sec:algorithms}
 
@@ -105,7 +113,7 @@ used algorithms are as follows:
       Multiqueue implementation is lock-based. Since code for the SprayList is
       not publicly available, we use our own reimplementation for benchmarks.
 \item \textit{Pheet \klsm} (\verb|pheet16, pheet128, ...|)
-      \citeauthor{wimmer2015lock}'s original implementation
+      \citeauthor{wimmerphd}'s original implementation
       of the \klsm within the Pheet task scheduling framework is used mostly to
       verify the behavior of the standalone reimplementation. We used a range
       of values of $k$ to vary between fairly strict ($k = 16$) to fairly relaxed
