@@ -101,6 +101,10 @@
                , topaths
                }
 
+% For the skiplist figure.
+\newcommand{\snode}[2]{\node(#1)[item]{\ensuremath{#2}}}
+\newcommand{\nodelabel}[1]{\node[label]{Level #1}}
+
 \begin{document}
 
 \tikzstyle{box} =

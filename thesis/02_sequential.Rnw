@@ -183,8 +183,8 @@ private:
 \label{fig:heap_members}
 \end{figure}
 
-As shown in Figure \ref{fig:heap_members},
-the backing data structure of a binary heap is a flat array \lstinline|items| together
+As shown in Figures \ref{fig:heap_members} and \ref{fig:heap_structure},
+the backing data structure of a binary heap is a flat array of \lstinline|items| together
 with a variable \lstinline|n| tracking the number of items within the heap. The root item,
 i.e. the item with the highest priority, is located at the head of the array
 \lstinline|items[1]|\footnote{For ease
@@ -217,7 +217,8 @@ at \lstinline|items[i / 2]|.
 (4) edge[bend left = 60] node [right] {} (8)
 (4) edge[bend left = 60] node [right] {} (9);
 \end{tikzpicture}
-\subcaption{Array representation.}
+\subcaption{Array representation. Arrows show the implicit parent-child connections
+between items.}
 \end{minipage}%
 \begin{minipage}[b]{.5\textwidth}
 \centering
@@ -304,11 +305,43 @@ struct skiplist_node {
 
 A SkipList is essentially a linked list of specialized nodes, each of which
 contains a key-value pair, an associated node level, and a list of pointers to
-the next node (Figure \ref{fig:skiplist_members}).
+the next node (Figures \ref{fig:skiplist_members} and \ref{fig:skiplist_structure}).
 The node's level determines how many pointers to the next node
 exist, and a pointer at level $l$ links to the next node of level $\geq l$
 within the data structure. Higher level pointers thus act as shortcuts into the
 list, avoiding the usual linear cost search operation of linked lists.
+
+\begin{figure}
+\centering
+    \begin{tikzpicture}[
+        ->,
+        start chain,
+        every node/.style={font=\small},
+        item/.style= box,
+        label/.style={rectangle,minimum size = 5mm}
+      ]
+
+      \matrix[row sep=0.1mm, column sep=5mm]{
+        \nodelabel{3}; & \snode{3a}{}; & & & & & & & \snode{3h}{};\\
+        \nodelabel{2}; & \snode{2a}{}; & & \snode{2c}{}; & & \snode{2e}{}; & & & \snode{2h}{};\\
+        \nodelabel{1}; & \snode{1a}{}; & & \snode{1c}{}; & \snode{1d}{}; & \snode{1e}{}; & \snode{1f}{}; & & \snode{1h}{};\\
+        \nodelabel{0}; & \snode{0a}{}; & \snode{0b}{0}; & \snode{0c}{1}; & \snode{0d}{2}; & \snode{0e}{3}; & \snode{0f}{4}; & \snode{0g}{5}; & \snode{0h}{};\\
+      };
+
+      {
+        [start chain] \chainin(0a); \chainin(0b) [join]; \chainin(0c) [join]; \chainin(0d) [join]; \chainin(0e) [join]; \chainin(0f) [join]; \chainin(0g) [join]; \chainin(0h) [join];
+        [start chain] \chainin(1a); \chainin(1c) [join]; \chainin(1d) [join]; \chainin(1e) [join]; \chainin(1f) [join]; \chainin(1h) [join];
+        [start chain] \chainin(2a); \chainin(2c) [join]; \chainin(2e) [join]; \chainin(2h) [join];
+        [start chain] \chainin(3a); \chainin(3h) [join];
+      }
+    \end{tikzpicture}
+\caption{A SkipList with 6 elements and a maximal level of 3.
+         Each column represents a single node. The first and last nodes are, respectively, artificial
+         head and tail nodes.
+         head and tail nodes.
+         Note that the minimal element is always accessible through the first pointer on level 0.}
+\label{fig:skiplist_structure}
+\end{figure}
 
 Insertions create a new node, assigning the level according to a geometric
 distribution. The correct position for the new node is determined
