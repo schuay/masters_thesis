@@ -458,6 +458,82 @@ actual \ac{LSM}. The \lstinline|block_array| class (Figure \ref{fig:block_array.
 contains an array of blocks
 conforming to the \ac{LSM} invariants at the boundaries of functions (see Section \ref{ssec:lsm}).
 
+\begin{figure}
+\centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}
+      ]
+
+        \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
+            \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
+            \node [on chain=1, minimum width = 10mm] (ba1) {$b_1$};
+            \node [on chain=1, minimum width = 10mm] (ba2) {$b_2$};
+            \node [on chain=1, minimum width = 10mm] (ba3) {$b_3$};
+            \node [on chain=1, minimum width = 10mm] (ba4) {$b_4$};
+        \end{scope}
+
+        \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm]
+            \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
+            \node[on chain, box] {3};
+            \node[on chain, white_box] {4};
+            \node[on chain, box] (03) {4};
+            \node[on chain, box] {6};
+            \node[on chain, box] {9};
+            \node[on chain, box] {};
+            \node[on chain, box] (07) {};
+        \end{scope}
+
+        \begin{scope}[start chain = 3 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm]
+            \node[on chain, white_box, above = of ba1, yshift = 3mm] (10) {0};
+            \node[on chain, box] (11) {0};
+            \node[on chain, white_box] {2};
+            \node[on chain, box] (13) {3};
+        \end{scope}
+
+        \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba2, yshift = 3mm] (20) {5};
+            \node[on chain, box] {8};
+        \end{scope}
+
+        \begin{scope}[start chain = 5 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba3, yshift = 3mm] (30) {2};
+        \end{scope}
+
+        \path[->, every node/.style= { font = \sffamily\small }]
+        (ba0) edge node [right] {} (00)
+        (ba1) edge node [right] {} (10)
+        (ba2) edge node [right] {} (20)
+        (ba3) edge node [right] {} (30);
+
+
+        \draw[serif cm-serif cm] ($(00.south west) - (1mm,0)$) -- node[sloped, above] {$p_0$}
+                                 ($(03.north west) - (1mm,0)$);
+        \draw[serif cm-serif cm] ($(11.south west) - (1mm,0)$) -- node[sloped, above] {$p_1$}
+                                 ($(13.north west) - (1mm,0)$);
+        \draw[serif cm-serif cm] ($(20.south west) - (1mm,0)$) -- node[sloped, above] {$p_2$}
+                                 ($(20.north west) - (1mm,0)$);
+        \draw[serif cm-serif cm] ($(30.south west) - (1mm,0)$) -- node[sloped, above] {$p_3$}
+                                 ($(30.north west) - (1mm,0)$);
+
+        \draw[serif cm-serif cm] ($(07.north west) + (0, 1mm)$) -- node[sloped, above] {Blocks}
+                                 ($(07.north west) + (45mm,1mm)$);
+
+        \draw[serif cm-serif cm] ($(ba0.south west) - (0, 1mm)$) -- node[below] {Block Array}
+                                 ($(ba4.south east) - (0, 1mm)$);
+    \end{tikzpicture}
+\caption{Schematic block array structure containing blocks $b_i$ and pivot ranges $p_i$, $i \in [1, 4]$. Items shown in white have been deleted.}
+\end{figure}
+
 The \ac{LSM} is represented through member variables holding the block pointer
 array together with its size. Additionally, block arrays contain pivot ranges
 (storing ranges within the blocks which contain a subset of the $k$ smallest items),
