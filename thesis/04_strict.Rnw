@@ -203,6 +203,49 @@ in \citeyear{linden2013skiplist} \cite{linden2013skiplist}. They present a linea
 queue which achieves a speed-up of $30-80\%$ compared to other SkipList-based priority queues by
 minimizing the number of \ac{CAS} operations within most \lstinline|delete_min| operations.
 
+\begin{figure}
+\centering
+\begin{tikzpicture}[
+    ->,
+    start chain,
+    every node/.style={font = \small},
+    item/.style= box,
+    label/.style={rectangle,minimum size = 5mm}
+    ]
+
+    \node[box] (3a) at (0, 15mm) {}; \node[box] (3h) at (70mm, 15mm) {};
+
+    \node[box] (2a) at (0, 10mm) {}; \node[box] (2c) at (20mm, 10mm) {};
+    \node[box] (2e) at (40mm, 10mm) {}; \node[box] (2h) at (70mm, 10mm) {};
+
+    \node[box] (1a) at (0, 5mm) {}; \node[box] (1c) at (20mm, 5mm) {};
+    \node[box] (1d) at (30mm, 5mm) {}; \node[box] (1e) at (40mm, 5mm) {}; \node[box] (1f) at (50mm, 5mm) {};
+    \node[box] (1h) at (70mm, 5mm) {};
+
+    \node[box] (0a) at (0, 0) {}; \node[box] (0b) at (10mm, 0) {0}; \node[box] (0c) at (20mm, 0) {1};
+    \node[box] (0d) at (30mm, 0) {2}; \node[box] (0e) at (40mm, 0) {3}; \node[box] (0f) at (50mm, 0) {4};
+    \node[box] (0g) at (60mm, 0) {5}; \node[box] (0h) at (70mm, 0) {};
+
+
+    {
+    [start chain] \chainin(0a); \chainin(0b) [join]; \chainin(0c) [join]; \chainin(0d) [join]; \chainin(0e) [join]; \chainin(0f) [join]; \chainin(0g) [join]; \chainin(0h) [join];
+    [start chain] \chainin(1a); \chainin(1c) [join]; \chainin(1d) [join]; \chainin(1e) [join]; \chainin(1f) [join]; \chainin(1h) [join];
+    [start chain] \chainin(2a); \chainin(2c) [join]; \chainin(2e) [join]; \chainin(2h) [join];
+    [start chain] \chainin(3a); \chainin(3h) [join];
+    }
+
+    \node[flag_true] at (1.5mm, -1.5mm) {};
+    \node[flag_true] at (11.5mm, -1.5mm) {};
+    \node[flag_false] at (21.5mm, -1.5mm) {};
+    \node[flag_false] at (31.5mm, -1.5mm) {};
+    \node[flag_false] at (41.5mm, -1.5mm) {};
+    \node[flag_false] at (51.5mm, -1.5mm) {};
+    \node[flag_false] at (61.5mm, -1.5mm) {};
+\end{tikzpicture}
+\caption{A \citeauthor{linden2013skiplist} priority queue with two deleted elements.
+         Note that deletion marks are located in their predecessors of deleted nodes $0$ and $1$.}
+\end{figure}
+
 A priority queue implementation is called strict when \lstinline|delete_min| is
 guaranteed to return the minimal element currently within the queue
 (in contrast to relaxed data structures which are discussed further in the next chapter).

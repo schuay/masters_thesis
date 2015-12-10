@@ -117,6 +117,21 @@
     , fill = black!10
     ]
 
+\tikzstyle{flag_true} =
+    [ draw,
+    , circle,
+    , inner sep = 0mm,
+    , text width = 0.75mm,
+    , fill = black
+    ]
+
+\tikzstyle{flag_false} =
+    [ draw,
+    , circle,
+    , inner sep = 0mm,
+    , text width = 0.75mm,
+    ]
+
 \frontmatter
 
 \includepdf[pages = {1-6}, fitpaper = true]{titlepage.pdf}

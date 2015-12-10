@@ -321,12 +321,18 @@ list, avoiding the usual linear cost search operation of linked lists.
         label/.style={rectangle,minimum size = 5mm}
       ]
 
-      \matrix[row sep=0.1mm, column sep=5mm]{
-        \nodelabel{3}; & \snode{3a}{}; & & & & & & & \snode{3h}{};\\
-        \nodelabel{2}; & \snode{2a}{}; & & \snode{2c}{}; & & \snode{2e}{}; & & & \snode{2h}{};\\
-        \nodelabel{1}; & \snode{1a}{}; & & \snode{1c}{}; & \snode{1d}{}; & \snode{1e}{}; & \snode{1f}{}; & & \snode{1h}{};\\
-        \nodelabel{0}; & \snode{0a}{}; & \snode{0b}{0}; & \snode{0c}{1}; & \snode{0d}{2}; & \snode{0e}{3}; & \snode{0f}{4}; & \snode{0g}{5}; & \snode{0h}{};\\
-      };
+      \node[box] (3a) at (0, 15mm) {}; \node[box] (3h) at (70mm, 15mm) {};
+
+      \node[box] (2a) at (0, 10mm) {}; \node[box] (2c) at (20mm, 10mm) {};
+      \node[box] (2e) at (40mm, 10mm) {}; \node[box] (2h) at (70mm, 10mm) {};
+
+      \node[box] (1a) at (0, 5mm) {}; \node[box] (1c) at (20mm, 5mm) {};
+      \node[box] (1d) at (30mm, 5mm) {}; \node[box] (1e) at (40mm, 5mm) {}; \node[box] (1f) at (50mm, 5mm) {};
+      \node[box] (1h) at (70mm, 5mm) {};
+
+      \node[box] (0a) at (0, 0) {}; \node[box] (0b) at (10mm, 0) {0}; \node[box] (0c) at (20mm, 0) {1};
+      \node[box] (0d) at (30mm, 0) {2}; \node[box] (0e) at (40mm, 0) {3}; \node[box] (0f) at (50mm, 0) {4};
+      \node[box] (0g) at (60mm, 0) {5}; \node[box] (0h) at (70mm, 0) {};
 
       {
         [start chain] \chainin(0a); \chainin(0b) [join]; \chainin(0c) [join]; \chainin(0d) [join]; \chainin(0e) [join]; \chainin(0f) [join]; \chainin(0g) [join]; \chainin(0h) [join];
