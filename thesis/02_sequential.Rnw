@@ -340,10 +340,21 @@ list, avoiding the usual linear cost search operation of linked lists.
         [start chain] \chainin(2a); \chainin(2c) [join]; \chainin(2e) [join]; \chainin(2h) [join];
         [start chain] \chainin(3a); \chainin(3h) [join];
       }
+
+      \draw[-] (-2.5mm,-5mm) -- node[below] {\texttt{head}} (2.5mm, -5mm);
+      \draw[-] (-2.5mm,-4.5mm) -- (-2.5mm,-5.5mm);
+      \draw[-] (2.5mm,-4.5mm) -- (2.5mm,-5.5mm);
+
+      \draw[-] (7.5mm,-5mm) -- node[below] {Items} (62.5mm, -5mm);
+      \draw[-] (7.5mm,-4.5mm) -- (7.5mm,-5.5mm);
+      \draw[-] (62.5mm,-4.5mm) -- (62.5mm,-5.5mm);
+
+      \draw[-] (67.5mm,-5mm) -- node[below] {\texttt{tail}} (72.5mm, -5mm);
+      \draw[-] (67.5mm,-4.5mm) -- (67.5mm,-5.5mm);
+      \draw[-] (72.5mm,-4.5mm) -- (72.5mm,-5.5mm);
     \end{tikzpicture}
 \caption{A SkipList with 6 elements and a maximal level of 3.
          Each column represents a single node. The first and last nodes are, respectively, artificial
-         head and tail nodes.
          head and tail nodes.
          Note that the minimal element is always accessible through the first pointer on level 0.}
 \label{fig:skiplist_structure}
