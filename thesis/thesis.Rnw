@@ -6,6 +6,7 @@
 \usepackage[usenames,dvipsnames,table]{xcolor}
 
 \usepackage{acronym}
+\usepackage{amsmath}
 \usepackage[backend=bibtex,sortcites=true]{biblatex}
 \usepackage{booktabs}
 \usepackage{comment}
@@ -17,8 +18,8 @@
 \usepackage{nag}
 \usepackage{pdfpages}
 \usepackage{subcaption}
+\usepackage{tikz}
 \usepackage{xspace}
-\usepackage[acronym,toc]{glossaries} % Has to be last.
 
 % --- BEGIN copied setup.
 
@@ -41,7 +42,7 @@
 \setlength{\parindent}{0pt} % Remove paragraph identation (optional).
 
 \makeindex      % Use an optional index.
-\makeglossaries % Use an optional glossary.
+%\makeglossaries % Use an optional glossary.
 %\glstocfalse   % Remove the glossaries from the table of contents.
 
 \setauthor{}{\authorname}{BA BSc}{male}
@@ -89,7 +90,28 @@
     escapeinside={(@*}{*@)}
 }
 
+\usetikzlibrary{ arrows
+               , automata
+               , backgrounds
+               , calc
+               , chains
+               , fit
+               , petri
+               , shapes
+               , topaths
+               }
+
 \begin{document}
+
+\tikzstyle{box} =
+    [ draw,
+    , rectangle,
+    , text centered,
+    , minimum width = 5mm,
+    , minimum height = 5mm,
+    , font = \footnotesize,
+    , fill = black!10
+    ]
 
 \frontmatter
 
@@ -139,7 +161,7 @@
 %\addcontentsline{toc}{chapter}{List of Algorithms}
 
 \printindex
-\printglossaries
+%\printglossaries
 
 \printbibliography
 

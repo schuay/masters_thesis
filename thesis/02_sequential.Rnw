@@ -193,6 +193,57 @@ at position \lstinline|items[i]|, its left child is located at \lstinline|items[
 at \lstinline|items[2i + 1]|. Vice versa, the parent item of position \lstinline|items[i]| can be found
 at \lstinline|items[i / 2]|.
 
+\begin{figure}
+\begin{minipage}[b]{.5\textwidth}
+\centering
+\begin{tikzpicture}[every node/.style = box]
+\node (1) at (0, 0)    {$0$};
+\node (2) at (5mm, 0)  {$2$};
+\node (3) at (10mm, 0) {$1$};
+\node (4) at (15mm, 0) {$4$};
+\node (5) at (20mm, 0) {$6$};
+\node (6) at (25mm, 0) {$5$};
+\node (7) at (30mm, 0) {$3$};
+\node (8) at (35mm, 0) {$7$};
+\node (9) at (40mm, 0) {$8$};
+
+\path[->, every node/.style= { font = \sffamily\small }]
+(1) edge[bend right = 60] node [right] {} (2)
+(1) edge[bend right = 60] node [right] {} (3)
+(2) edge[bend left = 60] node [right] {} (4)
+(2) edge[bend left = 60] node [right] {} (5)
+(3) edge[bend right = 60] node [right] {} (6)
+(3) edge[bend right = 60] node [right] {} (7)
+(4) edge[bend left = 60] node [right] {} (8)
+(4) edge[bend left = 60] node [right] {} (9);
+\end{tikzpicture}
+\subcaption{Array representation.}
+\end{minipage}%
+\begin{minipage}[b]{.5\textwidth}
+\centering
+\begin{tikzpicture}[
+    ->,
+    every node/.style = box,
+    level distance = 10mm,
+    level 1/.style = { sibling distance = 20mm },
+    level 2/.style = { sibling distance = 10mm }]]
+  \node {$0$}
+    child { node {$2$}
+      child { node {$4$}
+        child { node {$7$} }
+        child { node {$8$} } }
+      child { node {$6$} } }
+    child { node {$1$}
+      child { node {$5$} }
+      child { node {$3$} } };
+\end{tikzpicture}
+\subcaption{Tree representation.}
+\end{minipage}
+\caption{The same heap displayed once in its native array representation,
+         and once as its corresponding tree.}
+\label{fig:heap_structure}
+\end{figure}
+
 Insertions initially append the new item at the tail of array \lstinline|items[n + 1]|.
 Note that heap order might be violated at this point if the inserted item has a
 higher priority than its parent. If that is the case, the item and its parent
