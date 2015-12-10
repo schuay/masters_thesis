@@ -117,6 +117,15 @@
     , fill = black!10
     ]
 
+\tikzstyle{white_box} =
+    [ draw,
+    , rectangle,
+    , text centered,
+    , minimum width = 5mm,
+    , minimum height = 5mm,
+    , font = \footnotesize,
+    ]
+
 \tikzstyle{flag_true} =
     [ draw,
     , circle,

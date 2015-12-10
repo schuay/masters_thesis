@@ -215,14 +215,14 @@ minimizing the number of \ac{CAS} operations within most \lstinline|delete_min| 
 
     \node[box] (3a) at (0, 15mm) {}; \node[box] (3h) at (70mm, 15mm) {};
 
-    \node[box] (2a) at (0, 10mm) {}; \node[box] (2c) at (20mm, 10mm) {};
+    \node[box] (2a) at (0, 10mm) {}; \node[white_box] (2c) at (20mm, 10mm) {};
     \node[box] (2e) at (40mm, 10mm) {}; \node[box] (2h) at (70mm, 10mm) {};
 
-    \node[box] (1a) at (0, 5mm) {}; \node[box] (1c) at (20mm, 5mm) {};
+    \node[box] (1a) at (0, 5mm) {}; \node[white_box] (1c) at (20mm, 5mm) {};
     \node[box] (1d) at (30mm, 5mm) {}; \node[box] (1e) at (40mm, 5mm) {}; \node[box] (1f) at (50mm, 5mm) {};
     \node[box] (1h) at (70mm, 5mm) {};
 
-    \node[box] (0a) at (0, 0) {}; \node[box] (0b) at (10mm, 0) {0}; \node[box] (0c) at (20mm, 0) {1};
+    \node[box] (0a) at (0, 0) {}; \node[white_box] (0b) at (10mm, 0) {0}; \node[white_box] (0c) at (20mm, 0) {1};
     \node[box] (0d) at (30mm, 0) {2}; \node[box] (0e) at (40mm, 0) {3}; \node[box] (0f) at (50mm, 0) {4};
     \node[box] (0g) at (60mm, 0) {5}; \node[box] (0h) at (70mm, 0) {};
 
@@ -243,7 +243,9 @@ minimizing the number of \ac{CAS} operations within most \lstinline|delete_min| 
     \node[flag_false] at (61.5mm, -1.5mm) {};
 \end{tikzpicture}
 \caption{A \citeauthor{linden2013skiplist} priority queue with two deleted elements.
-         Note that deletion marks are located in their predecessors of deleted nodes $0$ and $1$.}
+        Deletion flags are shown as a filled (if set) or clear (unset) circle
+        at the lowest node level.
+        Note that deletion flags are located in their predecessors of deleted nodes $0$ and $1$.}
 \end{figure}
 
 A priority queue implementation is called strict when \lstinline|delete_min| is

@@ -146,12 +146,14 @@ Three different machines are used to run benchmarks:
 \begin{itemize}
 \item \lstinline|mars| An 80-core system consisting of 8 Intel Xeon E7-8850
       processors with 10 cores each and 1 TB of RAM. The processors are clocked
-      at 2 GHz.
+      at 2 GHz and have 32 KB L1, 256 KB L2, and 24 MB of L3 cache per core.
 \item \lstinline|saturn| A 48-core machine with 4 AMD Opteron 6168 processors
-      with 12 cores each, clocked at 1.9 GHz. \lstinline|saturn| has 125 GB of RAM.
+      with 12 cores each, clocked at 1.9 GHz. \lstinline|saturn| has
+      64 KB of L1, 512 KB of L2, and 5 MB of L3 cache per core and 125 GB of RAM.
 \item \lstinline|ceres| A 64-core SPARCv9-based machine with 4 processors
       of 16 cores each. Cores are clocked at 3.6 GHz and have 8-way hardware
-      hyperthreading. \lstinline|ceres| has 1 TB of RAM.
+      hyperthreading. \lstinline|ceres| has 16 KB of L1, 128 KB of L2,
+      and 8 MB of L3 cache per core and 1 TB of RAM.
 \end{itemize}
 
 All applications are compiled using \verb|gcc| --- version \verb|5.2.1|
