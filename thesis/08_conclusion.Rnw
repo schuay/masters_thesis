@@ -70,13 +70,13 @@ Additionally, their average degree of relaxation is fairly high.
 To our knowledge, we are also the first to report on quality metrics for the \klsm.
 These show that the standalone \klsm not only satisfies the provided guarantees
 of returning one of the $kP$ least elements; the provided results are
-usually even of far better quality. At low concurrency, Multiqueues seem to be
+usually of far better quality. At low concurrency, Multiqueues seem to be
 somewhat comparable to the \klsm with $k = 4096$, but the rank error of Multiqueues
 grows slower than the \klsm's with rising thread counts. However, a distinct
 advantage of the \klsm is that it can provide a fixed upper bound to the rank
 error.
 
-The \klsm remains an intensely interesting
+The \klsm remains an highly interesting
 data structure. It is highly sensitive to key distribution over time and the mixture
 of performed operations, performing exceptionally well under ideal circumstances
 but below average in others. Thus the \klsm might be an ideal candidate

@@ -23,7 +23,7 @@ within the range of 32-bit integers. The benchmark is run for a certain amount
 of time, and the number of performed operations per second is then reported as the resulting
 throughput.
 
-This type of benchmark is hugely popular within priority queue research and
+This type of benchmark is widely popular within priority queue research and
 has been used as the basis for performance evaluations in most publications,
 including
 \cite{hunt1996efficient,alistarhspraylist,linden2013skiplist,shavit2000skiplist,sundell2003fast,wimmer2015lock,cbpq}.
@@ -122,7 +122,7 @@ used algorithms are as follows:
       was retrieved from their Launchpad site\footnote{\url{http://www.pheet.org}}.
 \item \textit{Standalone \klsm} (\verb|klsm16, klsm128, ...|)
       The standalone \klsm
-      reimplementation was measured by using a variety of values for the
+      reimplementation was measured by using a wide range of values for the
       relaxation parameter $k$. Both the standalone and Pheet \klsm implementations
       are linearizable, lock-free, and relaxed priority queues.
       Code for the standalone \klsm, as well as the entire benchmarking suite, is available
@@ -357,7 +357,7 @@ This result is both surprising and disappointing. Performance counters indicate
 that when using uniform key generation, $97\%$ of all deleted items are taken
 from the \ac{DLSM} --- and this is obviously the reason for the \klsm's high
 performance. But how is this kind of skewed balance between the \ac{SLSM} and the
-\ac{DLSM} possibly? Since \lstinline|k_lsm::delete_min| peeks at one item from
+\ac{DLSM} possible? Since \lstinline|k_lsm::delete_min| peeks at one item from
 the \ac{SLSM} and one from the \ac{DLSM}, wouldn't it be reasonable to expect
 a $50/50$ proportion of items taken from the either component?
 

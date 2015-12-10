@@ -52,7 +52,8 @@ reliance on randomization.
 
 A state of the art lock-free SkipList implementation based on the \ac{CAS} instruction
 by \citeauthor{fraser2004practical} \cite{fraser2004practical} is freely available\footnote{
-\url{http://www.cl.cam.ac.uk/research/srg/netos/lock-free/}} under a BSD license.
+\url{http://www.cl.cam.ac.uk/research/srg/netos/lock-free/}, last visited on December 9\textsuperscript{th}, 2015.}
+under a BSD license.
 \citeauthor{fraser2004practical} exploits unused pointer bits to mark nodes as logically
 deleted, with physical deletion following as a second step.
 
@@ -139,8 +140,6 @@ and is implemented using commonly available atomic primitives \ac{CAS}, \ac{TAS}
 In contrast to other structures covered in this thesis, this priority queue is restricted to
 contain items with distinct priorities. Inserting a new item with a priority already contained
 in the list simply performs an update of the associated value.
-A real-time version is also provided which we will not discuss further (interested readers are
-referred to \cite{sundell2003fast}).
 
 \begin{figure}[ht]
 \begin{lstlisting}
@@ -158,7 +157,10 @@ struct node_t {
 The structure of each node is basically identical to Figure \ref{fig:skiplist_members}.
 However, \citeauthor{sundell2003fast}
 exploit the fact that the two least significant bits of pointers on 32- and 64-bit systems
-are unused and reuse these as deletion marks. A set least significant bit on a pointer signifies
+are unused (due to alignment of allocated memory) and reuse these as deletion marks.
+A simple \ac{CAS} operation can then be used to atomically update the pointer and the deletion marks:
+\lstinline!CAS(node.next[i], ptr, ptr | 1)!.
+A set least significant bit on a pointer signifies
 that the current node is about to be deleted.
 This packed use of \lstinline|node.next[i]| pointers
 prevents situations in which a new node is inserted while its predecessor is being removed,
@@ -170,7 +172,7 @@ As in the \citeauthor{shavit2000skiplist} priority queue, insertions proceed bot
 deletions proceed top-down --- on the one hand, the choice of opposite directions reduces collisions
 between concurrent insert and delete operations, while on the other hand removing nodes from top levels first
 allows many other concurrent operations to simply skip these nodes, further improving performance.
-\lstinline|node.valid_level| is updated during inserts to always equal the highest level of the SkipList
+The \lstinline|node.valid_level| variable is updated during inserts to always equal the highest level of the SkipList
 at which pointers in this node have already been set (as opposed to \lstinline|node.level|, which equals
 the final level of the node).
 
@@ -201,8 +203,8 @@ in \citeyear{linden2013skiplist} \cite{linden2013skiplist}. They present a linea
 queue which achieves a speed-up of $30-80\%$ compared to other SkipList-based priority queues by
 minimizing the number of \ac{CAS} operations within most \lstinline|delete_min| operations.
 
-A priority queue implementation is called deterministic when the algorithm does not contain randomized elements.
-It is called strict when \lstinline|delete_min| is guaranteed to return the minimal element currently within the queue
+A priority queue implementation is called strict when \lstinline|delete_min| is
+guaranteed to return the minimal element currently within the queue
 (in contrast to relaxed data structures which are discussed further in the next chapter).
 All such priority queues have an inherent bottleneck, since all threads calling \lstinline|delete_min| compete
 for the minimal element, causing both contention through concurrent \ac{CAS} operations on the same variable
@@ -249,7 +251,7 @@ authors recommending a prefix length bound of 128 for 32 threads.
 
 The actual \lstinline|delete_min| and \lstinline|insert| implementations are surprisingly simple.
 Deletions simply traverse the list until the first node for which \lstinline|(ptr, d) = FAO(node.next[0], 1)|
-returns a previously unset deletion flag (\lstinline|d = 0|) and then return \lstinline|ptr|.
+returns an unset deletion flag (\lstinline|d = 0|), and then return \lstinline|ptr|.
 Insertions occur bottom-up and follow the basic \citeauthor{fraser2004practical} algorithm \cite{fraser2004practical},
 taking the separation of deletion flags and nodes into account. The \lstinline|node.inserting| flag
 is set until the node has been fully inserted, and prevents moving the list head past a partially
@@ -264,7 +266,7 @@ up to $80\%$.
 \section{\acl{CBPQ}} \label{sec:cbpq}
 
 The latest strict priority queue of interest, called the \ac{CBPQ}, was published very recently in a dissertation
-by \citeauthor{cbpq} \cite{cbpq}. It is primarily based on two ideas: the chunk linked list
+by \citeauthor{cbpq} \cite{cbpq}. It is primarily based on two main ideas: the chunk linked list
 \cite{braginsky2011locality} replaces SkipLists and heaps as the backing data structure,
 and use of the more efficient \ac{FAA} instruction is preferred over the more powerful
 \ac{CAS} instruction.

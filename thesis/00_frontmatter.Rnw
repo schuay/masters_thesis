@@ -41,13 +41,13 @@ semantic guarantees to allow the \lstinline|delete_min| operation to return one
 of the $kP$ elements, where $P$ is the number of threads and $k$ is a configuration parameter.
 
 During the course of this thesis, we have implemented an improved standalone version of
-the \klsm and explain its design and implementation in detail. We finally evaluate the
+the \klsm priority queue and explain its design and implementation in detail. We finally evaluate the
 the \klsm against other state-of-the-art concurrent priority queues including
 the Spraylist, the \citeauthor{linden2013skiplist} queue, and
 \citeauthor{rihani2014multiqueues}'s Multiqueues.
 
 In some benchmarking scenarios, including
-the popular generic throughput benchmark, the \klsm shows exceptional scalability,
+the popular generic throughput benchmark, the \klsm priority queue shows exceptional scalability,
 outperforming all other queues by up to a factor of ten; in others however,
 its throughput drops dramatically. Out of the other designs, Multiqueues are the
 clear winner, performing consistently across all benchmarks.

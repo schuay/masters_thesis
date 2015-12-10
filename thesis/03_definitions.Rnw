@@ -3,31 +3,38 @@
 % Blocking, lock-free and wait-free data structures.
 
 Concurrent data structures are intended to be accessed simultaneously by several processes
-at at the same time. \emph{Lock-based} structures ensure that only a limited number of processes may enter
+at at the same time. \emph{Lock-based} structures limit the  number of processes that may enter
 a critical section at once through the use of locks.
 \emph{Lock-free} data structures eschew the use of locks, and guarantee
-that at least a single process makes progress at all times. Since lock-free structures are
-non-blocking, they are not susceptible to priority inversion, deadlock, and livelock.
+that at least one process makes progress at all times. Since lock-free structures are
+non-blocking, they are not susceptible to priority inversion (in which a high priority process is
+prevented from running by a low priority process) and deadlock (two processes wait for a resource held by the other).
 \emph{Wait-freedom} further guarantees that every process finishes each operation in a bounded number of steps.
 In practice, wait-freedom often introduces an unacceptable overhead; lock-freedom
-however has proven to be both efficient and to scale well to large numbers of processes.
+however has turned out to be both efficient and to scale well to large numbers of processes.
 Recently, \citeauthor{kogan2012methodology} have also developed a methodology for implementing efficient
-wait-free data structures \cite{kogan2012methodology}.
+wait-free data structures from lock-free cases \cite{kogan2012methodology}.
 
 % Linearizability, sequential and quiescent consistency.
 
+% TODO: Expand. Review definitions, extend explanations, relate to sequential sequence of operations.
+
 There are several different criteria which allow reasoning about the correctness of concurrent
 data structures. \emph{Linearizable} \cite{herlihy1990linearizability} operations appear to take
-effect at a single instant in time at so-called linearization points.
+effect at a single instant in time between the operation invocation and response at so-called linearization points.
+A sequence of concurrent linearizable operations must have an equivalent effect to some legal sequential sequence of
+the same operations.
 \emph{Quiescently consistent} \cite{shavit1996diffracting} data structures
 guarantee that the result of a set of parallel operations is equal to the result of a sequential ordering
-after a period of quiescence, i.e. an interval without active operations has passed.
+after a period of quiescence, i.e. an interval without active operations, has passed; however,
+no guarantees are given while one or more operations are in progress.
 Linearizability as well as quiescent consistency are composable ---
 any data structure composed of linearizable (quiescently consistent) objects is also linearizable
 (quiescently consistent).
 \emph{Sequential consistency} \cite{lamport1979make} requires the result of a set of operations
 executed in parallel to be equivalent to the result of some sequential ordering of the same
-operations.
+operations. Contrary to linearizability and quiescent consistency, sequential consistency is
+not composable.
 
 % Relaxed consistency definitions.
 
@@ -60,8 +67,10 @@ Lock-free algorithms and data structures are commonly constructed using synchron
 such as \acf{CAS}, \ac{FAA}, \ac{FAO}, and \ac{TAS}. The \ac{CAS} instruction, which atomically
 compares a memory location to an expected value and sets it to a new value if they are equal,
 is implemented on most modern architectures and can be considered a basic building block of lock-free
-programming. More exotic primitives such as \ac{DCAS} and \ac{DCSS} exist as well, but are not yet
-widely available and require inefficient software emulations to be used.
+programming since it is the most powerful of these operations \cite{herlihy1991wait}.
+More exotic primitives such as \ac{DCAS} and \ac{DCSS} exist as well, but are not yet
+widely available in hardware and require software emulations (with associated overhead)
+to be used \cite{harris2002practical}.
 
 % Disjoint-access parallelism.
 

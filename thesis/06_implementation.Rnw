@@ -22,7 +22,9 @@ There are several reasons:
       and makes tradeoffs that pose challenges to maintainability. While the standalone
       \klsm also aims to achieve high performance, the reimplementation also 
       explicitly values classical software engineering concepts such as 
-      composability, readability, and separation of concerns.
+      composability, readability, and separation of concerns \cite{hunt2000pragmatic}.
+\item Scientific reproducability. The standalone \klsm verifies performance
+      claims by \citeauthor{wimmerphd}.
 \item Further insight and improvements. Finally, a reimplementation by a fresh
       set of eyes can create new insight into the design and might result in
       improvements to further increase performance over the original Pheet \klsm.
@@ -162,7 +164,7 @@ delegated to responsible classes. The best example in this case is the act of
 item removal --- how can we ensure that an item is taken only by a single thread
 and that no items are lost?
 And since memory for items is reused (see Section \ref{sec:mm_internals}),
-how can we prevent the ABA problem in which memory is reused after being
+how can we prevent the ABA problem \cite{michael2004aba} in which memory is reused after being
 retrieved (i.e. the thread reads data different than had been intended)?
 
 The answer lies within the \lstinline|peek_t| class, which contains both
@@ -206,7 +208,7 @@ prove these statements but attempt to give a rough sketch for each:
       an item and returns; or we again find both the \ac{DLSM} and \ac{SLSM}
       empty --- but if that is the case, then other threads must have made
       progress in the meantime and deleted all items which we have spied at the
-      end of the previous iteration. \lstinline|delete_min| is thus lock-free.
+      end of the previous iteration. The \lstinline|delete_min| operation is thus lock-free.
 \item \emph{Complexity}. Assuming the corresponding operations on the \ac{SLSM}
       and \ac{DLSM} have amortized logarithmic complexity, then \lstinline|k_lsm::insert|
       and \lstinline|k_lsm::delete_min| are also in amortized $O(\log n)$. Insertions
@@ -252,7 +254,9 @@ a batched insertion function which takes a block argument, and a \lstinline|find
 function used by the \klsm to retrieve one of the smallest items without removing it.
 
 The \ac{SLSM} itself contains a versioned pointer to the global block array, which is
-the single point of truth for determining the contents of the \ac{SLSM}. The
+used by all threads to determine the contents of the \ac{SLSM}. A versioned pointer (also known
+as tagged pointers) reserves a subset of the available bits which contain a version number,
+incremented each time the global block array is modified. The
 pointer is versioned since block arrays are heavily reused --- each thread allocates
 two block arrays and uses them in an alternating fashion when setting the global
 array pointer (see Section \ref{sec:mm_internals}). 
@@ -378,7 +382,7 @@ Finally, the global array pointer is updated using a \ac{CAS} operation. The
 update fails if the global array has changed since it has been last read by this
 thread, in which case the insertion is retried. Otherwise, the insertion
 is successful. The linearization point for insertions into the \ac{SLSM}
-is upon a successful \ac{CAS }in line \ref{ln:shared_lsm_local::insert_block.cas}.
+is upon a successful \ac{CAS} in line \ref{ln:shared_lsm_local::insert_block.cas}.
 
 It is important to realize that any work done within this function prior to a
 failed \ac{CAS} is wasted work. Insertions into the block array copy trigger
@@ -749,7 +753,8 @@ private:
 \end{figure}
 
 Contrary to the \ac{SLSM}, the \ac{DLSM} uses a linked list of blocks to represent
-the local \ac{LSM} (this is due to historical reasons).
+the local \ac{LSM}; this is due to historical reasons and is not expected to make
+any difference in achieved performance.
 Blocks (covered further in Section \ref{sec:component_internals})
 contain \lstinline|next| pointers accessible by all threads, and \lstinline|prev|
 pointers which may only be used by the owning thread. Insertions proceed
@@ -895,8 +900,8 @@ inherently distributed and has one separate \ac{LSM} per thread, and the
 a per-thread basis.
 
 There are several mechanisms and libraries which offer thread-local storage,
-the most popular being the C++11 \lstinline|thread_local| keyword and
-\acs{pthreads} \lstinline|pthread_getspecific|, \lstinline|pthread_setspecific| functions.
+the most popular being the C++11 \lstinline|thread_local| keyword \cite{c++11std} and
+\acs{pthreads} \lstinline|pthread_getspecific|, \lstinline|pthread_setspecific| functions \cite{butenhof1997programming}.
 
 We have evaluated both of these for use in the \klsm; unfortunately,
 neither are suitable. \lstinline|thread_local| is only usable at namespace and

@@ -1,7 +1,7 @@
 \chapter{Relaxed Concurrent Priority Queues} \label{ch:relaxed}
 
 The body of work discussed in previous sections
-creates the impression that the outer limits of strict, deterministic priority queues have been reached.
+creates the impression that the upper limits of strict priority queues have been reached.
 In particular, \citeauthor{linden2013skiplist} conclude that scalability is solely limited by \lstinline|delete_min|,
 and that less than one modified memory location per thread and operation would have to be read
 in order to achieve improved performance \cite{linden2013skiplist} through SkipLists. 
@@ -111,7 +111,7 @@ $k$-LSM priority queue.
 \citeauthor{wimmerphd} first presented this data structure in \citedate{wimmer2013data}
 \cite{wimmer2013data} and have improved on it continuously since, with the most recent results
 being published in \cite{wimmer2015lock}. The original $k$-LSM queue is integrated as a priority scheduler
-into their \emph{Pheet} task-scheduling system, and an open-source implementation is
+into \citeauthor{wimmerphd}'s \emph{Pheet} task-scheduling system, and an open-source implementation is
 available at \url{http://pheet.org}. In this section we describe its design in detail, while
 Chapter \ref{ch:implementation} covers our implementation and improvements.
 
@@ -184,7 +184,8 @@ invariants after the completion of each operation:
 
 \begin{itemize}
 \item Each block $B$ is associated with a level $i$ such that $B$ has a capacity of $2^i$ items.
-\item If block $B$ (with associated level $i$) is located before block $B'$ (with level $i'$),
+\item Consider block $B$ (with associated level $i$ and position within the LSM $ix$)
+      and block $B'$ (with level $i'$ and position $ix'$); if $ix < ix$
       then $i < i'$.
 \item For each block $B$ with level $i$, $2^{i-1} \leq |B| \leq 2^i$ where $|B|$ is the number of items
       stored in $B$.
@@ -200,7 +201,8 @@ Note that this operation is $O(1)$ for each block since the minimal item is
 located at the head of each block, and thus of logarithmic complexity for the entire \ac{LSM}.
 
 Both insertions and deletions are of amortized complexity $O(\log n)$ and are usually extremely
-cache-efficient since items are mostly accessed with high locality (e.g. during merge operations).
+cache-efficient since the central merge operation accesses items in sequence, and items
+are stored in contiguous chunks of memory.
 
 \subsection{\acl{DLSM}} \label{ssec:dlsm}
 
@@ -238,7 +240,7 @@ The \ac{DLSM} is essentially embarassingly parallel as long as all local queues 
 and scales exceedingly well even at very high thread counts. This is to be expected, since the \ac{LSM}
 is very efficient, and most, if not all operations are thread-local. However, its major weakness
 is the lack of global quality guarantees. The next section discusses the \ac{SLSM}, which is utilized
-in the \klsm in order to amend this point.
+in the \klsm in order to reintroduce global guarantees.
 
 Insertions and deletions are again of amortized logarithmic complexity and benefit
 from high cache locality as well as mostly thread-local operations.

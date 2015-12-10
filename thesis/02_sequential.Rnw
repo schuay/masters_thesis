@@ -33,6 +33,9 @@ public:
 \label{fig:priority_queue_interface}
 \end{figure}
 
+% TODO: Interface of delete_min: why is the key not returned? Discussion of other
+% interface styles (boost, LEDA, stl) - they all do pop/top/insert.
+
 A priority queue is a data structure which holds a collection of key-value
 pairs, and provides two methods (see Figure \ref{fig:priority_queue_interface}):
 \lstinline|insert|, which takes a key
@@ -48,7 +51,7 @@ There are various further possible extensions to the given interface:
 \item \lstinline|peek_min| returns the minimal item's value without removing
       it from the queue.
 \item \lstinline|decrease_key| decreases the key of a given item. This operation
-      is vital e.g. for an efficient implementation of the Dijkstra shortest
+      is vital e.g. for an efficient implementation of Dijkstra's shortest
       paths algorithm\cite{dijkstra1959note}.
 \item \lstinline|meld| merges two priority queues.
 \end{itemize}
@@ -58,7 +61,7 @@ Each priority queue is associated with a priority function, which maps
 the key domain $K$ to a priority domain $P$, over which there exists
 a reflective, antisymmetric, and transitive ordering relation $\leq: P \times P$.
 
-When $K$ is the set of integers $\mathbb{Z}$, a priority queue is termed a
+When $K$ and $P$ are the set of integers $\mathbb{Z}$, a priority queue is termed a
 ``max-priority queue'' if the priority function is the identity function $f(x) = x$,
 i.e., if higher keys have higher priority.
 It is called a ``min-priority queue'' if the priority function is the additive
@@ -68,7 +71,8 @@ We are interested mainly in general priority queues within the context of shared
 memory systems. General priority queues are data structures which
 allow arbitrary keys of a given, possibly infinite set, and furthermore can
 hold multiple distinct items with identical keys. Such priority queues
-are congruent the sorting problem, and thus have a lower bound of $O(\log n)$
+are congruent the sorting problem\cite{Thorup:2002:EPQ:645413.652157},
+and thus have a lower bound of $O(\log n)$
 complexity for either \lstinline|insert| or \lstinline|delete_min| (or both).
 Note that these bounds do not
 hold for more specialized priority queues; for instance, queues which are limited
@@ -113,7 +117,7 @@ complexity of $\Theta(n)$.
 
 More efficient implementation techniques have been known for over half a century.
 Binary heaps \cite{williams1964algorithm} were invented as part of the sorting
-algorithm Heapsot in \citedate{williams1964algorithm} and are still arguable the most
+algorithm Heapsort in \citedate{williams1964algorithm} and are still arguable the most
 popular design for general purpose priority queues. For example, the priority queue
 container class contained in the C++ \ac{STL} implements a binary heap on top of
 any compatible backing structure. When using a heap, both deletions and insertions require
@@ -134,9 +138,9 @@ Fibonacci heaps \cite{fredman1987fibonacci} were invented by
 heap-sorted trees. In addition to the standard insertion and deletion operations
 (in amortized logarithmic time),
 they also support efficient \lstinline|merge| and \lstinline|decrease_key|
-operations in constant time, thus decreasing the complexity of Dijkstra's shortest
+operations in amortized constant time, thus decreasing the complexity of Dijkstra's shortest
 path algorithm to $O(|E| + |V| \log |V|)$. However, due to their programming complexity
-and involved constant factors, they are not widely used in practise.
+and involved constant factors, they are not commonly used in practise.
 Subsequent publications have proposed various alternatives to Fibonacci heaps
 such as relaxed heaps \cite{driscoll1988relaxed} and strict Fibonacci heaps
 \cite{brodal2012strict}.
@@ -160,7 +164,7 @@ that of complete balanced binary trees, composed of nodes with exactly two child
 And second, that of heap ordering, the notion that the priority of each child
 node is less or equal to that of its parent node. Furthermore, instead of using an
 explicit representation of a binary tree, heaps implicitly encode the position
-of their contents.
+of their contents in a so-called heap-ordered array.
 
 \begin{figure}[ht]
 \begin{lstlisting}
@@ -206,7 +210,8 @@ once for each level, resulting in a worst case of $O(\log n)$.
 
 Binary heaps are efficient in practice and conceptually simple as well as easy
 to implement. They are space-efficient since they do not store any overhead per
-item such as pointers (in \ac{BST}-based implementations). Their main drawbacks
+item such as pointers (in \ac{BST}-based implementations). One of their main drawbacks
+is that both deletes and inserts are of logarithmic complexity. Others
 become apparent only in a concurrent setting, in which their tendency to
 modify large parts of the data structure during both insertions and deletions
 causes contention, high cache-coherence protocol traffic, and synchronization
@@ -274,7 +279,7 @@ to contain twice as many nodes as level $l + 1$. Thus both the expected maximal 
 of all nodes, as well as the number of steps required to find any given key within
 the SkipList is $O(\log n)$.
 
-The SkipList has increasingly gained in popularity in recent research into
+The SkipList has gained popularity in recent research into
 parallel priority queues, since it does not require the frequent rebalancing
 operations of \acp{BST}, and operations on nodes of different keys usually access
 spacially disjoint parts of the data structure. In the context of concurrent
