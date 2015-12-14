@@ -186,19 +186,174 @@ invariants after the completion of each operation:
 \item Each block $B$ is associated with a level $i$ such that $B$ has a capacity of $2^i$ items.
 \item Consider block $B$ (with associated level $i$ and position within the LSM $ix$)
       and block $B'$ (with level $i'$ and position $ix'$); if $ix < ix$
-      then $i < i'$.
+      then $i > i'$.
 \item For each block $B$ with level $i$, $2^{i-1} \leq |B| \leq 2^i$ where $|B|$ is the number of items
       stored in $B$.
 \end{itemize}
 
 Insertions initially create a singleton block $B$ containing the given item. $B$ is then inserted
-at the front of the \ac{LSM}, possibly violating invariants temporarily. While invariants remain unsatisfied,
+at the tail end of the \ac{LSM}, possibly violating invariants temporarily. While invariants remain unsatisfied,
 i.e. while the \ac{LSM} contains multiple blocks of the same level, $B$ is merged with its
-successor block, replacing both $B$ and the successor block with a new block of doubled capacity.
+predecessor block, replacing both $B$ and the successor block with a new block of doubled capacity.
+Figure \ref{fig:lsm_insertion} displays an insertion example in which the new element with key $7$
+is inserted, triggering two block merges before completion.
+
+% TODO: Ensure we have the correct logic (head block is largest) everywhere.
 
 Peek operations iterate through each block in the \ac{LSM} and return the minimal encountered item.
 Note that this operation is $O(1)$ for each block since the minimal item is
 located at the head of each block, and thus of logarithmic complexity for the entire \ac{LSM}.
+
+\begin{figure}
+\begin{minipage}[t]{.33\textwidth}
+\centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}]
+
+        \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
+            \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
+            \node [on chain=1, minimum width = 10mm] (ba1) {$b_1$};
+            \node [on chain=1, minimum width = 10mm] (ba2) {$b_2$};
+            \node [on chain=1, minimum width = 10mm] (ba3) {$b_3$};
+        \end{scope}
+
+        \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm]
+            \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
+            \node[on chain, box] {3};
+            \node[on chain, box] {4};
+            \node[on chain, box] (03) {4};
+            \node[on chain, box] {6};
+            \node[on chain, box] {9};
+            \node[on chain, box] {};
+            \node[on chain, box] (07) {};
+        \end{scope}
+
+        \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba1, yshift = 3mm] (10) {5};
+            \node[on chain, box] {8};
+        \end{scope}
+
+        \begin{scope}[start chain = 5 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba2, yshift = 3mm] (20) {2};
+        \end{scope}
+
+        \begin{scope}[start chain = 6 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba3, yshift = 3mm] (30) {7};
+        \end{scope}
+
+        \path[->, every node/.style= { font = \sffamily\small }]
+        (ba0) edge node [right] {} (00)
+        (ba1) edge node [right] {} (10)
+        (ba2) edge node [right] {} (20)
+        (ba3) edge node [right] {} (30);
+    \end{tikzpicture}
+\subcaption{The initial state with item 7 inserted as a new block.}
+\end{minipage}%
+\begin{minipage}[t]{.33\textwidth}
+\centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}]
+
+        \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
+            \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
+            \node [on chain=1, minimum width = 10mm] (ba1) {$b_1$};
+            \node [on chain=1, minimum width = 10mm] (ba2) {$b_2$};
+            \node [on chain=1, minimum width = 10mm] (ba3) {$b_3$};
+        \end{scope}
+
+        \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm]
+            \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
+            \node[on chain, box] {3};
+            \node[on chain, box] {4};
+            \node[on chain, box] (03) {4};
+            \node[on chain, box] {6};
+            \node[on chain, box] {9};
+            \node[on chain, box] {};
+            \node[on chain, box] (07) {};
+        \end{scope}
+
+        \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba1, yshift = 3mm] (10) {5};
+            \node[on chain, box] {8};
+        \end{scope}
+
+        \begin{scope}[start chain = 5 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba2, yshift = 3mm] (20) {2};
+            \node[on chain, box] {7};
+        \end{scope}
+
+        \path[->, every node/.style= { font = \sffamily\small }]
+        (ba0) edge node [right] {} (00)
+        (ba1) edge node [right] {} (10)
+        (ba2) edge node [right] {} (20);
+    \end{tikzpicture}
+\subcaption{After the first merge.}
+\end{minipage}%
+\begin{minipage}[t]{.33\textwidth}
+\centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}]
+
+        \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
+            \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
+            \node [on chain=1, minimum width = 10mm] (ba1) {$b_1$};
+            \node [on chain=1, minimum width = 10mm] (ba2) {$b_2$};
+            \node [on chain=1, minimum width = 10mm] (ba3) {$b_3$};
+        \end{scope}
+
+        \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm]
+            \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
+            \node[on chain, box] {3};
+            \node[on chain, box] {4};
+            \node[on chain, box] (03) {4};
+            \node[on chain, box] {6};
+            \node[on chain, box] {9};
+            \node[on chain, box] {};
+            \node[on chain, box] (07) {};
+        \end{scope}
+
+        \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba1, yshift = 3mm] (10) {2};
+            \node[on chain, box] {5};
+            \node[on chain, box] {7};
+            \node[on chain, box] {8};
+        \end{scope}
+
+        \path[->, every node/.style= { font = \sffamily\small }]
+        (ba0) edge node [right] {} (00)
+        (ba1) edge node [right] {} (10);
+    \end{tikzpicture}
+\subcaption{After the second merge.}
+\end{minipage}
+\caption{Insertion of a new element into the \ac{LSM}. Note that while invariants
+         are violated during the operation (since block capacities are not unique),
+         they are reinstated after the final merge.}
+\label{fig:lsm_insertion}
+\end{figure}
 
 Both insertions and deletions are of amortized complexity $O(\log n)$ and are usually extremely
 cache-efficient since the central merge operation accesses items in sequence, and items
@@ -268,7 +423,7 @@ until the queue is either empty or an untaken item is found and returned.
 
 From the previous description, it almost seems as if the \ac{SLSM} were a simple
 data structure; however, rest assured that this is not the case. Chapter \ref{ch:implementation}
-covers its implementation in great detail.
+covers its implementation in more detail.
 
 \subsection{\klsm} \label{ssec:klsm}
 

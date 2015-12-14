@@ -463,8 +463,7 @@ conforming to the \ac{LSM} invariants at the boundaries of functions (see Sectio
     \begin{tikzpicture}[start chain,
         ->,
         every node/.style={font = \small},
-        label/.style={rectangle,minimum size = 5mm}
-      ]
+        label/.style={rectangle,minimum size = 5mm}]
 
         \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
             \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
@@ -516,14 +515,14 @@ conforming to the \ac{LSM} invariants at the boundaries of functions (see Sectio
         (ba3) edge node [right] {} (30);
 
 
-        \draw[serif cm-serif cm] ($(00.south west) - (1mm,0)$) -- node[sloped, above] {$p_0$}
-                                 ($(03.north west) - (1mm,0)$);
-        \draw[serif cm-serif cm] ($(11.south west) - (1mm,0)$) -- node[sloped, above] {$p_1$}
-                                 ($(13.north west) - (1mm,0)$);
-        \draw[serif cm-serif cm] ($(20.south west) - (1mm,0)$) -- node[sloped, above] {$p_2$}
-                                 ($(20.north west) - (1mm,0)$);
-        \draw[serif cm-serif cm] ($(30.south west) - (1mm,0)$) -- node[sloped, above] {$p_3$}
-                                 ($(30.north west) - (1mm,0)$);
+        \draw[serif cm-serif cm] ($(00.south west) - (0.75mm,0)$) -- node[sloped, above] {$p_0$}
+                                 ($(03.north west) - (0.75mm,0)$);
+        \draw[serif cm-serif cm] ($(11.south west) - (0.75mm,0)$) -- node[sloped, above] {$p_1$}
+                                 ($(13.north west) - (0.75mm,0)$);
+        \draw[serif cm-serif cm] ($(20.south west) - (0.75mm,0)$) -- node[sloped, above] {$p_2$}
+                                 ($(20.north west) - (0.75mm,0)$);
+        \draw[serif cm-serif cm] ($(30.south west) - (0.75mm,0)$) -- node[sloped, above] {$p_3$}
+                                 ($(30.north west) - (0.75mm,0)$);
 
         \draw[serif cm-serif cm] ($(07.north west) + (0, 1mm)$) -- node[sloped, above] {Blocks}
                                  ($(07.north west) + (45mm,1mm)$);
@@ -531,13 +530,19 @@ conforming to the \ac{LSM} invariants at the boundaries of functions (see Sectio
         \draw[serif cm-serif cm] ($(ba0.south west) - (0, 1mm)$) -- node[below] {Block Array}
                                  ($(ba4.south east) - (0, 1mm)$);
     \end{tikzpicture}
-\caption{Schematic block array structure containing blocks $b_i$ and pivot ranges $p_i$, $i \in [1, 4]$. Items shown in white have been deleted.}
+\caption{Schematic block array structure containing blocks $b_i$ and pivot ranges $p_i$, $i \in [1, 4]$.
+         Items shown in white have been deleted.}
+\label{fig:block_array_structure}
 \end{figure}
 
 The \ac{LSM} is represented through member variables holding the block pointer
 array together with its size. Additionally, block arrays contain pivot ranges
 (storing ranges within the blocks which contain a subset of the $k$ smallest items),
 a version (to avoid the ABA problem), and an efficient random number generator.
+
+An example block array is shown in Figure \ref{fig:block_array_structure}. It contains
+four blocks ($b_{0 \ldots 3}$), each with an associated pivot range ($p_{0 \ldots 3}$)
+containing the 7 minimal items within the block array.
 
 \begin{figure}[ht]
 \begin{lstlisting}
@@ -638,7 +643,10 @@ i.e. every successful peek iterates through the loop almost 5 times on average.
 This effect is caused by fragmentation of the pivot range, which has detrimental
 effects both on item selection (through random selection of a taken item)
 and relaxation (since the pivot range actually contains fewer elements than
-its size, calculated through pivot range boundaries, implies).
+its size, calculated through pivot range boundaries, implies). In Figure \ref{fig:block_array_structure},
+both $p_0$ and $p_1$ are fragmented, i.e., they contain deleted items. Note
+that the initial deleted item in $b_1$ is handled correctly and not included
+in the pivot range.
 
 We experimented with an alternative data structure for pivot maintainance
 based on a balanced binary interval tree to store taken items for each block.
