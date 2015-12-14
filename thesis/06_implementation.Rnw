@@ -52,6 +52,65 @@ The various applied methods of lock-free memory management are covered in Sectio
 
 \section{\klsm Internals} \label{sec:klsm_internals}
 
+Figure \ref{fig:klsm_structure} shows an overview of the class inter-class connections
+involved in the \klsm design. The \lstinline|k_lsm| itself simply holds a \ac{DLSM} and \ac{SLSM} instance
+and delegates most work to these lower-level designs. Details of the \lstinline|k_lsm|
+are covered in this section. The \lstinline|dist_lsm| (Section \ref{sec:dlsm_internals})
+consists of a linked list of \lstinline|block| instances, which in turn contain
+several \lstinline|item| instances (Section \ref{sec:component_internals}).
+The \lstinline|shared_lsm| organizes blocks using a global \lstinline|block_array|,
+which also contains an \lstinline|block_pivot| instance (Section \ref{sec:slsm_internals}).
+Memory management is handled by several classes, covered further in Section \ref{sec:mm_internals}.
+
+\begin{figure}
+\centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}
+      ]
+
+        \begin{scope}[start chain = 1 going {below=of \tikzchainprevious.south},
+                every on chain/.style = {anchor = north},
+                node distance = -0.15mm]
+            \node[on chain, box] (klsm) {\verb|k_lsm|};
+            \node[on chain, yshift = -5mm] (abpt) {\verb+aligned_block_ptr+};
+            \node[on chain] (bpool) {\verb+block_pool+};
+            \node[on chain] (italloc) {\verb|item_allocator|};
+            \node[on chain] (bstorage) {\verb|block_storage|};
+            \node[on chain] (mm) {\emph{\small Memory Management}};
+            \node[on chain, box, yshift = -5mm] (block) {\verb|block|};
+            \node[on chain, box, yshift = -5mm] (item) {\verb|item|};
+        \end{scope}
+
+        \node[box, left = of italloc] (dlsm) {\verb|dist_lsm|};
+        \node[box, right = of italloc] (slsm) {\verb|shared_lsm|};
+
+        \node[box, below = of slsm] (barray) {\verb|block_array|};
+        \node[box, below = of barray] (bpivots) {\verb|block_pivots|};
+
+        \begin{pgfonlayer}{background}
+            \draw[box] ($(abpt.north west) - (2mm, 0)$) rectangle ($(mm.south east) + (1mm, 0)$);
+        \end{pgfonlayer}
+
+        \path[->, every node/.style= { font = \sffamily\small }]
+            (klsm.west) edge[bend right = 30] node [right] {} (dlsm)
+            (klsm.east) edge[bend left = 30] node [right] {} (slsm)
+            (dlsm.east) edge[bend right = 10] node [right] {} (italloc.west)
+            (dlsm.east) edge[bend right = 10] node [right] {} (bstorage.west)
+            (slsm.west) edge[bend left = 10] node [right] {} (abpt.east)
+            (slsm.west) edge[bend left = 10] node [right] {} (bpool.east)
+            (slsm.west) edge[bend left = 10] node [right] {} (italloc.east)
+            (slsm.south) edge node [right] {} (barray.north)
+            (barray.west) edge[bend left = 10] node [right] {} (block.east)
+            (barray.south) edge node [right] {} (bpivots.north)
+            (dlsm.south) edge[bend right = 30] node [right] {} (block.west)
+            (block.south) edge node [right] {} (item.north);
+    \end{tikzpicture}
+\caption{Overview of the \lstinline|k_lsm| class structure.}
+\label{fig:klsm_structure}
+\end{figure}
+
 While the general \klsm interface has been covered previously in Section \ref{sec:wimmer},
 several details have been omitted for clarity. Figure \ref{fig:klsm.h} displays the full
 header file containing the \lstinline|k_lsm| class. In this instance, implementation
@@ -96,22 +155,8 @@ while an inline header contains the class definition and is itself
 included in the standard header. The \lstinline|init_thread| function is provided
 for queues which require per-thread initialization.
 
-\begin{figure}[ht]
-\begin{lstlisting}
-template <class K, class V, int Rlx>
-void
-k_lsm<K, V, Rlx>::insert(const K &key,
-                         const V &val)
-{
-    m_dist.insert(key, val, &m_shared);
-}
-\end{lstlisting}
-\caption{The \lstinline|k_lsm::insert| implementation.}
-\label{fig:k_lsm::insert}
-\end{figure}
-
 Trivialities aside, implementation of the \lstinline|k_lsm| class is extremely simple since it relies
-on a composition of the \ac{SLSM} and \ac{DLSM} queues. Insertion (see Figure \ref{fig:k_lsm::insert})
+on a composition of the \ac{SLSM} and \ac{DLSM} queues. Insertion
 simply triggers insertion into the local \ac{DLSM}, passing a pointer to the global
 \ac{SLSM} queue in case the maximal size of local blocks is exceeded.
 

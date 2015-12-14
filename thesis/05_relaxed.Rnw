@@ -455,7 +455,7 @@ has a significant global bottleneck.
         child {node [concept] {Global Bottleneck}}};
   \end{scope}
 \end{tikzpicture}
-\caption{A high-level view of the \klsm concept.}
+\caption{A high-level view of the \klsm concept. }
 \end{figure}
 
 The \klsm combines both of these designs to reduce these drawbacks. In order
