@@ -432,6 +432,32 @@ particularly practical data structures. The \ac{DLSM} is fast and scalable, but
 cannot offer any guarantees as to the quality of returned items, while the \ac{SLSM}
 has a significant global bottleneck.
 
+\begin{figure}[ht]
+\begin{tikzpicture}[mindmap,
+  level 1 concept/.append style={level distance = 130, sibling angle = 60},
+  level 2 concept/.append style={sibling angle = 45},
+  extra concept/.append style={color=blue!50, text=black}]
+
+  \begin{scope}[mindmap, concept color = black!10]
+    \node [concept] {\klsm}[clockwise from=-60]
+      child {node [concept] (dlsm) {\ac{DLSM}}
+        [clockwise from = 45]
+        child {node [concept] {Thread-local}}
+        child {node [concept] {Distributed}}
+        child {node [concept] {Efficient}}
+        child {node [concept] {Scalable}}
+        child {node [concept] {Strict}}}
+      child {node [concept] (slsm) {\ac{SLSM}}
+        [clockwise from = -90]
+        child {node [concept] {Shared}}
+        child {node [concept] {Global}}
+        child {node [concept] {Relaxed}}
+        child {node [concept] {Global Bottleneck}}};
+  \end{scope}
+\end{tikzpicture}
+\caption{A high-level view of the \klsm concept.}
+\end{figure}
+
 The \klsm combines both of these designs to reduce these drawbacks. In order
 to be able to offer global quality guarantees, the thread-local \acp{DLSM} are
 limited to a capacity of $k$ per thread, and \lstinline|delete_min| returns the minimal

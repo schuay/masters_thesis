@@ -96,6 +96,7 @@
                , calc
                , chains
                , fit
+               , mindmap
                , petri
                , shapes
                , topaths
