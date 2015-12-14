@@ -242,7 +242,8 @@ minimizing the number of \ac{CAS} operations within most \lstinline|delete_min| 
     \node[flag_false] at (51.5mm, -1.5mm) {};
     \node[flag_false] at (61.5mm, -1.5mm) {};
 \end{tikzpicture}
-\caption{A \citeauthor{linden2013skiplist} priority queue with two deleted elements.
+\caption[A \citeauthor{linden2013skiplist} priority queue with two deleted elements.]
+        {A \citeauthor{linden2013skiplist} priority queue with two deleted elements.
         Deletion flags are shown as a filled (if set) or clear (unset) circle
         at the lowest node level.
         Note that deletion flags are located in their predecessors of deleted nodes $0$ and $1$.}

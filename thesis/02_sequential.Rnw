@@ -240,7 +240,8 @@ between items.}
 \end{tikzpicture}
 \subcaption{Tree representation.}
 \end{minipage}
-\caption{The same heap displayed once in its native array representation,
+\caption[A binary heap structured as an array, and as a tree.]
+        {The same heap displayed once in its native array representation,
          and once as its corresponding tree.}
 \label{fig:heap_structure}
 \end{figure}
@@ -341,19 +342,12 @@ list, avoiding the usual linear cost search operation of linked lists.
         [start chain] \chainin(3a); \chainin(3h) [join];
       }
 
-      \draw[-] (-2.5mm,-5mm) -- node[below] {\texttt{head}} (2.5mm, -5mm);
-      \draw[-] (-2.5mm,-4.5mm) -- (-2.5mm,-5.5mm);
-      \draw[-] (2.5mm,-4.5mm) -- (2.5mm,-5.5mm);
-
-      \draw[-] (7.5mm,-5mm) -- node[below] {Items} (62.5mm, -5mm);
-      \draw[-] (7.5mm,-4.5mm) -- (7.5mm,-5.5mm);
-      \draw[-] (62.5mm,-4.5mm) -- (62.5mm,-5.5mm);
-
-      \draw[-] (67.5mm,-5mm) -- node[below] {\texttt{tail}} (72.5mm, -5mm);
-      \draw[-] (67.5mm,-4.5mm) -- (67.5mm,-5.5mm);
-      \draw[-] (72.5mm,-4.5mm) -- (72.5mm,-5.5mm);
+      \draw[serif cm-serif cm] (-2.5mm,-5mm) -- node[below] {\texttt{head}} (2.5mm, -5mm);
+      \draw[serif cm-serif cm] (7.5mm,-5mm) -- node[below] {Items} (62.5mm, -5mm);
+      \draw[serif cm-serif cm] (67.5mm,-5mm) -- node[below] {\texttt{tail}} (72.5mm, -5mm);
     \end{tikzpicture}
-\caption{A SkipList with 6 elements and a maximal level of 3.
+\caption[A SkipList structure with 6 elements and a maximal level of 3.]
+        {A SkipList with 6 elements and a maximal level of 3.
          Each column represents a single node. The first and last nodes are, respectively, artificial
          head and tail nodes.
          Note that the minimal element is always accessible through the first pointer on level 0.}

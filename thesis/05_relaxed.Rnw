@@ -27,7 +27,8 @@ is the number of participating threads.
 
 \citeauthor{fraser2004practical}'s lock-free SkipList \cite{fraser2004practical} again serves as the
 basis for the priority queue implementation. The full source code is available online at 
-\url{https://github.com/jkopinsky/SprayList}. In the SprayList, \lstinline|insert| calls are simply
+\url{https://github.com/jkopinsky/SprayList} (last visited on December 9\textsuperscript{th}, 2015).
+In the SprayList, \lstinline|insert| calls are simply
 forwarded to the underlying SkipList.
 
 The \lstinline|delete_min| operation however executes a random walk, also called a \emph{spray}, the
@@ -349,7 +350,8 @@ located at the head of each block, and thus of logarithmic complexity for the en
     \end{tikzpicture}
 \subcaption{After the second merge.}
 \end{minipage}
-\caption{Insertion of a new element into the \ac{LSM}. Note that while invariants
+\caption[Insertion of a new element into the \ac{LSM}.]
+        {Insertion of a new element into the \ac{LSM}. Note that while invariants
          are violated during the operation (since block capacities are not unique),
          they are reinstated after the final merge.}
 \label{fig:lsm_insertion}

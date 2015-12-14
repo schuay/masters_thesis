@@ -94,7 +94,8 @@ used algorithms are as follows:
       performance of a concurrent priority queue.
 \item \textit{Linden} (\verb|linden|)
       Code for the \citeauthor{linden2013skiplist} priority queue \cite{linden2013skiplist}
-      is provided by the authors under an open source license\footnote{\url{http://user.it.uu.se/~jonli208/priorityqueue}}.
+      is provided by the authors under an open source license\footnote{\url{http://user.it.uu.se/~jonli208/priorityqueue},
+      last visited on December 9\textsuperscript{th}, 2015.}.
       It is lock-free and uses \citeauthor{fraser2004practical}'s lock-free
       SkipList design. The aim of this implementation is to minimize contention in
       calls to \verb|delete_min|. We chose $32$ as the \verb|BoundOffset| in order to optimize
@@ -105,7 +106,8 @@ used algorithms are as follows:
       A relaxed, lock-free concurrent priority queue based on \citeauthor{fraser2004practical}'s
       SkipList using random walks to spread data accesses
       incurred by \verb|delete_min| calls. Code provided by \citeauthor{alistarhspraylist} is
-      available on Github\footnote{\url{https://github.com/jkopinsky/SprayList}}.
+      available on Github\footnote{\url{https://github.com/jkopinsky/SprayList},
+      last visited on December 9\textsuperscript{th}, 2015.}.
 \item \textit{Multiqueues} (\verb|multiq|)
       A simple, elegant recent relaxed concurrent priority queue
       design by \citeauthor{rihani2014multiqueues}. Contrary to the SprayList, the
@@ -118,7 +120,8 @@ used algorithms are as follows:
       of values of $k$ to vary between fairly strict ($k = 16$) to fairly relaxed
       ($k = 4096$) behavior. Unlike the other priority queues, the Pheet \klsm
       was measured using the benchmarks integrated into Pheet. The code
-      was retrieved from their Launchpad site\footnote{\url{http://www.pheet.org}}.
+      was retrieved from their Launchpad site\footnote{\url{http://www.pheet.org},
+      last visited on December 9\textsuperscript{th}, 2015.}.
 \item \textit{Standalone \klsm} (\verb|klsm16, klsm128, ...|)
       The standalone \klsm
       reimplementation was measured by using a wide range of values for the
