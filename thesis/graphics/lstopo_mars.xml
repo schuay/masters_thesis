@@ -1,0 +1,1054 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topology SYSTEM "hwloc.dtd">
+<topology>
+  <object type="Machine" os_index="0" cpuset="0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff" complete_cpuset="0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff" online_cpuset="0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff" allowed_cpuset="0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff" nodeset="0x000000ff" complete_nodeset="0x000000ff" allowed_nodeset="0x000000ff">
+    <page_type size="4096" count="0"/>
+    <page_type size="2097152" count="0"/>
+    <info name="DMIProductName" value="X8OBN"/>
+    <info name="DMIProductVersion" value="123456789"/>
+    <info name="DMIBoardVendor" value="Supermicro"/>
+    <info name="DMIBoardName" value="X8OBN"/>
+    <info name="DMIBoardVersion" value="123456789"/>
+    <info name="DMIBoardAssetTag" value="123456789"/>
+    <info name="DMIChassisVendor" value="Supermicro"/>
+    <info name="DMIChassisType" value="18"/>
+    <info name="DMIChassisVersion" value="123456789"/>
+    <info name="DMIChassisAssetTag" value="123456789"/>
+    <info name="DMIBIOSVendor" value="American Megatrends Inc."/>
+    <info name="DMIBIOSVersion" value="2.1"/>
+    <info name="DMIBIOSDate" value="03/06/2013"/>
+    <info name="DMISysVendor" value="Supermicro"/>
+    <info name="Backend" value="Linux"/>
+    <info name="OSName" value="Linux"/>
+    <info name="OSRelease" value="4.2.0-1-amd64"/>
+    <info name="OSVersion" value="#1 SMP Debian 4.2.3-2 (2015-10-14)"/>
+    <info name="HostName" value="mars"/>
+    <info name="Architecture" value="x86_64"/>
+    <info name="hwlocVersion" value="1.11.1"/>
+    <info name="ProcessName" value="lstopo"/>
+    <distances nbobjs="8" relative_depth="1" latency_base="10.000000">
+      <latency value="1.000000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="1.000000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="1.000000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="1.000000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="1.000000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="1.000000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="1.000000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="2.100000"/>
+      <latency value="1.000000"/>
+    </distances>
+    <object type="NUMANode" os_index="0" cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" complete_cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" online_cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" allowed_cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" local_memory="135171211264">
+      <page_type size="4096" count="33000784"/>
+      <page_type size="2097152" count="0"/>
+      <object type="Package" os_index="0" cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" complete_cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" online_cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" allowed_cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001">
+        <info name="CPUVendor" value="GenuineIntel"/>
+        <info name="CPUFamilyNumber" value="6"/>
+        <info name="CPUModelNumber" value="47"/>
+        <info name="CPUModel" value="Intel(R) Xeon(R) CPU E7- 8850  @ 2.00GHz"/>
+        <info name="CPUStepping" value="2"/>
+        <object type="Cache" cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" complete_cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" online_cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" allowed_cpuset="0x00000003,0xff000000,0x03fe0000,,0x00000001" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="25165824" depth="3" cache_linesize="64" cache_associativity="24" cache_type="0">
+          <object type="Cache" cpuset="0x01000000,,,0x00000001" complete_cpuset="0x01000000,,,0x00000001" online_cpuset="0x01000000,,,0x00000001" allowed_cpuset="0x01000000,,,0x00000001" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x01000000,,,0x00000001" complete_cpuset="0x01000000,,,0x00000001" online_cpuset="0x01000000,,,0x00000001" allowed_cpuset="0x01000000,,,0x00000001" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x01000000,,,0x00000001" complete_cpuset="0x01000000,,,0x00000001" online_cpuset="0x01000000,,,0x00000001" allowed_cpuset="0x01000000,,,0x00000001" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="0" cpuset="0x01000000,,,0x00000001" complete_cpuset="0x01000000,,,0x00000001" online_cpuset="0x01000000,,,0x00000001" allowed_cpuset="0x01000000,,,0x00000001" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001">
+                  <object type="PU" os_index="0" cpuset="0x00000001" complete_cpuset="0x00000001" online_cpuset="0x00000001" allowed_cpuset="0x00000001" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                  <object type="PU" os_index="120" cpuset="0x01000000,,,0x0" complete_cpuset="0x01000000,,,0x0" online_cpuset="0x01000000,,,0x0" allowed_cpuset="0x01000000,,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x02000000,0x00020000,,0x0" complete_cpuset="0x02000000,0x00020000,,0x0" online_cpuset="0x02000000,0x00020000,,0x0" allowed_cpuset="0x02000000,0x00020000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x02000000,0x00020000,,0x0" complete_cpuset="0x02000000,0x00020000,,0x0" online_cpuset="0x02000000,0x00020000,,0x0" allowed_cpuset="0x02000000,0x00020000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x02000000,0x00020000,,0x0" complete_cpuset="0x02000000,0x00020000,,0x0" online_cpuset="0x02000000,0x00020000,,0x0" allowed_cpuset="0x02000000,0x00020000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="1" cpuset="0x02000000,0x00020000,,0x0" complete_cpuset="0x02000000,0x00020000,,0x0" online_cpuset="0x02000000,0x00020000,,0x0" allowed_cpuset="0x02000000,0x00020000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001">
+                  <object type="PU" os_index="81" cpuset="0x00020000,,0x0" complete_cpuset="0x00020000,,0x0" online_cpuset="0x00020000,,0x0" allowed_cpuset="0x00020000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                  <object type="PU" os_index="121" cpuset="0x02000000,,,0x0" complete_cpuset="0x02000000,,,0x0" online_cpuset="0x02000000,,,0x0" allowed_cpuset="0x02000000,,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x04000000,0x00040000,,0x0" complete_cpuset="0x04000000,0x00040000,,0x0" online_cpuset="0x04000000,0x00040000,,0x0" allowed_cpuset="0x04000000,0x00040000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x04000000,0x00040000,,0x0" complete_cpuset="0x04000000,0x00040000,,0x0" online_cpuset="0x04000000,0x00040000,,0x0" allowed_cpuset="0x04000000,0x00040000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x04000000,0x00040000,,0x0" complete_cpuset="0x04000000,0x00040000,,0x0" online_cpuset="0x04000000,0x00040000,,0x0" allowed_cpuset="0x04000000,0x00040000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="2" cpuset="0x04000000,0x00040000,,0x0" complete_cpuset="0x04000000,0x00040000,,0x0" online_cpuset="0x04000000,0x00040000,,0x0" allowed_cpuset="0x04000000,0x00040000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001">
+                  <object type="PU" os_index="82" cpuset="0x00040000,,0x0" complete_cpuset="0x00040000,,0x0" online_cpuset="0x00040000,,0x0" allowed_cpuset="0x00040000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                  <object type="PU" os_index="122" cpuset="0x04000000,,,0x0" complete_cpuset="0x04000000,,,0x0" online_cpuset="0x04000000,,,0x0" allowed_cpuset="0x04000000,,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x08000000,0x00080000,,0x0" complete_cpuset="0x08000000,0x00080000,,0x0" online_cpuset="0x08000000,0x00080000,,0x0" allowed_cpuset="0x08000000,0x00080000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x08000000,0x00080000,,0x0" complete_cpuset="0x08000000,0x00080000,,0x0" online_cpuset="0x08000000,0x00080000,,0x0" allowed_cpuset="0x08000000,0x00080000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x08000000,0x00080000,,0x0" complete_cpuset="0x08000000,0x00080000,,0x0" online_cpuset="0x08000000,0x00080000,,0x0" allowed_cpuset="0x08000000,0x00080000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="8" cpuset="0x08000000,0x00080000,,0x0" complete_cpuset="0x08000000,0x00080000,,0x0" online_cpuset="0x08000000,0x00080000,,0x0" allowed_cpuset="0x08000000,0x00080000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001">
+                  <object type="PU" os_index="83" cpuset="0x00080000,,0x0" complete_cpuset="0x00080000,,0x0" online_cpuset="0x00080000,,0x0" allowed_cpuset="0x00080000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                  <object type="PU" os_index="123" cpuset="0x08000000,,,0x0" complete_cpuset="0x08000000,,,0x0" online_cpuset="0x08000000,,,0x0" allowed_cpuset="0x08000000,,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x10000000,0x00100000,,0x0" complete_cpuset="0x10000000,0x00100000,,0x0" online_cpuset="0x10000000,0x00100000,,0x0" allowed_cpuset="0x10000000,0x00100000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x10000000,0x00100000,,0x0" complete_cpuset="0x10000000,0x00100000,,0x0" online_cpuset="0x10000000,0x00100000,,0x0" allowed_cpuset="0x10000000,0x00100000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x10000000,0x00100000,,0x0" complete_cpuset="0x10000000,0x00100000,,0x0" online_cpuset="0x10000000,0x00100000,,0x0" allowed_cpuset="0x10000000,0x00100000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="9" cpuset="0x10000000,0x00100000,,0x0" complete_cpuset="0x10000000,0x00100000,,0x0" online_cpuset="0x10000000,0x00100000,,0x0" allowed_cpuset="0x10000000,0x00100000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001">
+                  <object type="PU" os_index="84" cpuset="0x00100000,,0x0" complete_cpuset="0x00100000,,0x0" online_cpuset="0x00100000,,0x0" allowed_cpuset="0x00100000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                  <object type="PU" os_index="124" cpuset="0x10000000,,,0x0" complete_cpuset="0x10000000,,,0x0" online_cpuset="0x10000000,,,0x0" allowed_cpuset="0x10000000,,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x20000000,0x00200000,,0x0" complete_cpuset="0x20000000,0x00200000,,0x0" online_cpuset="0x20000000,0x00200000,,0x0" allowed_cpuset="0x20000000,0x00200000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x20000000,0x00200000,,0x0" complete_cpuset="0x20000000,0x00200000,,0x0" online_cpuset="0x20000000,0x00200000,,0x0" allowed_cpuset="0x20000000,0x00200000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x20000000,0x00200000,,0x0" complete_cpuset="0x20000000,0x00200000,,0x0" online_cpuset="0x20000000,0x00200000,,0x0" allowed_cpuset="0x20000000,0x00200000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="16" cpuset="0x20000000,0x00200000,,0x0" complete_cpuset="0x20000000,0x00200000,,0x0" online_cpuset="0x20000000,0x00200000,,0x0" allowed_cpuset="0x20000000,0x00200000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001">
+                  <object type="PU" os_index="85" cpuset="0x00200000,,0x0" complete_cpuset="0x00200000,,0x0" online_cpuset="0x00200000,,0x0" allowed_cpuset="0x00200000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                  <object type="PU" os_index="125" cpuset="0x20000000,,,0x0" complete_cpuset="0x20000000,,,0x0" online_cpuset="0x20000000,,,0x0" allowed_cpuset="0x20000000,,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x40000000,0x00400000,,0x0" complete_cpuset="0x40000000,0x00400000,,0x0" online_cpuset="0x40000000,0x00400000,,0x0" allowed_cpuset="0x40000000,0x00400000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x40000000,0x00400000,,0x0" complete_cpuset="0x40000000,0x00400000,,0x0" online_cpuset="0x40000000,0x00400000,,0x0" allowed_cpuset="0x40000000,0x00400000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x40000000,0x00400000,,0x0" complete_cpuset="0x40000000,0x00400000,,0x0" online_cpuset="0x40000000,0x00400000,,0x0" allowed_cpuset="0x40000000,0x00400000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="17" cpuset="0x40000000,0x00400000,,0x0" complete_cpuset="0x40000000,0x00400000,,0x0" online_cpuset="0x40000000,0x00400000,,0x0" allowed_cpuset="0x40000000,0x00400000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001">
+                  <object type="PU" os_index="86" cpuset="0x00400000,,0x0" complete_cpuset="0x00400000,,0x0" online_cpuset="0x00400000,,0x0" allowed_cpuset="0x00400000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                  <object type="PU" os_index="126" cpuset="0x40000000,,,0x0" complete_cpuset="0x40000000,,,0x0" online_cpuset="0x40000000,,,0x0" allowed_cpuset="0x40000000,,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x80000000,0x00800000,,0x0" complete_cpuset="0x80000000,0x00800000,,0x0" online_cpuset="0x80000000,0x00800000,,0x0" allowed_cpuset="0x80000000,0x00800000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x80000000,0x00800000,,0x0" complete_cpuset="0x80000000,0x00800000,,0x0" online_cpuset="0x80000000,0x00800000,,0x0" allowed_cpuset="0x80000000,0x00800000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x80000000,0x00800000,,0x0" complete_cpuset="0x80000000,0x00800000,,0x0" online_cpuset="0x80000000,0x00800000,,0x0" allowed_cpuset="0x80000000,0x00800000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="18" cpuset="0x80000000,0x00800000,,0x0" complete_cpuset="0x80000000,0x00800000,,0x0" online_cpuset="0x80000000,0x00800000,,0x0" allowed_cpuset="0x80000000,0x00800000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001">
+                  <object type="PU" os_index="87" cpuset="0x00800000,,0x0" complete_cpuset="0x00800000,,0x0" online_cpuset="0x00800000,,0x0" allowed_cpuset="0x00800000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                  <object type="PU" os_index="127" cpuset="0x80000000,,,0x0" complete_cpuset="0x80000000,,,0x0" online_cpuset="0x80000000,,,0x0" allowed_cpuset="0x80000000,,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000001,,0x01000000,,0x0" complete_cpuset="0x00000001,,0x01000000,,0x0" online_cpuset="0x00000001,,0x01000000,,0x0" allowed_cpuset="0x00000001,,0x01000000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000001,,0x01000000,,0x0" complete_cpuset="0x00000001,,0x01000000,,0x0" online_cpuset="0x00000001,,0x01000000,,0x0" allowed_cpuset="0x00000001,,0x01000000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000001,,0x01000000,,0x0" complete_cpuset="0x00000001,,0x01000000,,0x0" online_cpuset="0x00000001,,0x01000000,,0x0" allowed_cpuset="0x00000001,,0x01000000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="24" cpuset="0x00000001,,0x01000000,,0x0" complete_cpuset="0x00000001,,0x01000000,,0x0" online_cpuset="0x00000001,,0x01000000,,0x0" allowed_cpuset="0x00000001,,0x01000000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001">
+                  <object type="PU" os_index="88" cpuset="0x01000000,,0x0" complete_cpuset="0x01000000,,0x0" online_cpuset="0x01000000,,0x0" allowed_cpuset="0x01000000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                  <object type="PU" os_index="128" cpuset="0x00000001,,,,0x0" complete_cpuset="0x00000001,,,,0x0" online_cpuset="0x00000001,,,,0x0" allowed_cpuset="0x00000001,,,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000002,,0x02000000,,0x0" complete_cpuset="0x00000002,,0x02000000,,0x0" online_cpuset="0x00000002,,0x02000000,,0x0" allowed_cpuset="0x00000002,,0x02000000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000002,,0x02000000,,0x0" complete_cpuset="0x00000002,,0x02000000,,0x0" online_cpuset="0x00000002,,0x02000000,,0x0" allowed_cpuset="0x00000002,,0x02000000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000002,,0x02000000,,0x0" complete_cpuset="0x00000002,,0x02000000,,0x0" online_cpuset="0x00000002,,0x02000000,,0x0" allowed_cpuset="0x00000002,,0x02000000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="25" cpuset="0x00000002,,0x02000000,,0x0" complete_cpuset="0x00000002,,0x02000000,,0x0" online_cpuset="0x00000002,,0x02000000,,0x0" allowed_cpuset="0x00000002,,0x02000000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001">
+                  <object type="PU" os_index="89" cpuset="0x02000000,,0x0" complete_cpuset="0x02000000,,0x0" online_cpuset="0x02000000,,0x0" allowed_cpuset="0x02000000,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                  <object type="PU" os_index="129" cpuset="0x00000002,,,,0x0" complete_cpuset="0x00000002,,,,0x0" online_cpuset="0x00000002,,,,0x0" allowed_cpuset="0x00000002,,,,0x0" nodeset="0x00000001" complete_nodeset="0x00000001" allowed_nodeset="0x00000001"/>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+      <object type="Bridge" os_index="0" bridge_type="0-1" depth="0" bridge_pci="0000:[00-09]">
+        <object type="Bridge" os_index="80" name="Intel Corporation 5520/X58 I/O Hub PCI Express Root Port 5" bridge_type="1-1" depth="1" bridge_pci="0000:[03-03]" pci_busid="0000:00:05.0" pci_type="0604 [8086:340c] [0000:0000] 22" pci_link_speed="0.000000">
+          <info name="PCIVendor" value="Intel Corporation"/>
+          <info name="PCIDevice" value="5520/X58 I/O Hub PCI Express Root Port 5"/>
+          <object type="PCIDev" os_index="12288" name="LSI Logic / Symbios Logic MegaRAID SAS 2108 [Liberator]" pci_busid="0000:03:00.0" pci_type="0104 [1000:0079] [1000:9290] 03" pci_link_speed="0.000000">
+            <info name="PCIVendor" value="LSI Logic / Symbios Logic"/>
+            <info name="PCIDevice" value="MegaRAID SAS 2108 [Liberator]"/>
+            <object type="OSDev" name="sda" osdev_type="0">
+              <info name="LinuxDeviceID" value="8:0"/>
+              <info name="Vendor" value="LSI"/>
+              <info name="Model" value="MR9280-24i4e"/>
+              <info name="Revision" value="2.13"/>
+              <info name="SerialNumber" value="600605b0017022401951929617ffb9e6"/>
+              <info name="Type" value="Disk"/>
+            </object>
+          </object>
+        </object>
+        <object type="Bridge" os_index="480" name="Intel Corporation 82801 PCI Bridge" bridge_type="1-1" depth="1" bridge_pci="0000:[09-09]" pci_busid="0000:00:1e.0" pci_type="0604 [8086:244e] [0000:0000] 90" pci_link_speed="0.000000">
+          <info name="PCIVendor" value="Intel Corporation"/>
+          <info name="PCIDevice" value="82801 PCI Bridge"/>
+          <object type="PCIDev" os_index="36880" name="Matrox Electronics Systems Ltd. MGA G200eW WPCM450" pci_busid="0000:09:01.0" pci_type="0300 [102b:0532] [15d9:0621] 0a" pci_link_speed="0.000000">
+            <info name="PCIVendor" value="Matrox Electronics Systems Ltd."/>
+            <info name="PCIDevice" value="MGA G200eW WPCM450"/>
+          </object>
+        </object>
+        <object type="PCIDev" os_index="498" name="Intel Corporation 82801JI (ICH10 Family) 4 port SATA IDE Controller #1" pci_busid="0000:00:1f.2" pci_type="0101 [8086:3a20] [15d9:0621] 00" pci_link_speed="0.000000">
+          <info name="PCIVendor" value="Intel Corporation"/>
+          <info name="PCIDevice" value="82801JI (ICH10 Family) 4 port SATA IDE Controller #1"/>
+        </object>
+        <object type="PCIDev" os_index="501" name="Intel Corporation 82801JI (ICH10 Family) 2 port SATA IDE Controller #2" pci_busid="0000:00:1f.5" pci_type="0101 [8086:3a26] [15d9:0621] 00" pci_link_speed="0.000000">
+          <info name="PCIVendor" value="Intel Corporation"/>
+          <info name="PCIDevice" value="82801JI (ICH10 Family) 2 port SATA IDE Controller #2"/>
+        </object>
+      </object>
+    </object>
+    <object type="NUMANode" os_index="4" cpuset="0x0007fe00,0x000007fe" complete_cpuset="0x0007fe00,0x000007fe" online_cpuset="0x0007fe00,0x000007fe" allowed_cpuset="0x0007fe00,0x000007fe" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" local_memory="135288676352">
+      <page_type size="4096" count="33029462"/>
+      <page_type size="2097152" count="0"/>
+      <object type="Package" os_index="4" cpuset="0x0007fe00,0x000007fe" complete_cpuset="0x0007fe00,0x000007fe" online_cpuset="0x0007fe00,0x000007fe" allowed_cpuset="0x0007fe00,0x000007fe" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010">
+        <info name="CPUVendor" value="GenuineIntel"/>
+        <info name="CPUFamilyNumber" value="6"/>
+        <info name="CPUModelNumber" value="47"/>
+        <info name="CPUModel" value="Intel(R) Xeon(R) CPU E7- 8850  @ 2.00GHz"/>
+        <info name="CPUStepping" value="2"/>
+        <object type="Cache" cpuset="0x0007fe00,0x000007fe" complete_cpuset="0x0007fe00,0x000007fe" online_cpuset="0x0007fe00,0x000007fe" allowed_cpuset="0x0007fe00,0x000007fe" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="25165824" depth="3" cache_linesize="64" cache_associativity="24" cache_type="0">
+          <object type="Cache" cpuset="0x00000200,0x00000002" complete_cpuset="0x00000200,0x00000002" online_cpuset="0x00000200,0x00000002" allowed_cpuset="0x00000200,0x00000002" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000200,0x00000002" complete_cpuset="0x00000200,0x00000002" online_cpuset="0x00000200,0x00000002" allowed_cpuset="0x00000200,0x00000002" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000200,0x00000002" complete_cpuset="0x00000200,0x00000002" online_cpuset="0x00000200,0x00000002" allowed_cpuset="0x00000200,0x00000002" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="0" cpuset="0x00000200,0x00000002" complete_cpuset="0x00000200,0x00000002" online_cpuset="0x00000200,0x00000002" allowed_cpuset="0x00000200,0x00000002" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010">
+                  <object type="PU" os_index="1" cpuset="0x00000002" complete_cpuset="0x00000002" online_cpuset="0x00000002" allowed_cpuset="0x00000002" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                  <object type="PU" os_index="41" cpuset="0x00000200,0x0" complete_cpuset="0x00000200,0x0" online_cpuset="0x00000200,0x0" allowed_cpuset="0x00000200,0x0" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000400,0x00000004" complete_cpuset="0x00000400,0x00000004" online_cpuset="0x00000400,0x00000004" allowed_cpuset="0x00000400,0x00000004" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000400,0x00000004" complete_cpuset="0x00000400,0x00000004" online_cpuset="0x00000400,0x00000004" allowed_cpuset="0x00000400,0x00000004" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000400,0x00000004" complete_cpuset="0x00000400,0x00000004" online_cpuset="0x00000400,0x00000004" allowed_cpuset="0x00000400,0x00000004" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="1" cpuset="0x00000400,0x00000004" complete_cpuset="0x00000400,0x00000004" online_cpuset="0x00000400,0x00000004" allowed_cpuset="0x00000400,0x00000004" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010">
+                  <object type="PU" os_index="2" cpuset="0x00000004" complete_cpuset="0x00000004" online_cpuset="0x00000004" allowed_cpuset="0x00000004" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                  <object type="PU" os_index="42" cpuset="0x00000400,0x0" complete_cpuset="0x00000400,0x0" online_cpuset="0x00000400,0x0" allowed_cpuset="0x00000400,0x0" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000800,0x00000008" complete_cpuset="0x00000800,0x00000008" online_cpuset="0x00000800,0x00000008" allowed_cpuset="0x00000800,0x00000008" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000800,0x00000008" complete_cpuset="0x00000800,0x00000008" online_cpuset="0x00000800,0x00000008" allowed_cpuset="0x00000800,0x00000008" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000800,0x00000008" complete_cpuset="0x00000800,0x00000008" online_cpuset="0x00000800,0x00000008" allowed_cpuset="0x00000800,0x00000008" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="2" cpuset="0x00000800,0x00000008" complete_cpuset="0x00000800,0x00000008" online_cpuset="0x00000800,0x00000008" allowed_cpuset="0x00000800,0x00000008" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010">
+                  <object type="PU" os_index="3" cpuset="0x00000008" complete_cpuset="0x00000008" online_cpuset="0x00000008" allowed_cpuset="0x00000008" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                  <object type="PU" os_index="43" cpuset="0x00000800,0x0" complete_cpuset="0x00000800,0x0" online_cpuset="0x00000800,0x0" allowed_cpuset="0x00000800,0x0" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00001000,0x00000010" complete_cpuset="0x00001000,0x00000010" online_cpuset="0x00001000,0x00000010" allowed_cpuset="0x00001000,0x00000010" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00001000,0x00000010" complete_cpuset="0x00001000,0x00000010" online_cpuset="0x00001000,0x00000010" allowed_cpuset="0x00001000,0x00000010" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00001000,0x00000010" complete_cpuset="0x00001000,0x00000010" online_cpuset="0x00001000,0x00000010" allowed_cpuset="0x00001000,0x00000010" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="8" cpuset="0x00001000,0x00000010" complete_cpuset="0x00001000,0x00000010" online_cpuset="0x00001000,0x00000010" allowed_cpuset="0x00001000,0x00000010" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010">
+                  <object type="PU" os_index="4" cpuset="0x00000010" complete_cpuset="0x00000010" online_cpuset="0x00000010" allowed_cpuset="0x00000010" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                  <object type="PU" os_index="44" cpuset="0x00001000,0x0" complete_cpuset="0x00001000,0x0" online_cpuset="0x00001000,0x0" allowed_cpuset="0x00001000,0x0" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00002000,0x00000020" complete_cpuset="0x00002000,0x00000020" online_cpuset="0x00002000,0x00000020" allowed_cpuset="0x00002000,0x00000020" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00002000,0x00000020" complete_cpuset="0x00002000,0x00000020" online_cpuset="0x00002000,0x00000020" allowed_cpuset="0x00002000,0x00000020" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00002000,0x00000020" complete_cpuset="0x00002000,0x00000020" online_cpuset="0x00002000,0x00000020" allowed_cpuset="0x00002000,0x00000020" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="9" cpuset="0x00002000,0x00000020" complete_cpuset="0x00002000,0x00000020" online_cpuset="0x00002000,0x00000020" allowed_cpuset="0x00002000,0x00000020" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010">
+                  <object type="PU" os_index="5" cpuset="0x00000020" complete_cpuset="0x00000020" online_cpuset="0x00000020" allowed_cpuset="0x00000020" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                  <object type="PU" os_index="45" cpuset="0x00002000,0x0" complete_cpuset="0x00002000,0x0" online_cpuset="0x00002000,0x0" allowed_cpuset="0x00002000,0x0" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00004000,0x00000040" complete_cpuset="0x00004000,0x00000040" online_cpuset="0x00004000,0x00000040" allowed_cpuset="0x00004000,0x00000040" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00004000,0x00000040" complete_cpuset="0x00004000,0x00000040" online_cpuset="0x00004000,0x00000040" allowed_cpuset="0x00004000,0x00000040" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00004000,0x00000040" complete_cpuset="0x00004000,0x00000040" online_cpuset="0x00004000,0x00000040" allowed_cpuset="0x00004000,0x00000040" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="16" cpuset="0x00004000,0x00000040" complete_cpuset="0x00004000,0x00000040" online_cpuset="0x00004000,0x00000040" allowed_cpuset="0x00004000,0x00000040" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010">
+                  <object type="PU" os_index="6" cpuset="0x00000040" complete_cpuset="0x00000040" online_cpuset="0x00000040" allowed_cpuset="0x00000040" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                  <object type="PU" os_index="46" cpuset="0x00004000,0x0" complete_cpuset="0x00004000,0x0" online_cpuset="0x00004000,0x0" allowed_cpuset="0x00004000,0x0" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00008000,0x00000080" complete_cpuset="0x00008000,0x00000080" online_cpuset="0x00008000,0x00000080" allowed_cpuset="0x00008000,0x00000080" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00008000,0x00000080" complete_cpuset="0x00008000,0x00000080" online_cpuset="0x00008000,0x00000080" allowed_cpuset="0x00008000,0x00000080" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00008000,0x00000080" complete_cpuset="0x00008000,0x00000080" online_cpuset="0x00008000,0x00000080" allowed_cpuset="0x00008000,0x00000080" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="17" cpuset="0x00008000,0x00000080" complete_cpuset="0x00008000,0x00000080" online_cpuset="0x00008000,0x00000080" allowed_cpuset="0x00008000,0x00000080" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010">
+                  <object type="PU" os_index="7" cpuset="0x00000080" complete_cpuset="0x00000080" online_cpuset="0x00000080" allowed_cpuset="0x00000080" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                  <object type="PU" os_index="47" cpuset="0x00008000,0x0" complete_cpuset="0x00008000,0x0" online_cpuset="0x00008000,0x0" allowed_cpuset="0x00008000,0x0" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00010000,0x00000100" complete_cpuset="0x00010000,0x00000100" online_cpuset="0x00010000,0x00000100" allowed_cpuset="0x00010000,0x00000100" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00010000,0x00000100" complete_cpuset="0x00010000,0x00000100" online_cpuset="0x00010000,0x00000100" allowed_cpuset="0x00010000,0x00000100" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00010000,0x00000100" complete_cpuset="0x00010000,0x00000100" online_cpuset="0x00010000,0x00000100" allowed_cpuset="0x00010000,0x00000100" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="18" cpuset="0x00010000,0x00000100" complete_cpuset="0x00010000,0x00000100" online_cpuset="0x00010000,0x00000100" allowed_cpuset="0x00010000,0x00000100" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010">
+                  <object type="PU" os_index="8" cpuset="0x00000100" complete_cpuset="0x00000100" online_cpuset="0x00000100" allowed_cpuset="0x00000100" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                  <object type="PU" os_index="48" cpuset="0x00010000,0x0" complete_cpuset="0x00010000,0x0" online_cpuset="0x00010000,0x0" allowed_cpuset="0x00010000,0x0" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00020000,0x00000200" complete_cpuset="0x00020000,0x00000200" online_cpuset="0x00020000,0x00000200" allowed_cpuset="0x00020000,0x00000200" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00020000,0x00000200" complete_cpuset="0x00020000,0x00000200" online_cpuset="0x00020000,0x00000200" allowed_cpuset="0x00020000,0x00000200" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00020000,0x00000200" complete_cpuset="0x00020000,0x00000200" online_cpuset="0x00020000,0x00000200" allowed_cpuset="0x00020000,0x00000200" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="24" cpuset="0x00020000,0x00000200" complete_cpuset="0x00020000,0x00000200" online_cpuset="0x00020000,0x00000200" allowed_cpuset="0x00020000,0x00000200" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010">
+                  <object type="PU" os_index="9" cpuset="0x00000200" complete_cpuset="0x00000200" online_cpuset="0x00000200" allowed_cpuset="0x00000200" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                  <object type="PU" os_index="49" cpuset="0x00020000,0x0" complete_cpuset="0x00020000,0x0" online_cpuset="0x00020000,0x0" allowed_cpuset="0x00020000,0x0" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00040000,0x00000400" complete_cpuset="0x00040000,0x00000400" online_cpuset="0x00040000,0x00000400" allowed_cpuset="0x00040000,0x00000400" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00040000,0x00000400" complete_cpuset="0x00040000,0x00000400" online_cpuset="0x00040000,0x00000400" allowed_cpuset="0x00040000,0x00000400" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00040000,0x00000400" complete_cpuset="0x00040000,0x00000400" online_cpuset="0x00040000,0x00000400" allowed_cpuset="0x00040000,0x00000400" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="25" cpuset="0x00040000,0x00000400" complete_cpuset="0x00040000,0x00000400" online_cpuset="0x00040000,0x00000400" allowed_cpuset="0x00040000,0x00000400" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010">
+                  <object type="PU" os_index="10" cpuset="0x00000400" complete_cpuset="0x00000400" online_cpuset="0x00000400" allowed_cpuset="0x00000400" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                  <object type="PU" os_index="50" cpuset="0x00040000,0x0" complete_cpuset="0x00040000,0x0" online_cpuset="0x00040000,0x0" allowed_cpuset="0x00040000,0x0" nodeset="0x00000010" complete_nodeset="0x00000010" allowed_nodeset="0x00000010"/>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+    <object type="NUMANode" os_index="5" cpuset="0x1ff80000,0x001ff800" complete_cpuset="0x1ff80000,0x001ff800" online_cpuset="0x1ff80000,0x001ff800" allowed_cpuset="0x1ff80000,0x001ff800" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" local_memory="135288676352">
+      <page_type size="4096" count="33029462"/>
+      <page_type size="2097152" count="0"/>
+      <object type="Package" os_index="5" cpuset="0x1ff80000,0x001ff800" complete_cpuset="0x1ff80000,0x001ff800" online_cpuset="0x1ff80000,0x001ff800" allowed_cpuset="0x1ff80000,0x001ff800" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020">
+        <info name="CPUVendor" value="GenuineIntel"/>
+        <info name="CPUFamilyNumber" value="6"/>
+        <info name="CPUModelNumber" value="47"/>
+        <info name="CPUModel" value="Intel(R) Xeon(R) CPU E7- 8850  @ 2.00GHz"/>
+        <info name="CPUStepping" value="2"/>
+        <object type="Cache" cpuset="0x1ff80000,0x001ff800" complete_cpuset="0x1ff80000,0x001ff800" online_cpuset="0x1ff80000,0x001ff800" allowed_cpuset="0x1ff80000,0x001ff800" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="25165824" depth="3" cache_linesize="64" cache_associativity="24" cache_type="0">
+          <object type="Cache" cpuset="0x00080000,0x00000800" complete_cpuset="0x00080000,0x00000800" online_cpuset="0x00080000,0x00000800" allowed_cpuset="0x00080000,0x00000800" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00080000,0x00000800" complete_cpuset="0x00080000,0x00000800" online_cpuset="0x00080000,0x00000800" allowed_cpuset="0x00080000,0x00000800" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00080000,0x00000800" complete_cpuset="0x00080000,0x00000800" online_cpuset="0x00080000,0x00000800" allowed_cpuset="0x00080000,0x00000800" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="0" cpuset="0x00080000,0x00000800" complete_cpuset="0x00080000,0x00000800" online_cpuset="0x00080000,0x00000800" allowed_cpuset="0x00080000,0x00000800" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020">
+                  <object type="PU" os_index="11" cpuset="0x00000800" complete_cpuset="0x00000800" online_cpuset="0x00000800" allowed_cpuset="0x00000800" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                  <object type="PU" os_index="51" cpuset="0x00080000,0x0" complete_cpuset="0x00080000,0x0" online_cpuset="0x00080000,0x0" allowed_cpuset="0x00080000,0x0" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00100000,0x00001000" complete_cpuset="0x00100000,0x00001000" online_cpuset="0x00100000,0x00001000" allowed_cpuset="0x00100000,0x00001000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00100000,0x00001000" complete_cpuset="0x00100000,0x00001000" online_cpuset="0x00100000,0x00001000" allowed_cpuset="0x00100000,0x00001000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00100000,0x00001000" complete_cpuset="0x00100000,0x00001000" online_cpuset="0x00100000,0x00001000" allowed_cpuset="0x00100000,0x00001000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="1" cpuset="0x00100000,0x00001000" complete_cpuset="0x00100000,0x00001000" online_cpuset="0x00100000,0x00001000" allowed_cpuset="0x00100000,0x00001000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020">
+                  <object type="PU" os_index="12" cpuset="0x00001000" complete_cpuset="0x00001000" online_cpuset="0x00001000" allowed_cpuset="0x00001000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                  <object type="PU" os_index="52" cpuset="0x00100000,0x0" complete_cpuset="0x00100000,0x0" online_cpuset="0x00100000,0x0" allowed_cpuset="0x00100000,0x0" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00200000,0x00002000" complete_cpuset="0x00200000,0x00002000" online_cpuset="0x00200000,0x00002000" allowed_cpuset="0x00200000,0x00002000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00200000,0x00002000" complete_cpuset="0x00200000,0x00002000" online_cpuset="0x00200000,0x00002000" allowed_cpuset="0x00200000,0x00002000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00200000,0x00002000" complete_cpuset="0x00200000,0x00002000" online_cpuset="0x00200000,0x00002000" allowed_cpuset="0x00200000,0x00002000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="2" cpuset="0x00200000,0x00002000" complete_cpuset="0x00200000,0x00002000" online_cpuset="0x00200000,0x00002000" allowed_cpuset="0x00200000,0x00002000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020">
+                  <object type="PU" os_index="13" cpuset="0x00002000" complete_cpuset="0x00002000" online_cpuset="0x00002000" allowed_cpuset="0x00002000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                  <object type="PU" os_index="53" cpuset="0x00200000,0x0" complete_cpuset="0x00200000,0x0" online_cpuset="0x00200000,0x0" allowed_cpuset="0x00200000,0x0" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00400000,0x00004000" complete_cpuset="0x00400000,0x00004000" online_cpuset="0x00400000,0x00004000" allowed_cpuset="0x00400000,0x00004000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00400000,0x00004000" complete_cpuset="0x00400000,0x00004000" online_cpuset="0x00400000,0x00004000" allowed_cpuset="0x00400000,0x00004000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00400000,0x00004000" complete_cpuset="0x00400000,0x00004000" online_cpuset="0x00400000,0x00004000" allowed_cpuset="0x00400000,0x00004000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="8" cpuset="0x00400000,0x00004000" complete_cpuset="0x00400000,0x00004000" online_cpuset="0x00400000,0x00004000" allowed_cpuset="0x00400000,0x00004000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020">
+                  <object type="PU" os_index="14" cpuset="0x00004000" complete_cpuset="0x00004000" online_cpuset="0x00004000" allowed_cpuset="0x00004000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                  <object type="PU" os_index="54" cpuset="0x00400000,0x0" complete_cpuset="0x00400000,0x0" online_cpuset="0x00400000,0x0" allowed_cpuset="0x00400000,0x0" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00800000,0x00008000" complete_cpuset="0x00800000,0x00008000" online_cpuset="0x00800000,0x00008000" allowed_cpuset="0x00800000,0x00008000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00800000,0x00008000" complete_cpuset="0x00800000,0x00008000" online_cpuset="0x00800000,0x00008000" allowed_cpuset="0x00800000,0x00008000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00800000,0x00008000" complete_cpuset="0x00800000,0x00008000" online_cpuset="0x00800000,0x00008000" allowed_cpuset="0x00800000,0x00008000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="9" cpuset="0x00800000,0x00008000" complete_cpuset="0x00800000,0x00008000" online_cpuset="0x00800000,0x00008000" allowed_cpuset="0x00800000,0x00008000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020">
+                  <object type="PU" os_index="15" cpuset="0x00008000" complete_cpuset="0x00008000" online_cpuset="0x00008000" allowed_cpuset="0x00008000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                  <object type="PU" os_index="55" cpuset="0x00800000,0x0" complete_cpuset="0x00800000,0x0" online_cpuset="0x00800000,0x0" allowed_cpuset="0x00800000,0x0" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x01000000,0x00010000" complete_cpuset="0x01000000,0x00010000" online_cpuset="0x01000000,0x00010000" allowed_cpuset="0x01000000,0x00010000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x01000000,0x00010000" complete_cpuset="0x01000000,0x00010000" online_cpuset="0x01000000,0x00010000" allowed_cpuset="0x01000000,0x00010000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x01000000,0x00010000" complete_cpuset="0x01000000,0x00010000" online_cpuset="0x01000000,0x00010000" allowed_cpuset="0x01000000,0x00010000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="16" cpuset="0x01000000,0x00010000" complete_cpuset="0x01000000,0x00010000" online_cpuset="0x01000000,0x00010000" allowed_cpuset="0x01000000,0x00010000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020">
+                  <object type="PU" os_index="16" cpuset="0x00010000" complete_cpuset="0x00010000" online_cpuset="0x00010000" allowed_cpuset="0x00010000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                  <object type="PU" os_index="56" cpuset="0x01000000,0x0" complete_cpuset="0x01000000,0x0" online_cpuset="0x01000000,0x0" allowed_cpuset="0x01000000,0x0" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x02000000,0x00020000" complete_cpuset="0x02000000,0x00020000" online_cpuset="0x02000000,0x00020000" allowed_cpuset="0x02000000,0x00020000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x02000000,0x00020000" complete_cpuset="0x02000000,0x00020000" online_cpuset="0x02000000,0x00020000" allowed_cpuset="0x02000000,0x00020000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x02000000,0x00020000" complete_cpuset="0x02000000,0x00020000" online_cpuset="0x02000000,0x00020000" allowed_cpuset="0x02000000,0x00020000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="17" cpuset="0x02000000,0x00020000" complete_cpuset="0x02000000,0x00020000" online_cpuset="0x02000000,0x00020000" allowed_cpuset="0x02000000,0x00020000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020">
+                  <object type="PU" os_index="17" cpuset="0x00020000" complete_cpuset="0x00020000" online_cpuset="0x00020000" allowed_cpuset="0x00020000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                  <object type="PU" os_index="57" cpuset="0x02000000,0x0" complete_cpuset="0x02000000,0x0" online_cpuset="0x02000000,0x0" allowed_cpuset="0x02000000,0x0" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x04000000,0x00040000" complete_cpuset="0x04000000,0x00040000" online_cpuset="0x04000000,0x00040000" allowed_cpuset="0x04000000,0x00040000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x04000000,0x00040000" complete_cpuset="0x04000000,0x00040000" online_cpuset="0x04000000,0x00040000" allowed_cpuset="0x04000000,0x00040000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x04000000,0x00040000" complete_cpuset="0x04000000,0x00040000" online_cpuset="0x04000000,0x00040000" allowed_cpuset="0x04000000,0x00040000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="18" cpuset="0x04000000,0x00040000" complete_cpuset="0x04000000,0x00040000" online_cpuset="0x04000000,0x00040000" allowed_cpuset="0x04000000,0x00040000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020">
+                  <object type="PU" os_index="18" cpuset="0x00040000" complete_cpuset="0x00040000" online_cpuset="0x00040000" allowed_cpuset="0x00040000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                  <object type="PU" os_index="58" cpuset="0x04000000,0x0" complete_cpuset="0x04000000,0x0" online_cpuset="0x04000000,0x0" allowed_cpuset="0x04000000,0x0" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x08000000,0x00080000" complete_cpuset="0x08000000,0x00080000" online_cpuset="0x08000000,0x00080000" allowed_cpuset="0x08000000,0x00080000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x08000000,0x00080000" complete_cpuset="0x08000000,0x00080000" online_cpuset="0x08000000,0x00080000" allowed_cpuset="0x08000000,0x00080000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x08000000,0x00080000" complete_cpuset="0x08000000,0x00080000" online_cpuset="0x08000000,0x00080000" allowed_cpuset="0x08000000,0x00080000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="24" cpuset="0x08000000,0x00080000" complete_cpuset="0x08000000,0x00080000" online_cpuset="0x08000000,0x00080000" allowed_cpuset="0x08000000,0x00080000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020">
+                  <object type="PU" os_index="19" cpuset="0x00080000" complete_cpuset="0x00080000" online_cpuset="0x00080000" allowed_cpuset="0x00080000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                  <object type="PU" os_index="59" cpuset="0x08000000,0x0" complete_cpuset="0x08000000,0x0" online_cpuset="0x08000000,0x0" allowed_cpuset="0x08000000,0x0" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x10000000,0x00100000" complete_cpuset="0x10000000,0x00100000" online_cpuset="0x10000000,0x00100000" allowed_cpuset="0x10000000,0x00100000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x10000000,0x00100000" complete_cpuset="0x10000000,0x00100000" online_cpuset="0x10000000,0x00100000" allowed_cpuset="0x10000000,0x00100000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x10000000,0x00100000" complete_cpuset="0x10000000,0x00100000" online_cpuset="0x10000000,0x00100000" allowed_cpuset="0x10000000,0x00100000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="25" cpuset="0x10000000,0x00100000" complete_cpuset="0x10000000,0x00100000" online_cpuset="0x10000000,0x00100000" allowed_cpuset="0x10000000,0x00100000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020">
+                  <object type="PU" os_index="20" cpuset="0x00100000" complete_cpuset="0x00100000" online_cpuset="0x00100000" allowed_cpuset="0x00100000" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                  <object type="PU" os_index="60" cpuset="0x10000000,0x0" complete_cpuset="0x10000000,0x0" online_cpuset="0x10000000,0x0" allowed_cpuset="0x10000000,0x0" nodeset="0x00000020" complete_nodeset="0x00000020" allowed_nodeset="0x00000020"/>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+    <object type="NUMANode" os_index="6" cpuset="0x0000007f,0xe0000000,0x7fe00000" complete_cpuset="0x0000007f,0xe0000000,0x7fe00000" online_cpuset="0x0000007f,0xe0000000,0x7fe00000" allowed_cpuset="0x0000007f,0xe0000000,0x7fe00000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" local_memory="135288676352">
+      <page_type size="4096" count="33029462"/>
+      <page_type size="2097152" count="0"/>
+      <object type="Package" os_index="6" cpuset="0x0000007f,0xe0000000,0x7fe00000" complete_cpuset="0x0000007f,0xe0000000,0x7fe00000" online_cpuset="0x0000007f,0xe0000000,0x7fe00000" allowed_cpuset="0x0000007f,0xe0000000,0x7fe00000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040">
+        <info name="CPUVendor" value="GenuineIntel"/>
+        <info name="CPUFamilyNumber" value="6"/>
+        <info name="CPUModelNumber" value="47"/>
+        <info name="CPUModel" value="Intel(R) Xeon(R) CPU E7- 8850  @ 2.00GHz"/>
+        <info name="CPUStepping" value="2"/>
+        <object type="Cache" cpuset="0x0000007f,0xe0000000,0x7fe00000" complete_cpuset="0x0000007f,0xe0000000,0x7fe00000" online_cpuset="0x0000007f,0xe0000000,0x7fe00000" allowed_cpuset="0x0000007f,0xe0000000,0x7fe00000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="25165824" depth="3" cache_linesize="64" cache_associativity="24" cache_type="0">
+          <object type="Cache" cpuset="0x20000000,0x00200000" complete_cpuset="0x20000000,0x00200000" online_cpuset="0x20000000,0x00200000" allowed_cpuset="0x20000000,0x00200000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x20000000,0x00200000" complete_cpuset="0x20000000,0x00200000" online_cpuset="0x20000000,0x00200000" allowed_cpuset="0x20000000,0x00200000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x20000000,0x00200000" complete_cpuset="0x20000000,0x00200000" online_cpuset="0x20000000,0x00200000" allowed_cpuset="0x20000000,0x00200000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="0" cpuset="0x20000000,0x00200000" complete_cpuset="0x20000000,0x00200000" online_cpuset="0x20000000,0x00200000" allowed_cpuset="0x20000000,0x00200000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040">
+                  <object type="PU" os_index="21" cpuset="0x00200000" complete_cpuset="0x00200000" online_cpuset="0x00200000" allowed_cpuset="0x00200000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                  <object type="PU" os_index="61" cpuset="0x20000000,0x0" complete_cpuset="0x20000000,0x0" online_cpuset="0x20000000,0x0" allowed_cpuset="0x20000000,0x0" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x40000000,0x00400000" complete_cpuset="0x40000000,0x00400000" online_cpuset="0x40000000,0x00400000" allowed_cpuset="0x40000000,0x00400000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x40000000,0x00400000" complete_cpuset="0x40000000,0x00400000" online_cpuset="0x40000000,0x00400000" allowed_cpuset="0x40000000,0x00400000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x40000000,0x00400000" complete_cpuset="0x40000000,0x00400000" online_cpuset="0x40000000,0x00400000" allowed_cpuset="0x40000000,0x00400000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="1" cpuset="0x40000000,0x00400000" complete_cpuset="0x40000000,0x00400000" online_cpuset="0x40000000,0x00400000" allowed_cpuset="0x40000000,0x00400000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040">
+                  <object type="PU" os_index="22" cpuset="0x00400000" complete_cpuset="0x00400000" online_cpuset="0x00400000" allowed_cpuset="0x00400000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                  <object type="PU" os_index="62" cpuset="0x40000000,0x0" complete_cpuset="0x40000000,0x0" online_cpuset="0x40000000,0x0" allowed_cpuset="0x40000000,0x0" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x80000000,0x00800000" complete_cpuset="0x80000000,0x00800000" online_cpuset="0x80000000,0x00800000" allowed_cpuset="0x80000000,0x00800000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x80000000,0x00800000" complete_cpuset="0x80000000,0x00800000" online_cpuset="0x80000000,0x00800000" allowed_cpuset="0x80000000,0x00800000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x80000000,0x00800000" complete_cpuset="0x80000000,0x00800000" online_cpuset="0x80000000,0x00800000" allowed_cpuset="0x80000000,0x00800000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="2" cpuset="0x80000000,0x00800000" complete_cpuset="0x80000000,0x00800000" online_cpuset="0x80000000,0x00800000" allowed_cpuset="0x80000000,0x00800000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040">
+                  <object type="PU" os_index="23" cpuset="0x00800000" complete_cpuset="0x00800000" online_cpuset="0x00800000" allowed_cpuset="0x00800000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                  <object type="PU" os_index="63" cpuset="0x80000000,0x0" complete_cpuset="0x80000000,0x0" online_cpuset="0x80000000,0x0" allowed_cpuset="0x80000000,0x0" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000001,,0x01000000" complete_cpuset="0x00000001,,0x01000000" online_cpuset="0x00000001,,0x01000000" allowed_cpuset="0x00000001,,0x01000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000001,,0x01000000" complete_cpuset="0x00000001,,0x01000000" online_cpuset="0x00000001,,0x01000000" allowed_cpuset="0x00000001,,0x01000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000001,,0x01000000" complete_cpuset="0x00000001,,0x01000000" online_cpuset="0x00000001,,0x01000000" allowed_cpuset="0x00000001,,0x01000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="8" cpuset="0x00000001,,0x01000000" complete_cpuset="0x00000001,,0x01000000" online_cpuset="0x00000001,,0x01000000" allowed_cpuset="0x00000001,,0x01000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040">
+                  <object type="PU" os_index="24" cpuset="0x01000000" complete_cpuset="0x01000000" online_cpuset="0x01000000" allowed_cpuset="0x01000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                  <object type="PU" os_index="64" cpuset="0x00000001,,0x0" complete_cpuset="0x00000001,,0x0" online_cpuset="0x00000001,,0x0" allowed_cpuset="0x00000001,,0x0" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000002,,0x02000000" complete_cpuset="0x00000002,,0x02000000" online_cpuset="0x00000002,,0x02000000" allowed_cpuset="0x00000002,,0x02000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000002,,0x02000000" complete_cpuset="0x00000002,,0x02000000" online_cpuset="0x00000002,,0x02000000" allowed_cpuset="0x00000002,,0x02000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000002,,0x02000000" complete_cpuset="0x00000002,,0x02000000" online_cpuset="0x00000002,,0x02000000" allowed_cpuset="0x00000002,,0x02000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="9" cpuset="0x00000002,,0x02000000" complete_cpuset="0x00000002,,0x02000000" online_cpuset="0x00000002,,0x02000000" allowed_cpuset="0x00000002,,0x02000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040">
+                  <object type="PU" os_index="25" cpuset="0x02000000" complete_cpuset="0x02000000" online_cpuset="0x02000000" allowed_cpuset="0x02000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                  <object type="PU" os_index="65" cpuset="0x00000002,,0x0" complete_cpuset="0x00000002,,0x0" online_cpuset="0x00000002,,0x0" allowed_cpuset="0x00000002,,0x0" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000004,,0x04000000" complete_cpuset="0x00000004,,0x04000000" online_cpuset="0x00000004,,0x04000000" allowed_cpuset="0x00000004,,0x04000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000004,,0x04000000" complete_cpuset="0x00000004,,0x04000000" online_cpuset="0x00000004,,0x04000000" allowed_cpuset="0x00000004,,0x04000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000004,,0x04000000" complete_cpuset="0x00000004,,0x04000000" online_cpuset="0x00000004,,0x04000000" allowed_cpuset="0x00000004,,0x04000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="16" cpuset="0x00000004,,0x04000000" complete_cpuset="0x00000004,,0x04000000" online_cpuset="0x00000004,,0x04000000" allowed_cpuset="0x00000004,,0x04000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040">
+                  <object type="PU" os_index="26" cpuset="0x04000000" complete_cpuset="0x04000000" online_cpuset="0x04000000" allowed_cpuset="0x04000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                  <object type="PU" os_index="66" cpuset="0x00000004,,0x0" complete_cpuset="0x00000004,,0x0" online_cpuset="0x00000004,,0x0" allowed_cpuset="0x00000004,,0x0" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000008,,0x08000000" complete_cpuset="0x00000008,,0x08000000" online_cpuset="0x00000008,,0x08000000" allowed_cpuset="0x00000008,,0x08000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000008,,0x08000000" complete_cpuset="0x00000008,,0x08000000" online_cpuset="0x00000008,,0x08000000" allowed_cpuset="0x00000008,,0x08000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000008,,0x08000000" complete_cpuset="0x00000008,,0x08000000" online_cpuset="0x00000008,,0x08000000" allowed_cpuset="0x00000008,,0x08000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="17" cpuset="0x00000008,,0x08000000" complete_cpuset="0x00000008,,0x08000000" online_cpuset="0x00000008,,0x08000000" allowed_cpuset="0x00000008,,0x08000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040">
+                  <object type="PU" os_index="27" cpuset="0x08000000" complete_cpuset="0x08000000" online_cpuset="0x08000000" allowed_cpuset="0x08000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                  <object type="PU" os_index="67" cpuset="0x00000008,,0x0" complete_cpuset="0x00000008,,0x0" online_cpuset="0x00000008,,0x0" allowed_cpuset="0x00000008,,0x0" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000010,,0x10000000" complete_cpuset="0x00000010,,0x10000000" online_cpuset="0x00000010,,0x10000000" allowed_cpuset="0x00000010,,0x10000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000010,,0x10000000" complete_cpuset="0x00000010,,0x10000000" online_cpuset="0x00000010,,0x10000000" allowed_cpuset="0x00000010,,0x10000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000010,,0x10000000" complete_cpuset="0x00000010,,0x10000000" online_cpuset="0x00000010,,0x10000000" allowed_cpuset="0x00000010,,0x10000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="18" cpuset="0x00000010,,0x10000000" complete_cpuset="0x00000010,,0x10000000" online_cpuset="0x00000010,,0x10000000" allowed_cpuset="0x00000010,,0x10000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040">
+                  <object type="PU" os_index="28" cpuset="0x10000000" complete_cpuset="0x10000000" online_cpuset="0x10000000" allowed_cpuset="0x10000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                  <object type="PU" os_index="68" cpuset="0x00000010,,0x0" complete_cpuset="0x00000010,,0x0" online_cpuset="0x00000010,,0x0" allowed_cpuset="0x00000010,,0x0" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000020,,0x20000000" complete_cpuset="0x00000020,,0x20000000" online_cpuset="0x00000020,,0x20000000" allowed_cpuset="0x00000020,,0x20000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000020,,0x20000000" complete_cpuset="0x00000020,,0x20000000" online_cpuset="0x00000020,,0x20000000" allowed_cpuset="0x00000020,,0x20000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000020,,0x20000000" complete_cpuset="0x00000020,,0x20000000" online_cpuset="0x00000020,,0x20000000" allowed_cpuset="0x00000020,,0x20000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="24" cpuset="0x00000020,,0x20000000" complete_cpuset="0x00000020,,0x20000000" online_cpuset="0x00000020,,0x20000000" allowed_cpuset="0x00000020,,0x20000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040">
+                  <object type="PU" os_index="29" cpuset="0x20000000" complete_cpuset="0x20000000" online_cpuset="0x20000000" allowed_cpuset="0x20000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                  <object type="PU" os_index="69" cpuset="0x00000020,,0x0" complete_cpuset="0x00000020,,0x0" online_cpuset="0x00000020,,0x0" allowed_cpuset="0x00000020,,0x0" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000040,,0x40000000" complete_cpuset="0x00000040,,0x40000000" online_cpuset="0x00000040,,0x40000000" allowed_cpuset="0x00000040,,0x40000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000040,,0x40000000" complete_cpuset="0x00000040,,0x40000000" online_cpuset="0x00000040,,0x40000000" allowed_cpuset="0x00000040,,0x40000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000040,,0x40000000" complete_cpuset="0x00000040,,0x40000000" online_cpuset="0x00000040,,0x40000000" allowed_cpuset="0x00000040,,0x40000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="25" cpuset="0x00000040,,0x40000000" complete_cpuset="0x00000040,,0x40000000" online_cpuset="0x00000040,,0x40000000" allowed_cpuset="0x00000040,,0x40000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040">
+                  <object type="PU" os_index="30" cpuset="0x40000000" complete_cpuset="0x40000000" online_cpuset="0x40000000" allowed_cpuset="0x40000000" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                  <object type="PU" os_index="70" cpuset="0x00000040,,0x0" complete_cpuset="0x00000040,,0x0" online_cpuset="0x00000040,,0x0" allowed_cpuset="0x00000040,,0x0" nodeset="0x00000040" complete_nodeset="0x00000040" allowed_nodeset="0x00000040"/>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+    <object type="NUMANode" os_index="7" cpuset="0x0001ff80,0x000001ff,0x80000000" complete_cpuset="0x0001ff80,0x000001ff,0x80000000" online_cpuset="0x0001ff80,0x000001ff,0x80000000" allowed_cpuset="0x0001ff80,0x000001ff,0x80000000" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" local_memory="135287181312">
+      <page_type size="4096" count="33029097"/>
+      <page_type size="2097152" count="0"/>
+      <object type="Package" os_index="7" cpuset="0x0001ff80,0x000001ff,0x80000000" complete_cpuset="0x0001ff80,0x000001ff,0x80000000" online_cpuset="0x0001ff80,0x000001ff,0x80000000" allowed_cpuset="0x0001ff80,0x000001ff,0x80000000" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080">
+        <info name="CPUVendor" value="GenuineIntel"/>
+        <info name="CPUFamilyNumber" value="6"/>
+        <info name="CPUModelNumber" value="47"/>
+        <info name="CPUModel" value="Intel(R) Xeon(R) CPU E7- 8850  @ 2.00GHz"/>
+        <info name="CPUStepping" value="2"/>
+        <object type="Cache" cpuset="0x0001ff80,0x000001ff,0x80000000" complete_cpuset="0x0001ff80,0x000001ff,0x80000000" online_cpuset="0x0001ff80,0x000001ff,0x80000000" allowed_cpuset="0x0001ff80,0x000001ff,0x80000000" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="25165824" depth="3" cache_linesize="64" cache_associativity="24" cache_type="0">
+          <object type="Cache" cpuset="0x00000080,,0x80000000" complete_cpuset="0x00000080,,0x80000000" online_cpuset="0x00000080,,0x80000000" allowed_cpuset="0x00000080,,0x80000000" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000080,,0x80000000" complete_cpuset="0x00000080,,0x80000000" online_cpuset="0x00000080,,0x80000000" allowed_cpuset="0x00000080,,0x80000000" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000080,,0x80000000" complete_cpuset="0x00000080,,0x80000000" online_cpuset="0x00000080,,0x80000000" allowed_cpuset="0x00000080,,0x80000000" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="0" cpuset="0x00000080,,0x80000000" complete_cpuset="0x00000080,,0x80000000" online_cpuset="0x00000080,,0x80000000" allowed_cpuset="0x00000080,,0x80000000" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080">
+                  <object type="PU" os_index="31" cpuset="0x80000000" complete_cpuset="0x80000000" online_cpuset="0x80000000" allowed_cpuset="0x80000000" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                  <object type="PU" os_index="71" cpuset="0x00000080,,0x0" complete_cpuset="0x00000080,,0x0" online_cpuset="0x00000080,,0x0" allowed_cpuset="0x00000080,,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000100,0x00000001,0x0" complete_cpuset="0x00000100,0x00000001,0x0" online_cpuset="0x00000100,0x00000001,0x0" allowed_cpuset="0x00000100,0x00000001,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000100,0x00000001,0x0" complete_cpuset="0x00000100,0x00000001,0x0" online_cpuset="0x00000100,0x00000001,0x0" allowed_cpuset="0x00000100,0x00000001,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000100,0x00000001,0x0" complete_cpuset="0x00000100,0x00000001,0x0" online_cpuset="0x00000100,0x00000001,0x0" allowed_cpuset="0x00000100,0x00000001,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="1" cpuset="0x00000100,0x00000001,0x0" complete_cpuset="0x00000100,0x00000001,0x0" online_cpuset="0x00000100,0x00000001,0x0" allowed_cpuset="0x00000100,0x00000001,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080">
+                  <object type="PU" os_index="32" cpuset="0x00000001,0x0" complete_cpuset="0x00000001,0x0" online_cpuset="0x00000001,0x0" allowed_cpuset="0x00000001,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                  <object type="PU" os_index="72" cpuset="0x00000100,,0x0" complete_cpuset="0x00000100,,0x0" online_cpuset="0x00000100,,0x0" allowed_cpuset="0x00000100,,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000200,0x00000002,0x0" complete_cpuset="0x00000200,0x00000002,0x0" online_cpuset="0x00000200,0x00000002,0x0" allowed_cpuset="0x00000200,0x00000002,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000200,0x00000002,0x0" complete_cpuset="0x00000200,0x00000002,0x0" online_cpuset="0x00000200,0x00000002,0x0" allowed_cpuset="0x00000200,0x00000002,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000200,0x00000002,0x0" complete_cpuset="0x00000200,0x00000002,0x0" online_cpuset="0x00000200,0x00000002,0x0" allowed_cpuset="0x00000200,0x00000002,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="2" cpuset="0x00000200,0x00000002,0x0" complete_cpuset="0x00000200,0x00000002,0x0" online_cpuset="0x00000200,0x00000002,0x0" allowed_cpuset="0x00000200,0x00000002,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080">
+                  <object type="PU" os_index="33" cpuset="0x00000002,0x0" complete_cpuset="0x00000002,0x0" online_cpuset="0x00000002,0x0" allowed_cpuset="0x00000002,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                  <object type="PU" os_index="73" cpuset="0x00000200,,0x0" complete_cpuset="0x00000200,,0x0" online_cpuset="0x00000200,,0x0" allowed_cpuset="0x00000200,,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000400,0x00000004,0x0" complete_cpuset="0x00000400,0x00000004,0x0" online_cpuset="0x00000400,0x00000004,0x0" allowed_cpuset="0x00000400,0x00000004,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000400,0x00000004,0x0" complete_cpuset="0x00000400,0x00000004,0x0" online_cpuset="0x00000400,0x00000004,0x0" allowed_cpuset="0x00000400,0x00000004,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000400,0x00000004,0x0" complete_cpuset="0x00000400,0x00000004,0x0" online_cpuset="0x00000400,0x00000004,0x0" allowed_cpuset="0x00000400,0x00000004,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="8" cpuset="0x00000400,0x00000004,0x0" complete_cpuset="0x00000400,0x00000004,0x0" online_cpuset="0x00000400,0x00000004,0x0" allowed_cpuset="0x00000400,0x00000004,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080">
+                  <object type="PU" os_index="34" cpuset="0x00000004,0x0" complete_cpuset="0x00000004,0x0" online_cpuset="0x00000004,0x0" allowed_cpuset="0x00000004,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                  <object type="PU" os_index="74" cpuset="0x00000400,,0x0" complete_cpuset="0x00000400,,0x0" online_cpuset="0x00000400,,0x0" allowed_cpuset="0x00000400,,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000800,0x00000008,0x0" complete_cpuset="0x00000800,0x00000008,0x0" online_cpuset="0x00000800,0x00000008,0x0" allowed_cpuset="0x00000800,0x00000008,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000800,0x00000008,0x0" complete_cpuset="0x00000800,0x00000008,0x0" online_cpuset="0x00000800,0x00000008,0x0" allowed_cpuset="0x00000800,0x00000008,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000800,0x00000008,0x0" complete_cpuset="0x00000800,0x00000008,0x0" online_cpuset="0x00000800,0x00000008,0x0" allowed_cpuset="0x00000800,0x00000008,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="9" cpuset="0x00000800,0x00000008,0x0" complete_cpuset="0x00000800,0x00000008,0x0" online_cpuset="0x00000800,0x00000008,0x0" allowed_cpuset="0x00000800,0x00000008,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080">
+                  <object type="PU" os_index="35" cpuset="0x00000008,0x0" complete_cpuset="0x00000008,0x0" online_cpuset="0x00000008,0x0" allowed_cpuset="0x00000008,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                  <object type="PU" os_index="75" cpuset="0x00000800,,0x0" complete_cpuset="0x00000800,,0x0" online_cpuset="0x00000800,,0x0" allowed_cpuset="0x00000800,,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00001000,0x00000010,0x0" complete_cpuset="0x00001000,0x00000010,0x0" online_cpuset="0x00001000,0x00000010,0x0" allowed_cpuset="0x00001000,0x00000010,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00001000,0x00000010,0x0" complete_cpuset="0x00001000,0x00000010,0x0" online_cpuset="0x00001000,0x00000010,0x0" allowed_cpuset="0x00001000,0x00000010,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00001000,0x00000010,0x0" complete_cpuset="0x00001000,0x00000010,0x0" online_cpuset="0x00001000,0x00000010,0x0" allowed_cpuset="0x00001000,0x00000010,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="16" cpuset="0x00001000,0x00000010,0x0" complete_cpuset="0x00001000,0x00000010,0x0" online_cpuset="0x00001000,0x00000010,0x0" allowed_cpuset="0x00001000,0x00000010,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080">
+                  <object type="PU" os_index="36" cpuset="0x00000010,0x0" complete_cpuset="0x00000010,0x0" online_cpuset="0x00000010,0x0" allowed_cpuset="0x00000010,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                  <object type="PU" os_index="76" cpuset="0x00001000,,0x0" complete_cpuset="0x00001000,,0x0" online_cpuset="0x00001000,,0x0" allowed_cpuset="0x00001000,,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00002000,0x00000020,0x0" complete_cpuset="0x00002000,0x00000020,0x0" online_cpuset="0x00002000,0x00000020,0x0" allowed_cpuset="0x00002000,0x00000020,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00002000,0x00000020,0x0" complete_cpuset="0x00002000,0x00000020,0x0" online_cpuset="0x00002000,0x00000020,0x0" allowed_cpuset="0x00002000,0x00000020,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00002000,0x00000020,0x0" complete_cpuset="0x00002000,0x00000020,0x0" online_cpuset="0x00002000,0x00000020,0x0" allowed_cpuset="0x00002000,0x00000020,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="17" cpuset="0x00002000,0x00000020,0x0" complete_cpuset="0x00002000,0x00000020,0x0" online_cpuset="0x00002000,0x00000020,0x0" allowed_cpuset="0x00002000,0x00000020,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080">
+                  <object type="PU" os_index="37" cpuset="0x00000020,0x0" complete_cpuset="0x00000020,0x0" online_cpuset="0x00000020,0x0" allowed_cpuset="0x00000020,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                  <object type="PU" os_index="77" cpuset="0x00002000,,0x0" complete_cpuset="0x00002000,,0x0" online_cpuset="0x00002000,,0x0" allowed_cpuset="0x00002000,,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00004000,0x00000040,0x0" complete_cpuset="0x00004000,0x00000040,0x0" online_cpuset="0x00004000,0x00000040,0x0" allowed_cpuset="0x00004000,0x00000040,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00004000,0x00000040,0x0" complete_cpuset="0x00004000,0x00000040,0x0" online_cpuset="0x00004000,0x00000040,0x0" allowed_cpuset="0x00004000,0x00000040,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00004000,0x00000040,0x0" complete_cpuset="0x00004000,0x00000040,0x0" online_cpuset="0x00004000,0x00000040,0x0" allowed_cpuset="0x00004000,0x00000040,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="18" cpuset="0x00004000,0x00000040,0x0" complete_cpuset="0x00004000,0x00000040,0x0" online_cpuset="0x00004000,0x00000040,0x0" allowed_cpuset="0x00004000,0x00000040,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080">
+                  <object type="PU" os_index="38" cpuset="0x00000040,0x0" complete_cpuset="0x00000040,0x0" online_cpuset="0x00000040,0x0" allowed_cpuset="0x00000040,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                  <object type="PU" os_index="78" cpuset="0x00004000,,0x0" complete_cpuset="0x00004000,,0x0" online_cpuset="0x00004000,,0x0" allowed_cpuset="0x00004000,,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00008000,0x00000080,0x0" complete_cpuset="0x00008000,0x00000080,0x0" online_cpuset="0x00008000,0x00000080,0x0" allowed_cpuset="0x00008000,0x00000080,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00008000,0x00000080,0x0" complete_cpuset="0x00008000,0x00000080,0x0" online_cpuset="0x00008000,0x00000080,0x0" allowed_cpuset="0x00008000,0x00000080,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00008000,0x00000080,0x0" complete_cpuset="0x00008000,0x00000080,0x0" online_cpuset="0x00008000,0x00000080,0x0" allowed_cpuset="0x00008000,0x00000080,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="24" cpuset="0x00008000,0x00000080,0x0" complete_cpuset="0x00008000,0x00000080,0x0" online_cpuset="0x00008000,0x00000080,0x0" allowed_cpuset="0x00008000,0x00000080,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080">
+                  <object type="PU" os_index="39" cpuset="0x00000080,0x0" complete_cpuset="0x00000080,0x0" online_cpuset="0x00000080,0x0" allowed_cpuset="0x00000080,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                  <object type="PU" os_index="79" cpuset="0x00008000,,0x0" complete_cpuset="0x00008000,,0x0" online_cpuset="0x00008000,,0x0" allowed_cpuset="0x00008000,,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00010000,0x00000100,0x0" complete_cpuset="0x00010000,0x00000100,0x0" online_cpuset="0x00010000,0x00000100,0x0" allowed_cpuset="0x00010000,0x00000100,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00010000,0x00000100,0x0" complete_cpuset="0x00010000,0x00000100,0x0" online_cpuset="0x00010000,0x00000100,0x0" allowed_cpuset="0x00010000,0x00000100,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00010000,0x00000100,0x0" complete_cpuset="0x00010000,0x00000100,0x0" online_cpuset="0x00010000,0x00000100,0x0" allowed_cpuset="0x00010000,0x00000100,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="25" cpuset="0x00010000,0x00000100,0x0" complete_cpuset="0x00010000,0x00000100,0x0" online_cpuset="0x00010000,0x00000100,0x0" allowed_cpuset="0x00010000,0x00000100,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080">
+                  <object type="PU" os_index="40" cpuset="0x00000100,0x0" complete_cpuset="0x00000100,0x0" online_cpuset="0x00000100,0x0" allowed_cpuset="0x00000100,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                  <object type="PU" os_index="80" cpuset="0x00010000,,0x0" complete_cpuset="0x00010000,,0x0" online_cpuset="0x00010000,,0x0" allowed_cpuset="0x00010000,,0x0" nodeset="0x00000080" complete_nodeset="0x00000080" allowed_nodeset="0x00000080"/>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+    <object type="NUMANode" os_index="1" cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" complete_cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" online_cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" allowed_cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" local_memory="135288676352">
+      <page_type size="4096" count="33029462"/>
+      <page_type size="2097152" count="0"/>
+      <object type="Package" os_index="1" cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" complete_cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" online_cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" allowed_cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002">
+        <info name="CPUVendor" value="GenuineIntel"/>
+        <info name="CPUFamilyNumber" value="6"/>
+        <info name="CPUModelNumber" value="47"/>
+        <info name="CPUModel" value="Intel(R) Xeon(R) CPU E7- 8850  @ 2.00GHz"/>
+        <info name="CPUStepping" value="2"/>
+        <object type="Cache" cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" complete_cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" online_cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" allowed_cpuset="0x00000ffc,0x0000000f,0xfc000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="25165824" depth="3" cache_linesize="64" cache_associativity="24" cache_type="0">
+          <object type="Cache" cpuset="0x00000004,,0x04000000,,0x0" complete_cpuset="0x00000004,,0x04000000,,0x0" online_cpuset="0x00000004,,0x04000000,,0x0" allowed_cpuset="0x00000004,,0x04000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000004,,0x04000000,,0x0" complete_cpuset="0x00000004,,0x04000000,,0x0" online_cpuset="0x00000004,,0x04000000,,0x0" allowed_cpuset="0x00000004,,0x04000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000004,,0x04000000,,0x0" complete_cpuset="0x00000004,,0x04000000,,0x0" online_cpuset="0x00000004,,0x04000000,,0x0" allowed_cpuset="0x00000004,,0x04000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="0" cpuset="0x00000004,,0x04000000,,0x0" complete_cpuset="0x00000004,,0x04000000,,0x0" online_cpuset="0x00000004,,0x04000000,,0x0" allowed_cpuset="0x00000004,,0x04000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002">
+                  <object type="PU" os_index="90" cpuset="0x04000000,,0x0" complete_cpuset="0x04000000,,0x0" online_cpuset="0x04000000,,0x0" allowed_cpuset="0x04000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                  <object type="PU" os_index="130" cpuset="0x00000004,,,,0x0" complete_cpuset="0x00000004,,,,0x0" online_cpuset="0x00000004,,,,0x0" allowed_cpuset="0x00000004,,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000008,,0x08000000,,0x0" complete_cpuset="0x00000008,,0x08000000,,0x0" online_cpuset="0x00000008,,0x08000000,,0x0" allowed_cpuset="0x00000008,,0x08000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000008,,0x08000000,,0x0" complete_cpuset="0x00000008,,0x08000000,,0x0" online_cpuset="0x00000008,,0x08000000,,0x0" allowed_cpuset="0x00000008,,0x08000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000008,,0x08000000,,0x0" complete_cpuset="0x00000008,,0x08000000,,0x0" online_cpuset="0x00000008,,0x08000000,,0x0" allowed_cpuset="0x00000008,,0x08000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="1" cpuset="0x00000008,,0x08000000,,0x0" complete_cpuset="0x00000008,,0x08000000,,0x0" online_cpuset="0x00000008,,0x08000000,,0x0" allowed_cpuset="0x00000008,,0x08000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002">
+                  <object type="PU" os_index="91" cpuset="0x08000000,,0x0" complete_cpuset="0x08000000,,0x0" online_cpuset="0x08000000,,0x0" allowed_cpuset="0x08000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                  <object type="PU" os_index="131" cpuset="0x00000008,,,,0x0" complete_cpuset="0x00000008,,,,0x0" online_cpuset="0x00000008,,,,0x0" allowed_cpuset="0x00000008,,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000010,,0x10000000,,0x0" complete_cpuset="0x00000010,,0x10000000,,0x0" online_cpuset="0x00000010,,0x10000000,,0x0" allowed_cpuset="0x00000010,,0x10000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000010,,0x10000000,,0x0" complete_cpuset="0x00000010,,0x10000000,,0x0" online_cpuset="0x00000010,,0x10000000,,0x0" allowed_cpuset="0x00000010,,0x10000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000010,,0x10000000,,0x0" complete_cpuset="0x00000010,,0x10000000,,0x0" online_cpuset="0x00000010,,0x10000000,,0x0" allowed_cpuset="0x00000010,,0x10000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="2" cpuset="0x00000010,,0x10000000,,0x0" complete_cpuset="0x00000010,,0x10000000,,0x0" online_cpuset="0x00000010,,0x10000000,,0x0" allowed_cpuset="0x00000010,,0x10000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002">
+                  <object type="PU" os_index="92" cpuset="0x10000000,,0x0" complete_cpuset="0x10000000,,0x0" online_cpuset="0x10000000,,0x0" allowed_cpuset="0x10000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                  <object type="PU" os_index="132" cpuset="0x00000010,,,,0x0" complete_cpuset="0x00000010,,,,0x0" online_cpuset="0x00000010,,,,0x0" allowed_cpuset="0x00000010,,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000020,,0x20000000,,0x0" complete_cpuset="0x00000020,,0x20000000,,0x0" online_cpuset="0x00000020,,0x20000000,,0x0" allowed_cpuset="0x00000020,,0x20000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000020,,0x20000000,,0x0" complete_cpuset="0x00000020,,0x20000000,,0x0" online_cpuset="0x00000020,,0x20000000,,0x0" allowed_cpuset="0x00000020,,0x20000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000020,,0x20000000,,0x0" complete_cpuset="0x00000020,,0x20000000,,0x0" online_cpuset="0x00000020,,0x20000000,,0x0" allowed_cpuset="0x00000020,,0x20000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="8" cpuset="0x00000020,,0x20000000,,0x0" complete_cpuset="0x00000020,,0x20000000,,0x0" online_cpuset="0x00000020,,0x20000000,,0x0" allowed_cpuset="0x00000020,,0x20000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002">
+                  <object type="PU" os_index="93" cpuset="0x20000000,,0x0" complete_cpuset="0x20000000,,0x0" online_cpuset="0x20000000,,0x0" allowed_cpuset="0x20000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                  <object type="PU" os_index="133" cpuset="0x00000020,,,,0x0" complete_cpuset="0x00000020,,,,0x0" online_cpuset="0x00000020,,,,0x0" allowed_cpuset="0x00000020,,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000040,,0x40000000,,0x0" complete_cpuset="0x00000040,,0x40000000,,0x0" online_cpuset="0x00000040,,0x40000000,,0x0" allowed_cpuset="0x00000040,,0x40000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000040,,0x40000000,,0x0" complete_cpuset="0x00000040,,0x40000000,,0x0" online_cpuset="0x00000040,,0x40000000,,0x0" allowed_cpuset="0x00000040,,0x40000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000040,,0x40000000,,0x0" complete_cpuset="0x00000040,,0x40000000,,0x0" online_cpuset="0x00000040,,0x40000000,,0x0" allowed_cpuset="0x00000040,,0x40000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="9" cpuset="0x00000040,,0x40000000,,0x0" complete_cpuset="0x00000040,,0x40000000,,0x0" online_cpuset="0x00000040,,0x40000000,,0x0" allowed_cpuset="0x00000040,,0x40000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002">
+                  <object type="PU" os_index="94" cpuset="0x40000000,,0x0" complete_cpuset="0x40000000,,0x0" online_cpuset="0x40000000,,0x0" allowed_cpuset="0x40000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                  <object type="PU" os_index="134" cpuset="0x00000040,,,,0x0" complete_cpuset="0x00000040,,,,0x0" online_cpuset="0x00000040,,,,0x0" allowed_cpuset="0x00000040,,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000080,,0x80000000,,0x0" complete_cpuset="0x00000080,,0x80000000,,0x0" online_cpuset="0x00000080,,0x80000000,,0x0" allowed_cpuset="0x00000080,,0x80000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000080,,0x80000000,,0x0" complete_cpuset="0x00000080,,0x80000000,,0x0" online_cpuset="0x00000080,,0x80000000,,0x0" allowed_cpuset="0x00000080,,0x80000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000080,,0x80000000,,0x0" complete_cpuset="0x00000080,,0x80000000,,0x0" online_cpuset="0x00000080,,0x80000000,,0x0" allowed_cpuset="0x00000080,,0x80000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="16" cpuset="0x00000080,,0x80000000,,0x0" complete_cpuset="0x00000080,,0x80000000,,0x0" online_cpuset="0x00000080,,0x80000000,,0x0" allowed_cpuset="0x00000080,,0x80000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002">
+                  <object type="PU" os_index="95" cpuset="0x80000000,,0x0" complete_cpuset="0x80000000,,0x0" online_cpuset="0x80000000,,0x0" allowed_cpuset="0x80000000,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                  <object type="PU" os_index="135" cpuset="0x00000080,,,,0x0" complete_cpuset="0x00000080,,,,0x0" online_cpuset="0x00000080,,,,0x0" allowed_cpuset="0x00000080,,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000100,0x00000001,,,0x0" complete_cpuset="0x00000100,0x00000001,,,0x0" online_cpuset="0x00000100,0x00000001,,,0x0" allowed_cpuset="0x00000100,0x00000001,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000100,0x00000001,,,0x0" complete_cpuset="0x00000100,0x00000001,,,0x0" online_cpuset="0x00000100,0x00000001,,,0x0" allowed_cpuset="0x00000100,0x00000001,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000100,0x00000001,,,0x0" complete_cpuset="0x00000100,0x00000001,,,0x0" online_cpuset="0x00000100,0x00000001,,,0x0" allowed_cpuset="0x00000100,0x00000001,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="17" cpuset="0x00000100,0x00000001,,,0x0" complete_cpuset="0x00000100,0x00000001,,,0x0" online_cpuset="0x00000100,0x00000001,,,0x0" allowed_cpuset="0x00000100,0x00000001,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002">
+                  <object type="PU" os_index="96" cpuset="0x00000001,,,0x0" complete_cpuset="0x00000001,,,0x0" online_cpuset="0x00000001,,,0x0" allowed_cpuset="0x00000001,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                  <object type="PU" os_index="136" cpuset="0x00000100,,,,0x0" complete_cpuset="0x00000100,,,,0x0" online_cpuset="0x00000100,,,,0x0" allowed_cpuset="0x00000100,,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000200,0x00000002,,,0x0" complete_cpuset="0x00000200,0x00000002,,,0x0" online_cpuset="0x00000200,0x00000002,,,0x0" allowed_cpuset="0x00000200,0x00000002,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000200,0x00000002,,,0x0" complete_cpuset="0x00000200,0x00000002,,,0x0" online_cpuset="0x00000200,0x00000002,,,0x0" allowed_cpuset="0x00000200,0x00000002,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000200,0x00000002,,,0x0" complete_cpuset="0x00000200,0x00000002,,,0x0" online_cpuset="0x00000200,0x00000002,,,0x0" allowed_cpuset="0x00000200,0x00000002,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="18" cpuset="0x00000200,0x00000002,,,0x0" complete_cpuset="0x00000200,0x00000002,,,0x0" online_cpuset="0x00000200,0x00000002,,,0x0" allowed_cpuset="0x00000200,0x00000002,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002">
+                  <object type="PU" os_index="97" cpuset="0x00000002,,,0x0" complete_cpuset="0x00000002,,,0x0" online_cpuset="0x00000002,,,0x0" allowed_cpuset="0x00000002,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                  <object type="PU" os_index="137" cpuset="0x00000200,,,,0x0" complete_cpuset="0x00000200,,,,0x0" online_cpuset="0x00000200,,,,0x0" allowed_cpuset="0x00000200,,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000400,0x00000004,,,0x0" complete_cpuset="0x00000400,0x00000004,,,0x0" online_cpuset="0x00000400,0x00000004,,,0x0" allowed_cpuset="0x00000400,0x00000004,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000400,0x00000004,,,0x0" complete_cpuset="0x00000400,0x00000004,,,0x0" online_cpuset="0x00000400,0x00000004,,,0x0" allowed_cpuset="0x00000400,0x00000004,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000400,0x00000004,,,0x0" complete_cpuset="0x00000400,0x00000004,,,0x0" online_cpuset="0x00000400,0x00000004,,,0x0" allowed_cpuset="0x00000400,0x00000004,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="24" cpuset="0x00000400,0x00000004,,,0x0" complete_cpuset="0x00000400,0x00000004,,,0x0" online_cpuset="0x00000400,0x00000004,,,0x0" allowed_cpuset="0x00000400,0x00000004,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002">
+                  <object type="PU" os_index="98" cpuset="0x00000004,,,0x0" complete_cpuset="0x00000004,,,0x0" online_cpuset="0x00000004,,,0x0" allowed_cpuset="0x00000004,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                  <object type="PU" os_index="138" cpuset="0x00000400,,,,0x0" complete_cpuset="0x00000400,,,,0x0" online_cpuset="0x00000400,,,,0x0" allowed_cpuset="0x00000400,,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00000800,0x00000008,,,0x0" complete_cpuset="0x00000800,0x00000008,,,0x0" online_cpuset="0x00000800,0x00000008,,,0x0" allowed_cpuset="0x00000800,0x00000008,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00000800,0x00000008,,,0x0" complete_cpuset="0x00000800,0x00000008,,,0x0" online_cpuset="0x00000800,0x00000008,,,0x0" allowed_cpuset="0x00000800,0x00000008,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00000800,0x00000008,,,0x0" complete_cpuset="0x00000800,0x00000008,,,0x0" online_cpuset="0x00000800,0x00000008,,,0x0" allowed_cpuset="0x00000800,0x00000008,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="25" cpuset="0x00000800,0x00000008,,,0x0" complete_cpuset="0x00000800,0x00000008,,,0x0" online_cpuset="0x00000800,0x00000008,,,0x0" allowed_cpuset="0x00000800,0x00000008,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002">
+                  <object type="PU" os_index="99" cpuset="0x00000008,,,0x0" complete_cpuset="0x00000008,,,0x0" online_cpuset="0x00000008,,,0x0" allowed_cpuset="0x00000008,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                  <object type="PU" os_index="139" cpuset="0x00000800,,,,0x0" complete_cpuset="0x00000800,,,,0x0" online_cpuset="0x00000800,,,,0x0" allowed_cpuset="0x00000800,,,,0x0" nodeset="0x00000002" complete_nodeset="0x00000002" allowed_nodeset="0x00000002"/>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+    <object type="NUMANode" os_index="2" cpuset="0x003ff000,0x00003ff0,,,0x0" complete_cpuset="0x003ff000,0x00003ff0,,,0x0" online_cpuset="0x003ff000,0x00003ff0,,,0x0" allowed_cpuset="0x003ff000,0x00003ff0,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" local_memory="135288676352">
+      <page_type size="4096" count="33029462"/>
+      <page_type size="2097152" count="0"/>
+      <object type="Package" os_index="2" cpuset="0x003ff000,0x00003ff0,,,0x0" complete_cpuset="0x003ff000,0x00003ff0,,,0x0" online_cpuset="0x003ff000,0x00003ff0,,,0x0" allowed_cpuset="0x003ff000,0x00003ff0,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004">
+        <info name="CPUVendor" value="GenuineIntel"/>
+        <info name="CPUFamilyNumber" value="6"/>
+        <info name="CPUModelNumber" value="47"/>
+        <info name="CPUModel" value="Intel(R) Xeon(R) CPU E7- 8850  @ 2.00GHz"/>
+        <info name="CPUStepping" value="2"/>
+        <object type="Cache" cpuset="0x003ff000,0x00003ff0,,,0x0" complete_cpuset="0x003ff000,0x00003ff0,,,0x0" online_cpuset="0x003ff000,0x00003ff0,,,0x0" allowed_cpuset="0x003ff000,0x00003ff0,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="25165824" depth="3" cache_linesize="64" cache_associativity="24" cache_type="0">
+          <object type="Cache" cpuset="0x00001000,0x00000010,,,0x0" complete_cpuset="0x00001000,0x00000010,,,0x0" online_cpuset="0x00001000,0x00000010,,,0x0" allowed_cpuset="0x00001000,0x00000010,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00001000,0x00000010,,,0x0" complete_cpuset="0x00001000,0x00000010,,,0x0" online_cpuset="0x00001000,0x00000010,,,0x0" allowed_cpuset="0x00001000,0x00000010,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00001000,0x00000010,,,0x0" complete_cpuset="0x00001000,0x00000010,,,0x0" online_cpuset="0x00001000,0x00000010,,,0x0" allowed_cpuset="0x00001000,0x00000010,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="0" cpuset="0x00001000,0x00000010,,,0x0" complete_cpuset="0x00001000,0x00000010,,,0x0" online_cpuset="0x00001000,0x00000010,,,0x0" allowed_cpuset="0x00001000,0x00000010,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004">
+                  <object type="PU" os_index="100" cpuset="0x00000010,,,0x0" complete_cpuset="0x00000010,,,0x0" online_cpuset="0x00000010,,,0x0" allowed_cpuset="0x00000010,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                  <object type="PU" os_index="140" cpuset="0x00001000,,,,0x0" complete_cpuset="0x00001000,,,,0x0" online_cpuset="0x00001000,,,,0x0" allowed_cpuset="0x00001000,,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00002000,0x00000020,,,0x0" complete_cpuset="0x00002000,0x00000020,,,0x0" online_cpuset="0x00002000,0x00000020,,,0x0" allowed_cpuset="0x00002000,0x00000020,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00002000,0x00000020,,,0x0" complete_cpuset="0x00002000,0x00000020,,,0x0" online_cpuset="0x00002000,0x00000020,,,0x0" allowed_cpuset="0x00002000,0x00000020,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00002000,0x00000020,,,0x0" complete_cpuset="0x00002000,0x00000020,,,0x0" online_cpuset="0x00002000,0x00000020,,,0x0" allowed_cpuset="0x00002000,0x00000020,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="1" cpuset="0x00002000,0x00000020,,,0x0" complete_cpuset="0x00002000,0x00000020,,,0x0" online_cpuset="0x00002000,0x00000020,,,0x0" allowed_cpuset="0x00002000,0x00000020,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004">
+                  <object type="PU" os_index="101" cpuset="0x00000020,,,0x0" complete_cpuset="0x00000020,,,0x0" online_cpuset="0x00000020,,,0x0" allowed_cpuset="0x00000020,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                  <object type="PU" os_index="141" cpuset="0x00002000,,,,0x0" complete_cpuset="0x00002000,,,,0x0" online_cpuset="0x00002000,,,,0x0" allowed_cpuset="0x00002000,,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00004000,0x00000040,,,0x0" complete_cpuset="0x00004000,0x00000040,,,0x0" online_cpuset="0x00004000,0x00000040,,,0x0" allowed_cpuset="0x00004000,0x00000040,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00004000,0x00000040,,,0x0" complete_cpuset="0x00004000,0x00000040,,,0x0" online_cpuset="0x00004000,0x00000040,,,0x0" allowed_cpuset="0x00004000,0x00000040,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00004000,0x00000040,,,0x0" complete_cpuset="0x00004000,0x00000040,,,0x0" online_cpuset="0x00004000,0x00000040,,,0x0" allowed_cpuset="0x00004000,0x00000040,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="2" cpuset="0x00004000,0x00000040,,,0x0" complete_cpuset="0x00004000,0x00000040,,,0x0" online_cpuset="0x00004000,0x00000040,,,0x0" allowed_cpuset="0x00004000,0x00000040,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004">
+                  <object type="PU" os_index="102" cpuset="0x00000040,,,0x0" complete_cpuset="0x00000040,,,0x0" online_cpuset="0x00000040,,,0x0" allowed_cpuset="0x00000040,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                  <object type="PU" os_index="142" cpuset="0x00004000,,,,0x0" complete_cpuset="0x00004000,,,,0x0" online_cpuset="0x00004000,,,,0x0" allowed_cpuset="0x00004000,,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00008000,0x00000080,,,0x0" complete_cpuset="0x00008000,0x00000080,,,0x0" online_cpuset="0x00008000,0x00000080,,,0x0" allowed_cpuset="0x00008000,0x00000080,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00008000,0x00000080,,,0x0" complete_cpuset="0x00008000,0x00000080,,,0x0" online_cpuset="0x00008000,0x00000080,,,0x0" allowed_cpuset="0x00008000,0x00000080,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00008000,0x00000080,,,0x0" complete_cpuset="0x00008000,0x00000080,,,0x0" online_cpuset="0x00008000,0x00000080,,,0x0" allowed_cpuset="0x00008000,0x00000080,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="8" cpuset="0x00008000,0x00000080,,,0x0" complete_cpuset="0x00008000,0x00000080,,,0x0" online_cpuset="0x00008000,0x00000080,,,0x0" allowed_cpuset="0x00008000,0x00000080,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004">
+                  <object type="PU" os_index="103" cpuset="0x00000080,,,0x0" complete_cpuset="0x00000080,,,0x0" online_cpuset="0x00000080,,,0x0" allowed_cpuset="0x00000080,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                  <object type="PU" os_index="143" cpuset="0x00008000,,,,0x0" complete_cpuset="0x00008000,,,,0x0" online_cpuset="0x00008000,,,,0x0" allowed_cpuset="0x00008000,,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00010000,0x00000100,,,0x0" complete_cpuset="0x00010000,0x00000100,,,0x0" online_cpuset="0x00010000,0x00000100,,,0x0" allowed_cpuset="0x00010000,0x00000100,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00010000,0x00000100,,,0x0" complete_cpuset="0x00010000,0x00000100,,,0x0" online_cpuset="0x00010000,0x00000100,,,0x0" allowed_cpuset="0x00010000,0x00000100,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00010000,0x00000100,,,0x0" complete_cpuset="0x00010000,0x00000100,,,0x0" online_cpuset="0x00010000,0x00000100,,,0x0" allowed_cpuset="0x00010000,0x00000100,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="9" cpuset="0x00010000,0x00000100,,,0x0" complete_cpuset="0x00010000,0x00000100,,,0x0" online_cpuset="0x00010000,0x00000100,,,0x0" allowed_cpuset="0x00010000,0x00000100,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004">
+                  <object type="PU" os_index="104" cpuset="0x00000100,,,0x0" complete_cpuset="0x00000100,,,0x0" online_cpuset="0x00000100,,,0x0" allowed_cpuset="0x00000100,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                  <object type="PU" os_index="144" cpuset="0x00010000,,,,0x0" complete_cpuset="0x00010000,,,,0x0" online_cpuset="0x00010000,,,,0x0" allowed_cpuset="0x00010000,,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00020000,0x00000200,,,0x0" complete_cpuset="0x00020000,0x00000200,,,0x0" online_cpuset="0x00020000,0x00000200,,,0x0" allowed_cpuset="0x00020000,0x00000200,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00020000,0x00000200,,,0x0" complete_cpuset="0x00020000,0x00000200,,,0x0" online_cpuset="0x00020000,0x00000200,,,0x0" allowed_cpuset="0x00020000,0x00000200,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00020000,0x00000200,,,0x0" complete_cpuset="0x00020000,0x00000200,,,0x0" online_cpuset="0x00020000,0x00000200,,,0x0" allowed_cpuset="0x00020000,0x00000200,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="16" cpuset="0x00020000,0x00000200,,,0x0" complete_cpuset="0x00020000,0x00000200,,,0x0" online_cpuset="0x00020000,0x00000200,,,0x0" allowed_cpuset="0x00020000,0x00000200,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004">
+                  <object type="PU" os_index="105" cpuset="0x00000200,,,0x0" complete_cpuset="0x00000200,,,0x0" online_cpuset="0x00000200,,,0x0" allowed_cpuset="0x00000200,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                  <object type="PU" os_index="145" cpuset="0x00020000,,,,0x0" complete_cpuset="0x00020000,,,,0x0" online_cpuset="0x00020000,,,,0x0" allowed_cpuset="0x00020000,,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00040000,0x00000400,,,0x0" complete_cpuset="0x00040000,0x00000400,,,0x0" online_cpuset="0x00040000,0x00000400,,,0x0" allowed_cpuset="0x00040000,0x00000400,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00040000,0x00000400,,,0x0" complete_cpuset="0x00040000,0x00000400,,,0x0" online_cpuset="0x00040000,0x00000400,,,0x0" allowed_cpuset="0x00040000,0x00000400,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00040000,0x00000400,,,0x0" complete_cpuset="0x00040000,0x00000400,,,0x0" online_cpuset="0x00040000,0x00000400,,,0x0" allowed_cpuset="0x00040000,0x00000400,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="17" cpuset="0x00040000,0x00000400,,,0x0" complete_cpuset="0x00040000,0x00000400,,,0x0" online_cpuset="0x00040000,0x00000400,,,0x0" allowed_cpuset="0x00040000,0x00000400,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004">
+                  <object type="PU" os_index="106" cpuset="0x00000400,,,0x0" complete_cpuset="0x00000400,,,0x0" online_cpuset="0x00000400,,,0x0" allowed_cpuset="0x00000400,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                  <object type="PU" os_index="146" cpuset="0x00040000,,,,0x0" complete_cpuset="0x00040000,,,,0x0" online_cpuset="0x00040000,,,,0x0" allowed_cpuset="0x00040000,,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00080000,0x00000800,,,0x0" complete_cpuset="0x00080000,0x00000800,,,0x0" online_cpuset="0x00080000,0x00000800,,,0x0" allowed_cpuset="0x00080000,0x00000800,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00080000,0x00000800,,,0x0" complete_cpuset="0x00080000,0x00000800,,,0x0" online_cpuset="0x00080000,0x00000800,,,0x0" allowed_cpuset="0x00080000,0x00000800,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00080000,0x00000800,,,0x0" complete_cpuset="0x00080000,0x00000800,,,0x0" online_cpuset="0x00080000,0x00000800,,,0x0" allowed_cpuset="0x00080000,0x00000800,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="18" cpuset="0x00080000,0x00000800,,,0x0" complete_cpuset="0x00080000,0x00000800,,,0x0" online_cpuset="0x00080000,0x00000800,,,0x0" allowed_cpuset="0x00080000,0x00000800,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004">
+                  <object type="PU" os_index="107" cpuset="0x00000800,,,0x0" complete_cpuset="0x00000800,,,0x0" online_cpuset="0x00000800,,,0x0" allowed_cpuset="0x00000800,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                  <object type="PU" os_index="147" cpuset="0x00080000,,,,0x0" complete_cpuset="0x00080000,,,,0x0" online_cpuset="0x00080000,,,,0x0" allowed_cpuset="0x00080000,,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00100000,0x00001000,,,0x0" complete_cpuset="0x00100000,0x00001000,,,0x0" online_cpuset="0x00100000,0x00001000,,,0x0" allowed_cpuset="0x00100000,0x00001000,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00100000,0x00001000,,,0x0" complete_cpuset="0x00100000,0x00001000,,,0x0" online_cpuset="0x00100000,0x00001000,,,0x0" allowed_cpuset="0x00100000,0x00001000,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00100000,0x00001000,,,0x0" complete_cpuset="0x00100000,0x00001000,,,0x0" online_cpuset="0x00100000,0x00001000,,,0x0" allowed_cpuset="0x00100000,0x00001000,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="24" cpuset="0x00100000,0x00001000,,,0x0" complete_cpuset="0x00100000,0x00001000,,,0x0" online_cpuset="0x00100000,0x00001000,,,0x0" allowed_cpuset="0x00100000,0x00001000,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004">
+                  <object type="PU" os_index="108" cpuset="0x00001000,,,0x0" complete_cpuset="0x00001000,,,0x0" online_cpuset="0x00001000,,,0x0" allowed_cpuset="0x00001000,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                  <object type="PU" os_index="148" cpuset="0x00100000,,,,0x0" complete_cpuset="0x00100000,,,,0x0" online_cpuset="0x00100000,,,,0x0" allowed_cpuset="0x00100000,,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00200000,0x00002000,,,0x0" complete_cpuset="0x00200000,0x00002000,,,0x0" online_cpuset="0x00200000,0x00002000,,,0x0" allowed_cpuset="0x00200000,0x00002000,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00200000,0x00002000,,,0x0" complete_cpuset="0x00200000,0x00002000,,,0x0" online_cpuset="0x00200000,0x00002000,,,0x0" allowed_cpuset="0x00200000,0x00002000,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00200000,0x00002000,,,0x0" complete_cpuset="0x00200000,0x00002000,,,0x0" online_cpuset="0x00200000,0x00002000,,,0x0" allowed_cpuset="0x00200000,0x00002000,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="25" cpuset="0x00200000,0x00002000,,,0x0" complete_cpuset="0x00200000,0x00002000,,,0x0" online_cpuset="0x00200000,0x00002000,,,0x0" allowed_cpuset="0x00200000,0x00002000,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004">
+                  <object type="PU" os_index="109" cpuset="0x00002000,,,0x0" complete_cpuset="0x00002000,,,0x0" online_cpuset="0x00002000,,,0x0" allowed_cpuset="0x00002000,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                  <object type="PU" os_index="149" cpuset="0x00200000,,,,0x0" complete_cpuset="0x00200000,,,,0x0" online_cpuset="0x00200000,,,,0x0" allowed_cpuset="0x00200000,,,,0x0" nodeset="0x00000004" complete_nodeset="0x00000004" allowed_nodeset="0x00000004"/>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+      <object type="Bridge" os_index="1" bridge_type="0-1" depth="0" bridge_pci="0000:[80-85]">
+        <object type="Bridge" os_index="524304" name="Intel Corporation 5520/5500/X58 I/O Hub PCI Express Root Port 1" bridge_type="1-1" depth="1" bridge_pci="0000:[82-83]" pci_busid="0000:80:01.0" pci_type="0604 [8086:3408] [0000:0000] 22" pci_link_speed="0.000000">
+          <info name="PCIVendor" value="Intel Corporation"/>
+          <info name="PCIDevice" value="5520/5500/X58 I/O Hub PCI Express Root Port 1"/>
+          <object type="PCIDev" os_index="532480" name="Intel Corporation 82576 Gigabit Network Connection" pci_busid="0000:82:00.0" pci_type="0200 [8086:10c9] [15d9:10c9] 01" pci_link_speed="0.000000">
+            <info name="PCIVendor" value="Intel Corporation"/>
+            <info name="PCIDevice" value="82576 Gigabit Network Connection"/>
+            <object type="OSDev" name="eth0" osdev_type="2">
+              <info name="Address" value="00:25:90:59:74:ba"/>
+            </object>
+          </object>
+          <object type="PCIDev" os_index="532481" name="Intel Corporation 82576 Gigabit Network Connection" pci_busid="0000:82:00.1" pci_type="0200 [8086:10c9] [15d9:10c9] 01" pci_link_speed="0.000000">
+            <info name="PCIVendor" value="Intel Corporation"/>
+            <info name="PCIDevice" value="82576 Gigabit Network Connection"/>
+            <object type="OSDev" name="eth1" osdev_type="2">
+              <info name="Address" value="00:25:90:59:74:bb"/>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+    <object type="NUMANode" os_index="3" cpuset="0xffc00000,0x00ffc000,,,0x0" complete_cpuset="0xffc00000,0x00ffc000,,,0x0" online_cpuset="0xffc00000,0x00ffc000,,,0x0" allowed_cpuset="0xffc00000,0x00ffc000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" local_memory="135288676352">
+      <page_type size="4096" count="33029462"/>
+      <page_type size="2097152" count="0"/>
+      <object type="Package" os_index="3" cpuset="0xffc00000,0x00ffc000,,,0x0" complete_cpuset="0xffc00000,0x00ffc000,,,0x0" online_cpuset="0xffc00000,0x00ffc000,,,0x0" allowed_cpuset="0xffc00000,0x00ffc000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008">
+        <info name="CPUVendor" value="GenuineIntel"/>
+        <info name="CPUFamilyNumber" value="6"/>
+        <info name="CPUModelNumber" value="47"/>
+        <info name="CPUModel" value="Intel(R) Xeon(R) CPU E7- 8850  @ 2.00GHz"/>
+        <info name="CPUStepping" value="2"/>
+        <object type="Cache" cpuset="0xffc00000,0x00ffc000,,,0x0" complete_cpuset="0xffc00000,0x00ffc000,,,0x0" online_cpuset="0xffc00000,0x00ffc000,,,0x0" allowed_cpuset="0xffc00000,0x00ffc000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="25165824" depth="3" cache_linesize="64" cache_associativity="24" cache_type="0">
+          <object type="Cache" cpuset="0x00400000,0x00004000,,,0x0" complete_cpuset="0x00400000,0x00004000,,,0x0" online_cpuset="0x00400000,0x00004000,,,0x0" allowed_cpuset="0x00400000,0x00004000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00400000,0x00004000,,,0x0" complete_cpuset="0x00400000,0x00004000,,,0x0" online_cpuset="0x00400000,0x00004000,,,0x0" allowed_cpuset="0x00400000,0x00004000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00400000,0x00004000,,,0x0" complete_cpuset="0x00400000,0x00004000,,,0x0" online_cpuset="0x00400000,0x00004000,,,0x0" allowed_cpuset="0x00400000,0x00004000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="0" cpuset="0x00400000,0x00004000,,,0x0" complete_cpuset="0x00400000,0x00004000,,,0x0" online_cpuset="0x00400000,0x00004000,,,0x0" allowed_cpuset="0x00400000,0x00004000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008">
+                  <object type="PU" os_index="110" cpuset="0x00004000,,,0x0" complete_cpuset="0x00004000,,,0x0" online_cpuset="0x00004000,,,0x0" allowed_cpuset="0x00004000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                  <object type="PU" os_index="150" cpuset="0x00400000,,,,0x0" complete_cpuset="0x00400000,,,,0x0" online_cpuset="0x00400000,,,,0x0" allowed_cpuset="0x00400000,,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x00800000,0x00008000,,,0x0" complete_cpuset="0x00800000,0x00008000,,,0x0" online_cpuset="0x00800000,0x00008000,,,0x0" allowed_cpuset="0x00800000,0x00008000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x00800000,0x00008000,,,0x0" complete_cpuset="0x00800000,0x00008000,,,0x0" online_cpuset="0x00800000,0x00008000,,,0x0" allowed_cpuset="0x00800000,0x00008000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x00800000,0x00008000,,,0x0" complete_cpuset="0x00800000,0x00008000,,,0x0" online_cpuset="0x00800000,0x00008000,,,0x0" allowed_cpuset="0x00800000,0x00008000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="1" cpuset="0x00800000,0x00008000,,,0x0" complete_cpuset="0x00800000,0x00008000,,,0x0" online_cpuset="0x00800000,0x00008000,,,0x0" allowed_cpuset="0x00800000,0x00008000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008">
+                  <object type="PU" os_index="111" cpuset="0x00008000,,,0x0" complete_cpuset="0x00008000,,,0x0" online_cpuset="0x00008000,,,0x0" allowed_cpuset="0x00008000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                  <object type="PU" os_index="151" cpuset="0x00800000,,,,0x0" complete_cpuset="0x00800000,,,,0x0" online_cpuset="0x00800000,,,,0x0" allowed_cpuset="0x00800000,,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x01000000,0x00010000,,,0x0" complete_cpuset="0x01000000,0x00010000,,,0x0" online_cpuset="0x01000000,0x00010000,,,0x0" allowed_cpuset="0x01000000,0x00010000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x01000000,0x00010000,,,0x0" complete_cpuset="0x01000000,0x00010000,,,0x0" online_cpuset="0x01000000,0x00010000,,,0x0" allowed_cpuset="0x01000000,0x00010000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x01000000,0x00010000,,,0x0" complete_cpuset="0x01000000,0x00010000,,,0x0" online_cpuset="0x01000000,0x00010000,,,0x0" allowed_cpuset="0x01000000,0x00010000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="2" cpuset="0x01000000,0x00010000,,,0x0" complete_cpuset="0x01000000,0x00010000,,,0x0" online_cpuset="0x01000000,0x00010000,,,0x0" allowed_cpuset="0x01000000,0x00010000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008">
+                  <object type="PU" os_index="112" cpuset="0x00010000,,,0x0" complete_cpuset="0x00010000,,,0x0" online_cpuset="0x00010000,,,0x0" allowed_cpuset="0x00010000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                  <object type="PU" os_index="152" cpuset="0x01000000,,,,0x0" complete_cpuset="0x01000000,,,,0x0" online_cpuset="0x01000000,,,,0x0" allowed_cpuset="0x01000000,,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x02000000,0x00020000,,,0x0" complete_cpuset="0x02000000,0x00020000,,,0x0" online_cpuset="0x02000000,0x00020000,,,0x0" allowed_cpuset="0x02000000,0x00020000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x02000000,0x00020000,,,0x0" complete_cpuset="0x02000000,0x00020000,,,0x0" online_cpuset="0x02000000,0x00020000,,,0x0" allowed_cpuset="0x02000000,0x00020000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x02000000,0x00020000,,,0x0" complete_cpuset="0x02000000,0x00020000,,,0x0" online_cpuset="0x02000000,0x00020000,,,0x0" allowed_cpuset="0x02000000,0x00020000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="8" cpuset="0x02000000,0x00020000,,,0x0" complete_cpuset="0x02000000,0x00020000,,,0x0" online_cpuset="0x02000000,0x00020000,,,0x0" allowed_cpuset="0x02000000,0x00020000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008">
+                  <object type="PU" os_index="113" cpuset="0x00020000,,,0x0" complete_cpuset="0x00020000,,,0x0" online_cpuset="0x00020000,,,0x0" allowed_cpuset="0x00020000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                  <object type="PU" os_index="153" cpuset="0x02000000,,,,0x0" complete_cpuset="0x02000000,,,,0x0" online_cpuset="0x02000000,,,,0x0" allowed_cpuset="0x02000000,,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x04000000,0x00040000,,,0x0" complete_cpuset="0x04000000,0x00040000,,,0x0" online_cpuset="0x04000000,0x00040000,,,0x0" allowed_cpuset="0x04000000,0x00040000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x04000000,0x00040000,,,0x0" complete_cpuset="0x04000000,0x00040000,,,0x0" online_cpuset="0x04000000,0x00040000,,,0x0" allowed_cpuset="0x04000000,0x00040000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x04000000,0x00040000,,,0x0" complete_cpuset="0x04000000,0x00040000,,,0x0" online_cpuset="0x04000000,0x00040000,,,0x0" allowed_cpuset="0x04000000,0x00040000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="9" cpuset="0x04000000,0x00040000,,,0x0" complete_cpuset="0x04000000,0x00040000,,,0x0" online_cpuset="0x04000000,0x00040000,,,0x0" allowed_cpuset="0x04000000,0x00040000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008">
+                  <object type="PU" os_index="114" cpuset="0x00040000,,,0x0" complete_cpuset="0x00040000,,,0x0" online_cpuset="0x00040000,,,0x0" allowed_cpuset="0x00040000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                  <object type="PU" os_index="154" cpuset="0x04000000,,,,0x0" complete_cpuset="0x04000000,,,,0x0" online_cpuset="0x04000000,,,,0x0" allowed_cpuset="0x04000000,,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x08000000,0x00080000,,,0x0" complete_cpuset="0x08000000,0x00080000,,,0x0" online_cpuset="0x08000000,0x00080000,,,0x0" allowed_cpuset="0x08000000,0x00080000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x08000000,0x00080000,,,0x0" complete_cpuset="0x08000000,0x00080000,,,0x0" online_cpuset="0x08000000,0x00080000,,,0x0" allowed_cpuset="0x08000000,0x00080000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x08000000,0x00080000,,,0x0" complete_cpuset="0x08000000,0x00080000,,,0x0" online_cpuset="0x08000000,0x00080000,,,0x0" allowed_cpuset="0x08000000,0x00080000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="16" cpuset="0x08000000,0x00080000,,,0x0" complete_cpuset="0x08000000,0x00080000,,,0x0" online_cpuset="0x08000000,0x00080000,,,0x0" allowed_cpuset="0x08000000,0x00080000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008">
+                  <object type="PU" os_index="115" cpuset="0x00080000,,,0x0" complete_cpuset="0x00080000,,,0x0" online_cpuset="0x00080000,,,0x0" allowed_cpuset="0x00080000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                  <object type="PU" os_index="155" cpuset="0x08000000,,,,0x0" complete_cpuset="0x08000000,,,,0x0" online_cpuset="0x08000000,,,,0x0" allowed_cpuset="0x08000000,,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x10000000,0x00100000,,,0x0" complete_cpuset="0x10000000,0x00100000,,,0x0" online_cpuset="0x10000000,0x00100000,,,0x0" allowed_cpuset="0x10000000,0x00100000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x10000000,0x00100000,,,0x0" complete_cpuset="0x10000000,0x00100000,,,0x0" online_cpuset="0x10000000,0x00100000,,,0x0" allowed_cpuset="0x10000000,0x00100000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x10000000,0x00100000,,,0x0" complete_cpuset="0x10000000,0x00100000,,,0x0" online_cpuset="0x10000000,0x00100000,,,0x0" allowed_cpuset="0x10000000,0x00100000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="17" cpuset="0x10000000,0x00100000,,,0x0" complete_cpuset="0x10000000,0x00100000,,,0x0" online_cpuset="0x10000000,0x00100000,,,0x0" allowed_cpuset="0x10000000,0x00100000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008">
+                  <object type="PU" os_index="116" cpuset="0x00100000,,,0x0" complete_cpuset="0x00100000,,,0x0" online_cpuset="0x00100000,,,0x0" allowed_cpuset="0x00100000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                  <object type="PU" os_index="156" cpuset="0x10000000,,,,0x0" complete_cpuset="0x10000000,,,,0x0" online_cpuset="0x10000000,,,,0x0" allowed_cpuset="0x10000000,,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x20000000,0x00200000,,,0x0" complete_cpuset="0x20000000,0x00200000,,,0x0" online_cpuset="0x20000000,0x00200000,,,0x0" allowed_cpuset="0x20000000,0x00200000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x20000000,0x00200000,,,0x0" complete_cpuset="0x20000000,0x00200000,,,0x0" online_cpuset="0x20000000,0x00200000,,,0x0" allowed_cpuset="0x20000000,0x00200000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x20000000,0x00200000,,,0x0" complete_cpuset="0x20000000,0x00200000,,,0x0" online_cpuset="0x20000000,0x00200000,,,0x0" allowed_cpuset="0x20000000,0x00200000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="18" cpuset="0x20000000,0x00200000,,,0x0" complete_cpuset="0x20000000,0x00200000,,,0x0" online_cpuset="0x20000000,0x00200000,,,0x0" allowed_cpuset="0x20000000,0x00200000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008">
+                  <object type="PU" os_index="117" cpuset="0x00200000,,,0x0" complete_cpuset="0x00200000,,,0x0" online_cpuset="0x00200000,,,0x0" allowed_cpuset="0x00200000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                  <object type="PU" os_index="157" cpuset="0x20000000,,,,0x0" complete_cpuset="0x20000000,,,,0x0" online_cpuset="0x20000000,,,,0x0" allowed_cpuset="0x20000000,,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x40000000,0x00400000,,,0x0" complete_cpuset="0x40000000,0x00400000,,,0x0" online_cpuset="0x40000000,0x00400000,,,0x0" allowed_cpuset="0x40000000,0x00400000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x40000000,0x00400000,,,0x0" complete_cpuset="0x40000000,0x00400000,,,0x0" online_cpuset="0x40000000,0x00400000,,,0x0" allowed_cpuset="0x40000000,0x00400000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x40000000,0x00400000,,,0x0" complete_cpuset="0x40000000,0x00400000,,,0x0" online_cpuset="0x40000000,0x00400000,,,0x0" allowed_cpuset="0x40000000,0x00400000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="24" cpuset="0x40000000,0x00400000,,,0x0" complete_cpuset="0x40000000,0x00400000,,,0x0" online_cpuset="0x40000000,0x00400000,,,0x0" allowed_cpuset="0x40000000,0x00400000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008">
+                  <object type="PU" os_index="118" cpuset="0x00400000,,,0x0" complete_cpuset="0x00400000,,,0x0" online_cpuset="0x00400000,,,0x0" allowed_cpuset="0x00400000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                  <object type="PU" os_index="158" cpuset="0x40000000,,,,0x0" complete_cpuset="0x40000000,,,,0x0" online_cpuset="0x40000000,,,,0x0" allowed_cpuset="0x40000000,,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object type="Cache" cpuset="0x80000000,0x00800000,,,0x0" complete_cpuset="0x80000000,0x00800000,,,0x0" online_cpuset="0x80000000,0x00800000,,,0x0" allowed_cpuset="0x80000000,0x00800000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
+            <object type="Cache" cpuset="0x80000000,0x00800000,,,0x0" complete_cpuset="0x80000000,0x00800000,,,0x0" online_cpuset="0x80000000,0x00800000,,,0x0" allowed_cpuset="0x80000000,0x00800000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">
+              <object type="Cache" cpuset="0x80000000,0x00800000,,,0x0" complete_cpuset="0x80000000,0x00800000,,,0x0" online_cpuset="0x80000000,0x00800000,,,0x0" allowed_cpuset="0x80000000,0x00800000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="4" cache_type="2">
+                <object type="Core" os_index="25" cpuset="0x80000000,0x00800000,,,0x0" complete_cpuset="0x80000000,0x00800000,,,0x0" online_cpuset="0x80000000,0x00800000,,,0x0" allowed_cpuset="0x80000000,0x00800000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008">
+                  <object type="PU" os_index="119" cpuset="0x00800000,,,0x0" complete_cpuset="0x00800000,,,0x0" online_cpuset="0x00800000,,,0x0" allowed_cpuset="0x00800000,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                  <object type="PU" os_index="159" cpuset="0x80000000,,,,0x0" complete_cpuset="0x80000000,,,,0x0" online_cpuset="0x80000000,,,,0x0" allowed_cpuset="0x80000000,,,,0x0" nodeset="0x00000008" complete_nodeset="0x00000008" allowed_nodeset="0x00000008"/>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+  </object>
+</topology>

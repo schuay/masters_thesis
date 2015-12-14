@@ -600,7 +600,9 @@ a version (to avoid the ABA problem), and an efficient random number generator.
 
 An example block array is shown in Figure \ref{fig:block_array_structure}. It contains
 four blocks ($b_{0 \ldots 3}$), each with an associated pivot range ($p_{0 \ldots 3}$)
-containing the 7 minimal items within the block array.
+containing the 7 minimal items within the block array. Some items have been deleted,
+and as shown it is possible for these items to be either within or before a pivot range (never after).
+Deleted items within a pivot range cause so-called pivot fragmentation.
 
 \begin{figure}[ht]
 \begin{lstlisting}
