@@ -478,7 +478,7 @@ conforming to the \ac{LSM} invariants at the boundaries of functions (see Sectio
                 node distance = -0.15mm]
             \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
             \node[on chain, box] {3};
-            \node[on chain, white_box] {4};
+            \node[on chain, deleted_box] {4};
             \node[on chain, box] (03) {4};
             \node[on chain, box] {6};
             \node[on chain, box] {9};
@@ -489,9 +489,9 @@ conforming to the \ac{LSM} invariants at the boundaries of functions (see Sectio
         \begin{scope}[start chain = 3 going {above=of \tikzchainprevious.north},
                 every on chain/.style={anchor=south},
                 node distance = -0.15mm]
-            \node[on chain, white_box, above = of ba1, yshift = 3mm] (10) {0};
+            \node[on chain, deleted_box, above = of ba1, yshift = 3mm] (10) {0};
             \node[on chain, box] (11) {0};
-            \node[on chain, white_box] {2};
+            \node[on chain, deleted_box] {2};
             \node[on chain, box] (13) {3};
         \end{scope}
 

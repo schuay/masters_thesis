@@ -117,13 +117,14 @@
     , fill = black!10
     ]
 
-\tikzstyle{white_box} =
+\tikzstyle{deleted_box} =
     [ draw,
     , rectangle,
     , text centered,
     , minimum width = 5mm,
     , minimum height = 5mm,
     , font = \footnotesize,
+    , text = black!50
     ]
 
 \tikzstyle{flag_true} =
