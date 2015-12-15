@@ -1,6 +1,10 @@
 \chapter{Definitions} \label{ch:definitions}
 
+This chapter introduces basic terms and concepts required by the remaining
+thesis.
+
 % Blocking, lock-free and wait-free data structures.
+\section{Lock-freedom}
 
 Concurrent data structures are intended to be accessed simultaneously by several processes
 at at the same time. \emph{Lock-based} structures limit the  number of processes that may enter
@@ -16,6 +20,7 @@ Recently, \citeauthor{kogan2012methodology} have also developed a methodology fo
 wait-free data structures from lock-free cases \cite{kogan2012methodology}.
 
 % Linearizability, sequential and quiescent consistency.
+\section{Correctness Conditions}
 
 % TODO: Expand. Review definitions, extend explanations, relate to sequential sequence of operations.
 
@@ -37,6 +42,7 @@ operations. Contrary to linearizability and quiescent consistency, sequential co
 not composable.
 
 % Relaxed consistency definitions.
+\section{Relaxation}
 
 In recent years, weaker versions of these criteria have been investigated as
 promising approaches towards higher scalability. Correctness criteria such as
@@ -62,6 +68,7 @@ relatively weak guarantee, and simply requires each thread-induced history
 (containing only operations on items inserted by that thread) to be linearizable.
 
 % Synchronization primitives.
+\section{Synchronization Primitives}
 
 Lock-free algorithms and data structures are commonly constructed using synchronization primitives
 such as \acf{CAS}, \ac{FAA}, \ac{FAO}, and \ac{TAS}. The \ac{CAS} instruction, which atomically
@@ -72,7 +79,33 @@ More exotic primitives such as \ac{DCAS} and \ac{DCSS} exist as well, but are no
 widely available in hardware and require software emulations (with associated overhead)
 to be used \cite{harris2002practical}.
 
-% Disjoint-access parallelism.
+\section{Hardware Topologies}
+
+Multiprocessor machines
+are often built by combining several physical processors, each containing a collection
+of processing cores (and their associated cache hierarchy), which themselves contain
+one or more processing units each. Every processing unit is capable of running
+one independent hardware thread.
+
+Shared memory multiprocessor machines usually have a so-called \ac{NUMA} architecture,
+in which the efficiency of memory accesses is determined by both the physical location
+of the memory and the active processing core. Often, each processing core
+has one or more dedicated levels of memory cache (typically L1 and L2 caches),
+and a level of shared cache per processor (typically L3). Access to these
+cache levels is rises by about an order of magnitude with each level; L1 caches
+being the fastest, followed by accesses to L2 and L3 caches, \ac{RAM}, and finally
+the hard disk.
+
+Cache coherency is a problem which arises in programs executed concurrently
+whenever multiple threads have an identical memory location (variable)
+cached in their local caches. Whenever a thread updates the variable, other threads'
+caches must be notified that a the variable has changed, and its value must be
+updated if required. This type of traffic is called the \emph{cache coherency protocol}.
+
+Locality is another critical aspect of effective cache use. Cache contents are
+loaded by blocks containing not just the requested location, but also its neighborhood.
+Thus algorithms with sequential data access patterns incur fewer cache loads than those
+with random accesses, adding up to significant performance gains.
 
 An area in memory accessed frequently by a large number of processes is said to be \emph{contended}.
 Contention is a limiting factor regarding scalability: concurrent reads and writes to the same
