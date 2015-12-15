@@ -81,11 +81,50 @@ to be used \cite{harris2002practical}.
 
 \section{Hardware Topologies}
 
-Multiprocessor machines
+Multiprocessor machines (Figure \ref{fig:system_topology})
 are often built by combining several physical processors, each containing a collection
-of processing cores (and their associated cache hierarchy), which themselves contain
+of processing cores (and their associated cache hierarchy), which themselves may contain
 one or more processing units each. Every processing unit is capable of running
 one independent hardware thread.
+
+\begin{figure}
+\centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}
+      ]
+
+        \begin{scope}[start chain = 1 going right]
+            \node [on chain=1] (m) {Machine};
+            \node [on chain=1] (p) {Processor};
+            \node [on chain=1] (pc) {Processing Core};
+            \node [on chain=1] (pu) {Processing Unit};
+        \end{scope}
+
+        \begin{scope}[start chain = 2 going right]
+            \node [on chain=2, above = of m] (ram) {RAM};
+            \node [on chain=2, above = of p] (l3) {L3 Cache};
+            \node [on chain=2, above = of pc] (l21) {L1, L2 Caches};
+        \end{scope}
+
+        \path[->, every node/.style= { font = \footnotesize }]
+            (m) edge node [above] {contains} (p)
+            (p) edge node [above] {contains} (pc)
+            (pc) edge node [above] {contains} (pu);
+
+        \path[<->, every node/.style= { font = \footnotesize }]
+            (ram) edge node [above] {} (m)
+            (l3) edge node [above] {} (p)
+            (l21) edge node [above] {} (pc);
+
+        \path[->, every node/.style= { font = \footnotesize }]
+            (l21) edge node [above] {accesses} (l3)
+            (l3) edge node [above] {accesses} (ram);
+    \end{tikzpicture}
+\caption{A typical system topology.}
+\label{fig:system_topology}
+\end{figure}
 
 Shared memory multiprocessor machines usually have a so-called \ac{NUMA} architecture,
 in which the efficiency of memory accesses is determined by both the physical location
