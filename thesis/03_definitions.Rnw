@@ -24,6 +24,78 @@ wait-free data structures from lock-free cases \cite{kogan2012methodology}.
 
 % TODO: Expand. Review definitions, extend explanations, relate to sequential sequence of operations.
 
+\begin{figure}
+\begin{minipage}[b]{\textwidth}
+    \centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}
+      ]
+
+        \begin{scope}[start chain = 1 going right]
+            \node [on chain=1] (t1_start) {Thread A};
+            \node [on chain=1, xshift = 90mm] (t1_end) {};
+        \end{scope}
+
+        \begin{scope}[start chain = 2 going right]
+            \node [on chain=2, below = of t1_start] (t2_start) {Thread B};
+            \node [on chain=2, xshift = 90mm] (t2_end) {};
+        \end{scope}
+
+        \path[dashed, -stealth'] (t1_start) edge node [above] {} (t1_end);
+        \path[dashed, -stealth'] (t2_start) edge node [above] {} (t2_end);
+
+        \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+            ($(t2_start.east) + (10mm, 0)$) edge node [above] {\lstinline|insert(5)|}
+            ($(t2_start.east) + (30mm, 0)$)
+            ($(t2_start.east) + (40mm, 0)$) edge node [above] {\lstinline|delete_min(1)|}
+            ($(t2_start.east) + (60mm, 0)$);
+
+        \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+            ($(t1_start.east) + (70mm, 0)$) edge node [above] {\lstinline|insert(1)|}
+            ($(t1_start.east) + (90mm, 0)$);
+    \end{tikzpicture}
+    \subcaption{Sequentially consistent, but neither quiescently consistent nor linearizable.}
+\end{minipage}
+\begin{minipage}[b]{\textwidth}
+    \centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}
+      ]
+
+        \begin{scope}[start chain = 1 going right]
+            \node [on chain=1] (t1_start) {Thread A};
+            \node [on chain=1, xshift = 90mm] (t1_end) {};
+        \end{scope}
+
+        \begin{scope}[start chain = 2 going right]
+            \node [on chain=2, below = of t1_start] (t2_start) {Thread B};
+            \node [on chain=2, xshift = 90mm] (t2_end) {};
+        \end{scope}
+
+        \path[dashed, -stealth'] (t1_start) edge node [above] {} (t1_end);
+        \path[dashed, -stealth'] (t2_start) edge node [above] {} (t2_end);
+
+        \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+            ($(t2_start.east) + (10mm, 0)$) edge node [above] {\lstinline|insert(5)|}
+            ($(t2_start.east) + (30mm, 0)$)
+            ($(t2_start.east) + (40mm, 0)$) edge node [above] {\lstinline|delete_min(1)|}
+            ($(t2_start.east) + (60mm, 0)$);
+
+        \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+            ($(t1_start.east) + (50mm, 0)$) edge node [above] {\lstinline|insert(1)|}
+            ($(t1_start.east) + (70mm, 0)$);
+    \end{tikzpicture}
+    \subcaption{Sequentially consistent, quiescently consistent and linearizable.}
+    \label{fig:correctness_criteria_b}
+\end{minipage}
+\caption{A history of concurrent operations on a min-priority queue.}
+\label{fig:correctness_criteria}
+\end{figure}
+
 There are several different criteria which allow reasoning about the correctness of concurrent
 data structures. \emph{Linearizable} \cite{herlihy1990linearizability} operations appear to take
 effect at a single instant in time between the operation invocation and response at so-called linearization points.
@@ -40,6 +112,16 @@ any data structure composed of linearizable (quiescently consistent) objects is 
 executed in parallel to be equivalent to the result of some sequential ordering of the same
 operations. Contrary to linearizability and quiescent consistency, sequential consistency is
 not composable.
+
+Figure \ref{fig:correctness_criteria} shows two examples of thread histories. The
+first is sequentially consistent since intra-thread reordering (delaying Thread B
+such that key 1 is inserted before it is deleted) results in a valid
+sequential history. It is is neither quiescently consistent (no valid history
+exists during the period of quiescence after \lstinline|delete_min|), nor
+linearizable (there are no linearization points resulting in a valid history).
+Example \ref{fig:correctness_criteria_b} on the other hand is sequentially consistent,
+quiescently consistent, and linearizable (if \lstinline|delete_min| has its
+linearization point after that of \lstinline|insert(1)|).
 
 % Relaxed consistency definitions.
 \section{Relaxation}
