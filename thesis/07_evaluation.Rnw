@@ -146,39 +146,30 @@ structures.
 Three different machines are used to run benchmarks:
 
 \begin{itemize}
-\item \lstinline|mars| (Figure \ref{ref:machine_architecture_mars})
+\item \lstinline|mars|
       An 80-core system consisting of 8 Intel Xeon E7-8850
       processors with 10 cores each and 1 TB of RAM. The processors are clocked
       at 2 GHz and have 32 KB L1, 256 KB L2, and 24 MB of L3 cache per core.
-\item \lstinline|saturn| (Figure \ref{ref:machine_architecture_saturn})
+\item \lstinline|saturn|
       A 48-core machine with 4 AMD Opteron 6168 processors
       with 12 cores each, clocked at 1.9 GHz. \lstinline|saturn| has
       64 KB of L1, 512 KB of L2, and 5 MB of L3 cache per core and 125 GB of RAM.
-\item \lstinline|ceres| (Figure \ref{ref:machine_architecture_ceres})
+\item \lstinline|ceres|
       A 64-core SPARCv9-based machine with 4 processors
       of 16 cores each. Cores are clocked at 3.6 GHz and have 8-way hardware
       hyperthreading. \lstinline|ceres| has 16 KB of L1, 128 KB of L2,
       and 8 MB of L3 cache per core and 1 TB of RAM.
 \end{itemize}
 
+Figure \ref{fig:machine_architecture_mars} shows the topology of one of eight
+cores on \lstinline|mars|, generated with \emph{hwloc's} \verb|lstopo| tool.
+Topology graphs for all machines can be found in Appendix \ref{ch:topologies}.
+
 \begin{figure}[ht]
 \includegraphics[width = \textwidth]{graphics/lstopo_mars.pdf}
 \caption{Topology of one of eight nodes on \lstinline|mars|.}
-\label{ref:machine_architecture_mars}
+\label{fig:machine_architecture_mars}
 \end{figure}
-
-\begin{figure}[ht]
-\includegraphics[width = \textwidth]{graphics/lstopo_saturn.pdf}
-\caption{Topology of one of eight nodes on \lstinline|saturn|.}
-\label{ref:machine_architecture_saturn}
-\end{figure}
-
-\begin{figure}[ht]
-\includegraphics[width = \textwidth]{graphics/lstopo_ceres.pdf}
-\caption{Topology of one of four nodes on \lstinline|ceres|.}
-\label{ref:machine_architecture_ceres}
-\end{figure}
-
 
 All applications are compiled using \verb|gcc| --- version \verb|5.2.1|
 on \lstinline|mars| and \lstinline|saturn|, and version \verb|4.8.2| on

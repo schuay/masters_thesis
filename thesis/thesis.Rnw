@@ -16,6 +16,7 @@
 \usepackage{amsfonts}
 \usepackage{microtype}
 \usepackage{nag}
+\usepackage{placeins}
 \usepackage{pdfpages}
 \usepackage{subcaption}
 \usepackage{tikz}
@@ -180,6 +181,10 @@
 
 % Dominance of K-LSM in throughput benchmark, importance of benchmark parameters.
 \SweaveInput{08_conclusion.Rnw}
+
+\begin{appendices}
+\SweaveInput{09_appendices.Rnw}
+\end{appendices}
 
 \backmatter
 
