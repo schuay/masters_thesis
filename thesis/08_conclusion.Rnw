@@ -54,7 +54,7 @@ the usage of a variety of different settings for priority queue performance
 evaluation.
 
 The strict Linden priority queue performs as expected in most cases; it scales
-decently while executed on a single socket, but performance drops with higher concurrency.
+decently while executed on a single processor, but performance drops with higher concurrency.
 However, to our surprise, the Linden queue is actually a relevant contender
 in the split workload, ascending key generation benchmark, scaling up to the maximal
 thread count. We expect that this is due to increased locality (inserter threads

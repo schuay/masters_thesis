@@ -94,7 +94,8 @@ has one or more dedicated levels of memory cache (typically L1 and L2 caches),
 and a level of shared cache per processor (typically L3). Access to these
 cache levels is rises by about an order of magnitude with each level; L1 caches
 being the fastest, followed by accesses to L2 and L3 caches, \ac{RAM}, and finally
-the hard disk.
+the hard disk. Many concurrent algorithms are only efficient while all participating
+threads are located on a single processor and may share an L3 cache.
 
 Cache coherency is a problem which arises in programs executed concurrently
 whenever multiple threads have an identical memory location (variable)

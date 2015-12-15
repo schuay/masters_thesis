@@ -6,7 +6,7 @@ In particular, \citeauthor{linden2013skiplist} conclude that scalability is sole
 and that less than one modified memory location per thread and operation would have to be read
 in order to achieve improved performance \cite{linden2013skiplist} through SkipLists. 
 Through a novel concept, the CBPQ \cite{cbpq} manages to improve on the Linden queue
-by up to a factor of two, but only scales while executed on a single socket.
+by up to a factor of two, but only scales while executed on a single processor.
 
 Recently, relaxation of provided guarantees have been investigated as another method of reducing
 contention and improving disjoint-access parallelism.
