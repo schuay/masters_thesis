@@ -35,7 +35,7 @@ is implemented in C++11 using a minimal set of dependencies on other libraries.
 The included benchmark application requires the \emph{hwloc} library for hardware-independent
 thread pinning, while other priority queues included for benchmarking purposes
 require the \ac{GSL}. The \klsm implementation itself has no external
-dependencies and is therefore highly portable.
+dependencies and uses standard C++11 atomics, and is therefore highly portable.
 
 Unlike the Pheet \klsm, our implementation does not guarantee locality, i.e., it
 may occur that a thread skips items it has previously inserted itself. While

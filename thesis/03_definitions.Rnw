@@ -112,3 +112,15 @@ Contention is a limiting factor regarding scalability: concurrent reads and writ
 location must be serialized by the cache coherence protocol, and only a single concurrent \ac{CAS}
 can succeed while all others must retry. \emph{Disjoint-access parallelism} is the concept of
 spreading such accesses in order to reduce contention as much as possible.
+
+\section{C++11 Memory Model}
+
+While thread support has previously only been added on to the C++ language through the
+\ac{pthreads} library (and others) \cite{boehm2005threads},
+the C++11 standard finally specifies a fully multi-threaded abstract state machine with a
+clearly defined memory model. A memory model restricts the order in which changes to memory locations by one
+thread may become visible to other threads; for instance, usage of the the \lstinline|std::atomic|
+type together with its \lstinline|load()| and \lstinline|store()| operations ensures
+portable multithreaded behavior across different architectures. It is possible to vary
+the strictness of provided guarantees between sequential consistency (on the strict end)
+and relaxed behavior (guaranteeing only atomicity).
