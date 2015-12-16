@@ -39,7 +39,7 @@ wait-free data structures from lock-free cases \cite{kogan2012methodology}.
         \end{scope}
 
         \begin{scope}[start chain = 2 going right]
-            \node [on chain=2, below = of t1_start] (t2_start) {Thread B};
+            \node [on chain=2, below = of t1_start, yshift = 7.5mm] (t2_start) {Thread B};
             \node [on chain=2, xshift = 90mm] (t2_end) {};
         \end{scope}
 
@@ -72,7 +72,41 @@ wait-free data structures from lock-free cases \cite{kogan2012methodology}.
         \end{scope}
 
         \begin{scope}[start chain = 2 going right]
-            \node [on chain=2, below = of t1_start] (t2_start) {Thread B};
+            \node [on chain=2, below = of t1_start, yshift = 7.5mm] (t2_start) {Thread B};
+            \node [on chain=2, xshift = 90mm] (t2_end) {};
+        \end{scope}
+
+        \path[dashed, -stealth'] (t1_start) edge node [above] {} (t1_end);
+        \path[dashed, -stealth'] (t2_start) edge node [above] {} (t2_end);
+
+        \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+            ($(t2_start.east) + (10mm, 0)$) edge node [above] {\lstinline|delete_min(5)|}
+            ($(t2_start.east) + (30mm, 0)$)
+            ($(t2_start.east) + (40mm, 0)$) edge node [above] {\lstinline|insert(5)|}
+            ($(t2_start.east) + (60mm, 0)$);
+
+        \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+            ($(t1_start.east) + (25mm, 0)$) edge node [above] {\lstinline|insert(1)|}
+            ($(t1_start.east) + (45mm, 0)$);
+    \end{tikzpicture}
+    \subcaption{Quiescently consistent, but neither sequentially consistent nor linearizable.}
+    \label{fig:correctness_criteria_b}
+\end{minipage}
+\begin{minipage}[b]{\textwidth}
+    \centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}
+      ]
+
+        \begin{scope}[start chain = 1 going right]
+            \node [on chain=1] (t1_start) {Thread A};
+            \node [on chain=1, xshift = 90mm] (t1_end) {};
+        \end{scope}
+
+        \begin{scope}[start chain = 2 going right]
+            \node [on chain=2, below = of t1_start, yshift = 7.5mm] (t2_start) {Thread B};
             \node [on chain=2, xshift = 90mm] (t2_end) {};
         \end{scope}
 
@@ -92,7 +126,7 @@ wait-free data structures from lock-free cases \cite{kogan2012methodology}.
     \subcaption{Sequentially consistent, quiescently consistent and linearizable.}
     \label{fig:correctness_criteria_b}
 \end{minipage}
-\caption{A history of concurrent operations on a min-priority queue.}
+\caption{A history of concurrent operations on an initially empty min-priority queue.}
 \label{fig:correctness_criteria}
 \end{figure}
 
