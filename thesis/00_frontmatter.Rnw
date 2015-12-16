@@ -4,7 +4,39 @@ would not have been possible.
 \end{acknowledgements*}
 
 \begin{kurzfassung}
-\todo{Ihr Text hier.}
+Priority queues sind abstrakte Datenstrukturen welche eine Menge von Key/Value
+Paaren speichern und effizienten Zugriff auf das minimale (maximale) Element
+erlauben. Sie sind ein wichtiger Teil in vielen Bereichen der Informatik, wie zum Beispiel
+Algorithmen (e.g., Dijkstra's k\"urzester Pfad Algorithmus) und Betriebssystemen
+(e.g., Priority Schedulers).
+
+Der aktuelle Trend hin zu Multiprozessor Systemen ben\"otigt neue
+Implementationen von Basisdatenstrukturen, die auch bis auf viele Threads skalieren.
+Sogenannte Lock-free Strukturen sind in der Hinsicht vielversprechend nachdem sie auf
+blockierende Synchronisationsmechanismen verzichten.
+
+An parallelen Priority queues ist im vergangenen Jahrzehnt intensiv geforscht worden.
+In den letzten Jahren hatte sich die Forschung haupts\"achlich auf SkipList-basierte
+Strukturen konzentriert, nachdem sie hervorragende disjoint-access Parallelismus
+Eigenschaften vorweisen, i.e., Schreibzugriffe an verschiedenen Elementen betreffen
+separate Teile der Datenstruktur. Contention zwischen verschiedenen Threads und
+das Datenvolumen durch das Cache-coherency Protokoll kann daher reduziert reduziert werden.
+
+Die Skalierbarkeit hat sich jedoch bisher nur begrenzt verbessert. Auf der einen Seite
+haben strikte Priority queues einen inh\"arenten Engpass nachdem jede \lstinline|delete_min|
+Operation auf das minimale (maximale) Element zugreift. Und auf der anderen
+haben SkipLists wegen der dynamischen Allokation jeder Node relativ schlechte Cache Locality,
+und daher eher niedrigen Throughput bei SkipList-basierten Designs.
+
+Relaxed Datenstrukturen sind ein neuer und vielversprechender Zugang in dem h\"ohere Skalierbarkeit
+durch schw\"achere Qualit\"atsgarantien erlangt wird. Die \klsm ist ein paralleler,
+lock-free, und relaxed Priority queue Design, welcher hohe Skalierbarkeit verspricht:
+1) einerseits durch die Benutzung von Arrays and der Merge Operation
+f\"ur hohe Cache Locality, und 2) andererseits derart geschw\"achte semantische Garantien,
+sodass \lstinline|delete_min| eines der $kP$ minimale (maximale) Elemente zur\"uckgeben
+darf, wobei $P$ die Anzahl der Threads und $k$ ein Konfigurationsparameter ist.
+
+\todo{Continue here.}
 \end{kurzfassung}
 
 \begin{abstract}
@@ -38,7 +70,7 @@ The \klsm is a concurrent, lock-free, and relaxed priority queue design which
 aims to improve scalability by 1) using arrays as backing data structures and the standard
 merge algorithm as its central operation (for high cache locality); and 2) by relaxing
 semantic guarantees to allow the \lstinline|delete_min| operation to return one
-of the $kP$ elements, where $P$ is the number of threads and $k$ is a configuration parameter.
+of the $kP$ minimal (maximal) elements, where $P$ is the number of threads and $k$ is a configuration parameter.
 
 During the course of this thesis, we have implemented an improved standalone version of
 the \klsm priority queue and explain its design and implementation in detail. We finally evaluate the
