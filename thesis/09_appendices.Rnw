@@ -11,8 +11,8 @@
 
 \begin{figure}[ht!]
 \includegraphics[width = \textwidth]{graphics/lstopo_saturn.pdf}
-\caption[Topology of one of eight nodes on \lstinline|saturn|.]
-    {Topology of one of eight nodes on \lstinline|saturn|.
+\caption[Topology of one of four nodes on \lstinline|saturn|.]
+    {Topology of one of four nodes on \lstinline|saturn|.
     \lstinline|saturn| is a 48-core machine with 4 AMD Opteron 6168 processors
       with 12 cores each, clocked at 1.9 GHz. \lstinline|saturn| has
       64 KB of L1, 512 KB of L2, and 5 MB of L3 cache per core and 125 GB of RAM.}
