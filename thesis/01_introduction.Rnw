@@ -103,9 +103,10 @@ a rank of around $\frac{1}{20}$ of the upper quality bound.
 % Thesis structure.
 
 The thesis is structured as follows:
+Chapter \ref{ch:definitions} outlines basic concepts and definitions. 
 Chapter \ref{ch:sequential} provides an outline of sequential priority queues, with a focus
 on designs which have also been relevant to concurrent algorithms.
-Chapter \ref{ch:definitions} outlines basic concepts and definitions. In Chapter \ref{ch:strict},
+In Chapter \ref{ch:strict},
 we cover important concurrent priority queues with strict semantics, e.g.:
 the \citeauthor{hunt1996efficient} queue as a representative of early heap-based queues using
 fine-grained locking to avoid the bottleneck of a single global lock; lock-free SkipList-based

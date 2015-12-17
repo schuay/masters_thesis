@@ -159,11 +159,11 @@
 % What's priority queue, applications, ...
 \SweaveInput{01_introduction.Rnw}
 
-% Naive, heaps, skip lists, binary trees. Theoretical properties, structure.
-\SweaveInput{02_sequential.Rnw}
-
 % Definitions for parallel structures. Lock/wait-free, linearizable, etc.
-\SweaveInput{03_definitions.Rnw}
+\SweaveInput{02_definitions.Rnw}
+
+% Naive, heaps, skip lists, binary trees. Theoretical properties, structure.
+\SweaveInput{03_sequential.Rnw}
 
 % Global lock, hunt heap, shavit & lotan, linden, CBPQ.
 \SweaveInput{04_strict.Rnw}
