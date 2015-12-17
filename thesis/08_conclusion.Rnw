@@ -33,7 +33,7 @@ on all test machines. This is a significant improvement over the Pheet \klsm imp
 Unfortunately, this result does not carry over to the other benchmarking scenarios.
 Ascending key generation causes priority queues to behave in a quasi-\ac{FIFO}
 manner, which places more emphasis on the global, slower \ac{SLSM} component.
-Split workloads increases stress the \ac{SLSM} because the local \ac{DLSM} does
+Split workloads increases stress on the \ac{SLSM} because the local \ac{DLSM} does
 not have a continual flow of new items. In both cases, performance of the \klsm
 drops dramatically while the Multiqueues continues to perform reliably, delivering
 better performance than all \klsm variants in these altered benchmark environments.
