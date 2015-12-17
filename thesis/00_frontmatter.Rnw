@@ -36,7 +36,17 @@ f\"ur hohe Cache Locality, und 2) andererseits derart geschw\"achte semantische 
 sodass \lstinline|delete_min| eines der $kP$ minimale (maximale) Elemente zur\"uckgeben
 darf, wobei $P$ die Anzahl der Threads und $k$ ein Konfigurationsparameter ist.
 
-\todo{Continue here.}
+Im Laufe dieser Arbeit haben wir eine erweiterte standalone Version der \klsm Priority queue
+implementiert und beschreiben ihr Design sowie ihre Implementation bis ins Detail.
+Letztlich evaluieren wir die \klsm gegen andere State-of-the-art parallele Priority queues
+wie die SprayList, den \citeauthor{linden2013skiplist} queue, und
+\citeauthor{rihani2014multiqueues}'s Multiqueues.
+
+In manchen Benchmark Szenarios, inklusive der g\"angigen generic throughput Benchmark,
+zeigt die \klsm hervorragende Skalierbarkeit und hat bis zu einem 10-fachen Speedup gegen\"uber
+den anderen Datenstrukturen. In anderen zeigt sich jedoch, dass das Verhalten der
+\klsm stark Situationsabh\"angig ist. Von den anderen Designs scheinen sich die Multiqueues
+am besten zu verhalten, mit konsistenter Performance auf allen Benchmarks.
 \end{kurzfassung}
 
 \begin{abstract}
