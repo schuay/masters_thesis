@@ -101,7 +101,7 @@ We are interested mainly in general priority queues within the context of shared
 memory systems. General priority queues are data structures which
 allow arbitrary keys of a given, possibly infinite set, and furthermore can
 hold multiple distinct items with identical keys. Such priority queues
-are congruent the sorting problem\cite{Thorup:2002:EPQ:645413.652157},
+are congruent the sorting problem \cite{Thorup:2002:EPQ:645413.652157},
 and thus have a lower bound of $O(\log n)$
 complexity for either \lstinline|insert| or \lstinline|delete_min| (or both).
 Note that these bounds do not
