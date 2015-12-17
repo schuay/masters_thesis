@@ -156,7 +156,7 @@ worst-case complexity.
 
 While heaps use an implicit tree structure, it is also possible to use explicit
 balanced \acp{BST} as priority queues with identical worst case bounds as heaps.
-Popular \ac{BST} variants are e.g. Red-black trees \cite{bayer1972symmetric} and
+Popular \ac{BST} variants are, e.g., Red-black trees \cite{bayer1972symmetric} and
 AVL trees \cite{adelsonvelskii1963algorithm}.
 Insertions use the standard \ac{BST} insert algorithm, while deletions remove
 the tree's leftmost item. Alternatively, SkipLists \cite{pugh1990skip} also
@@ -169,13 +169,14 @@ heap-sorted trees. In addition to the standard insertion and deletion operations
 (in amortized logarithmic time),
 they also support efficient \lstinline|merge| and \lstinline|decrease_key|
 operations in amortized constant time, thus decreasing the complexity of Dijkstra's shortest
-path algorithm to $O(|E| + |V| \log |V|)$. However, due to their programming complexity
-and involved constant factors, they are not commonly used in practise.
+path algorithm from $O(|E| \log |V|)$ to $O(|E| + |V| \log |V|)$.
+However, due to their programming complexity
+and involved constant factors, they are not commonly used in practice.
 Subsequent publications have proposed various alternatives to Fibonacci heaps
 such as relaxed heaps \cite{driscoll1988relaxed} and strict Fibonacci heaps
 \cite{brodal2012strict}.
 
-Other well-known priority queue designs are the Skew Heap \cite{sleator1986self}
+Other well-known priority queue designs are the Skew Heap \cite{sleator1986self},
 based on a heap-ordered binary tree and the \lstinline|meld| operation;
 the Splay Tree \cite{sleator1985self}, a heuristically balanced \ac{BST}
 which attempts to move frequently used sections towards the root of the tree;
@@ -190,7 +191,7 @@ information, we refer the reader to reviews such as
 
 Binary heaps  \cite{williams1964algorithm} are one of the most common (and also one of the simplest)
 methods of implementing priority queues. They are based on two concepts; first,
-that of complete balanced binary trees, composed of nodes with exactly two children each.
+that of complete balanced binary trees, composed of inner nodes with exactly two children each.
 And second, that of heap ordering, the notion that the priority of each child
 node is less or equal to that of its parent node. Furthermore, instead of using an
 explicit representation of a binary tree, heaps implicitly encode the position
