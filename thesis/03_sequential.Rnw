@@ -33,9 +33,6 @@ public:
 \label{fig:priority_queue_interface}
 \end{figure}
 
-% TODO: Interface of delete_min: why is the key not returned? Discussion of other
-% interface styles (boost, LEDA, stl) - they all do pop/top/insert.
-
 A priority queue is a data structure which holds a collection of key-value
 pairs, and provides two methods (see Figure \ref{fig:priority_queue_interface}):
 \lstinline|insert|, which takes a key
@@ -45,10 +42,43 @@ which writes the value of the least item within the queue into the given paramet
 and returns true if the operation succeeded. \lstinline|delete_min| may fail if,
 for instance, the priority queue is empty.
 
+Popular libraries such as \emph{boost}\footnote{\url{www.boost.org}},
+\emph{LEDA}\footnote{\url{http://www.algorithmic-solutions.com/leda/index.htm}},
+and the \ac{STL} use a slightly different interface (Figure \ref{fig:stl_priority_queue_interface}) in which deletions
+are split into a read-only \lstinline|top| method, which returns the minimal
+element without removing it; and \lstinline|pop|, which deletes the minimal
+item without returning it. However, the split-deletion interface style causes
+issues in a concurrent setting in which it is essential that both reads and
+modifications must operate on the same element. For instance, imagine a case
+in which two threads concurrently each call \lstinline|top| followed by \lstinline|pop|;
+it is easy to construct a situation in which both \lstinline|top| operations
+return a reference to the same element, while the two \lstinline|pop| operations
+delete two distinct elements (one of which is lost).
+
+Note that there is also another difference in that our priority queue syntax
+separates the key and value types, while the \ac{STL} queue does not. Furthermore,
+\lstinline|top| returns the entire item, while \lstinline|delete_min| returns only
+the value --- however, these points are cosmetic in nature and our interface
+could be adapted with relative ease.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+template <class T>
+class priority_queue {
+public:
+    void push(const T &value);
+    const T &top() const;
+    void pop();
+};
+\end{lstlisting}
+\caption{The \ac{STL} priority queue class.}
+\label{fig:stl_priority_queue_interface}
+\end{figure}
+
 There are various further possible extensions to the given interface:
 \begin{itemize}
 \item \lstinline|empty| states whether the queue is empty.
-\item \lstinline|peek_min| returns the minimal item's value without removing
+\item \lstinline|peek_min| (or \lstinline|top|) returns the minimal item's value without removing
       it from the queue.
 \item \lstinline|decrease_key| decreases the key of a given item. This operation
       is vital e.g. for an efficient implementation of Dijkstra's shortest
