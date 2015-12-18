@@ -1,0 +1,1 @@
+/home/jakob/src/masters_thesis/common/vutinfth.cls

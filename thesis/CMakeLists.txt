@@ -5,3 +5,5 @@ add_latex_document(thesis.tex
            titlepage.pdf
     BIBFILES bibliography.bib
     IMAGE_DIRS graphics)
+    
+add_dependencies(thesis titlepage)
