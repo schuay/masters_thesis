@@ -25,7 +25,7 @@
   Arbeitsbereich: Parallel Computing\\[0.25\baselineskip]
   Betreuer: Prof. Dr. Scient. Jesper Larsson Tr\"aff
 }
-\titlegraphic{\includegraphics[height=52mm]{parcomp_logo}}
+\titlegraphic{\includegraphics[height=52mm, width=52mm]{parcomp_logo}}
 \date[\today]{\today}
 \subject{epilog}
 \keywords{concurrency, algorithms, lock-free, relaxed, priority queue}
