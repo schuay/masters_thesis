@@ -9,6 +9,7 @@
 \usepackage{lipsum}
 \usepackage{listings}
 \usepackage{ragged2e}
+\usepackage{subcaption}
 \usepackage{tikz}
 \usepackage{xspace}
 
@@ -114,36 +115,24 @@
 \begin{columns}[t]
 % ---------------------------------------------------------%
 \begin{column}{.45\textwidth}
-\begin{block}{Context}
+\begin{block}{Concurrent Priority Queues}
 \begin{itemize}
 \justifying
 \item \emph{Priority queues} are abstract data structures which store a set of key/value pairs
 and allow efficient access to the item with the minimal (maximal) key.
 
-\item \emph{Concurrency}. Due to the recent trend towards multiprocessor computing, it is becoming ever
-more vital to develop data structure designs that scale well to a large number
-of threads.
+\item It is becoming ever more vital to develop data structure designs that scale well to a large number
+of threads in \emph{concurrent} systems.
 
-\item \emph{Challenges}.
-However, priority queues with traditional semantics incur an inherent sequential
-bottleneck since each concurrent deletion attempts to remove the same item,
-resulting in high contention at the minimal (maximal) item.
+\item \emph{Concurrent priority queues} have developed over the years from early locking heaps,
+through lock-free SkipList-based designs, to modern research into relaxed priority queues.
 
-\item \emph{The traditional approach}. While some gains can be made by optimizing access to the minimal (maximal)
-element, results have shown limited scalability.
+\item \emph{Lock-freedom} is a strong progress condition which has been shown to be
+efficient in practice.
 
-\item \emph{Relaxation}. However, recently another promising approach based on weakening of
-semantic guarantees has been gaining in popularity. Contrary to traditional,
-strict priority queues, relaxed priority queues allow deletions to
-return one of several potential candidate items, thus eliminating the
-bottleneck at the minimal (maximal) item.
-
-\item The \emph{\klsm} is a relaxed priority queue design offering strong and
-parameterizable quality guarantees, and is both highly performant as well
-as scalable to a large number of threads. We present a standalone implementation
-of the \klsm and evaluate its throughput and quality against other state of the art
-priority queues.
-% TODO: Possible duplicate statement.
+\item \emph{Relaxation} is an approach which weakens semantic guarantees in return for
+higher efficience and/or scalability. It is especially useful in the context of
+priority queues in order to lessen the global bottleneck at the minimal (maximal) element.
 \end{itemize}
 \end{block}
 
@@ -173,29 +162,178 @@ priority queues.
         child {node [concept] {Global Bottleneck}}};
   \end{scope}
 \end{tikzpicture}
-\caption{A high-level view of the \klsm concept.}
 \end{figure}
 
 \justifying
 The \emph{\klsm} is a relaxed, linearizable and lock-free priority queue design by
-\citeauthor{wimmer2015lock} \cite{wimmer2015lock}, composed of two independent but
+\citeauthor{wimmerphd}, composed of two independent but
 complementary priority queues: the \ac{SLSM}, a centralized queue with strong
 guarantees but limited performance; and the \ac{DLSM}, a distributed design without
-global guarantees but having very high performance. The \klsm is:
+global guarantees but having very high throughput. The \klsm is:
 \begin{itemize}
 \justifying
 \item \emph{Linearizable}: Each operation appears to take effect at some instant
-in time.
+in time within the operation invocation.
 
-\item \emph{Lock-free}: At least one process makes progress at all times.
+\item \emph{Lock-free}: No blocking primitives are used, and at least one
+process makes progress at all times.
 
 \item \emph{Relaxed}: Deletions may return one of the $kP$ minimal items, where
 $k$ is a configuration parameter and $P$ is the number of threads.
+
+\begin{figure}
+\begin{minipage}[t]{.33\textwidth}
+\centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}]
+
+        \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
+            \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
+            \node [on chain=1, minimum width = 10mm] (ba1) {$b_1$};
+            \node [on chain=1, minimum width = 10mm] (ba2) {$b_2$};
+            \node [on chain=1, minimum width = 10mm] (ba3) {$b_3$};
+        \end{scope}
+
+        \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm]
+            \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
+            \node[on chain, box] {3};
+            \node[on chain, box] {4};
+            \node[on chain, box] (03) {4};
+            \node[on chain, box] {6};
+            \node[on chain, box] {9};
+        \end{scope}
+
+        \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba1, yshift = 3mm] (10) {5};
+            \node[on chain, box] {8};
+        \end{scope}
+
+        \begin{scope}[start chain = 5 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba2, yshift = 3mm] (20) {2};
+        \end{scope}
+
+        \begin{scope}[start chain = 6 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba3, yshift = 3mm] (30) {7};
+        \end{scope}
+
+        \path[->, every node/.style= { font = \sffamily\small }]
+        (ba0) edge node [right] {} (00)
+        (ba1) edge node [right] {} (10)
+        (ba2) edge node [right] {} (20)
+        (ba3) edge node [right] {} (30);
+    \end{tikzpicture}
+\subcaption{The initial state with item 7 as a new block.}
+\end{minipage}%
+\begin{minipage}[t]{.33\textwidth}
+\centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}]
+
+        \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
+            \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
+            \node [on chain=1, minimum width = 10mm] (ba1) {$b_1$};
+            \node [on chain=1, minimum width = 10mm] (ba2) {$b_2$};
+            \node [on chain=1, minimum width = 10mm] (ba3) {$b_3$};
+        \end{scope}
+
+        \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm]
+            \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
+            \node[on chain, box] {3};
+            \node[on chain, box] {4};
+            \node[on chain, box] (03) {4};
+            \node[on chain, box] {6};
+            \node[on chain, box] {9};
+        \end{scope}
+
+        \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba1, yshift = 3mm] (10) {5};
+            \node[on chain, box] {8};
+        \end{scope}
+
+        \begin{scope}[start chain = 5 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba2, yshift = 3mm] (20) {2};
+            \node[on chain, box] {7};
+        \end{scope}
+
+        \path[->, every node/.style= { font = \sffamily\small }]
+        (ba0) edge node [right] {} (00)
+        (ba1) edge node [right] {} (10)
+        (ba2) edge node [right] {} (20);
+    \end{tikzpicture}
+\subcaption{After the first merge.}
+\end{minipage}%
+\begin{minipage}[t]{.33\textwidth}
+\centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}]
+
+        \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
+            \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
+            \node [on chain=1, minimum width = 10mm] (ba1) {$b_1$};
+            \node [on chain=1, minimum width = 10mm] (ba2) {$b_2$};
+            \node [on chain=1, minimum width = 10mm] (ba3) {$b_3$};
+        \end{scope}
+
+        \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm]
+            \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
+            \node[on chain, box] {3};
+            \node[on chain, box] {4};
+            \node[on chain, box] (03) {4};
+            \node[on chain, box] {6};
+            \node[on chain, box] {9};
+        \end{scope}
+
+        \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
+                every on chain/.style={anchor=south},
+                node distance = -0.15mm, every node/.style = box]
+            \node[on chain, box, above = of ba1, yshift = 3mm] (10) {2};
+            \node[on chain, box] {5};
+            \node[on chain, box] {7};
+            \node[on chain, box] {8};
+        \end{scope}
+
+        \path[->, every node/.style= { font = \sffamily\small }]
+        (ba0) edge node [right] {} (00)
+        (ba1) edge node [right] {} (10);
+    \end{tikzpicture}
+\subcaption{After the second merge.}
+\end{minipage}
+\end{figure}
 
 \item \emph{Cache-efficient}: Usage of arrays and the standard merge algorithm
 result in good cache locality properties and high performance.
 \end{itemize}
 
+\end{block}
+\end{column}
+% ---------------------------------------------------------%
+
+% ---------------------------------------------------------%
+\begin{column}{.45\textwidth}
+
+\begin{block}{Our Implementation}
 Previously only available as part of the task-scheduling framework \emph{Pheet}
 (\url{www.pheet.org}), we have implemented an efficient standalone version
 of the \klsm. Our implementation is:
@@ -207,21 +345,20 @@ machines.
 
 \item \emph{Performant}: The \klsm outperforms the best other concurrent
 priority queues by up to a factor of ten.
+
+\item \emph{Maintainable}:
+
+\item \emph{Portable}:
 \end{itemize}
 \end{block}
-\end{column}
-% ---------------------------------------------------------%
-
-% ---------------------------------------------------------%
-\begin{column}{.45\textwidth}
 
 \begin{block}{Results}
 \begin{itemize}
 \justifying
 \item \emph{Algorithms}. The \klsm was evaluated against other state of the art designs, including
-the SprayList \cite{alistarhspraylist} (relaxed, lock-free, SkipList-based, probabilistic guarantees), the
-\citeauthor{linden2013skiplist} queue \cite{linden2013skiplist} (strict, lock-free, SkipList-based), and
-the Multiqueues \cite{rihani2014multiqueues} (relaxed, lock-based, no guarantees).
+the SprayList (relaxed, lock-free, SkipList-based, probabilistic guarantees), the
+Lind\'en queue (strict, lock-free, SkipList-based), and
+the Multiqueues (relaxed, lock-based, no guarantees).
 
 \item \emph{Benchmarks}. Throughput benchmarks measure the millions of operations per second.
 
@@ -258,7 +395,7 @@ range.
 
 \end{block}
 
-\begin{block}{References}
+\begin{block}{Publications}
 \printbibliography
 \end{block}
 \end{column}
