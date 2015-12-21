@@ -11,7 +11,7 @@ by up to a factor of two, but only scales while executed on a single processor.
 Recently, relaxation of provided guarantees have been investigated as another method of reducing
 contention and improving disjoint-access parallelism.
 For instance, k-FIFO queues \cite{kirsch2012fast} have achieved considerable
-speed-ups compared to strict FIFO queues by allowing {\lstset{breaklines,breakatwhitespace} \lstinline|Dequeue|} to return elements
+speed-ups compared to strict FIFO queues by allowing {\lstset{breaklines,breakatwhitespace} \lstinline|dequeue|} to return elements
 up to $k$ positions out of order.
 
 Relaxation has also been applied to concurrent priority queues with some success, and in the following
@@ -31,7 +31,7 @@ basis for the priority queue implementation. The full source code is available o
 In the SprayList, \lstinline|insert| calls are simply
 forwarded to the underlying SkipList.
 
-The \lstinline|delete_min| operation however executes a random walk, also called a \emph{spray}, the
+The \lstinline|delete_min| operation executes a random walk, also called a \emph{spray}, the
 purpose of which is to spread accesses over a certain section of the SkipList uniformly such that
 collisions between multiple concurrent \lstinline|delete_min| calls become unlikely. This is achieved by
 starting at some initial level, walking a randomized number of steps, descending a randomized number of levels,
@@ -68,7 +68,7 @@ any defined quality guarantees (probabilistic or otherwise). In their benchmarks
 Multiqueues outperform the SprayList in both throughput (by around a factor of two)
 and quality.
 
-Similar to the \klsm (see Section \ref{sec:wimmer} and Chapter \ref{ch:implementation}),
+Similarly to the \klsm (see Section \ref{sec:wimmer} and Chapter \ref{ch:implementation}),
 the Multiqueue is a configurable data structure. It takes a parameter $c$, which
 controls the number of created sequential priority queues. Each thread creates
 $c$ queues, adding up to $cP$ queues in total.
@@ -80,7 +80,7 @@ insert the given item, updating the cached smallest key if necessary.
 
 Deletions choose \emph{two} queues $q_i, q_j$ at random and peek at their respective cached
 minimal keys. The queue with the smaller cached key is then locked and popped,
-again updating the cached key. This technique is somewhat similar load balancing
+again updating the cached key. This technique is somewhat similar to load balancing
 through random selection \cite{richa2001power}, but no definite quality analysis
 has yet been given due to the complications arising through priority queue semantics.
 
@@ -138,7 +138,7 @@ The semantics are as follows: when \lstinline|insert| completes, the given key-v
 inserted into the queue. \lstinline|delete_min| can either complete successfully, in which case
 it returns \lstinline|true|, one of the $kP$ minimal items is removed from the queue
 and its value is written into the given argument; or it can fail, in which case no item is removed
-from the queue and the \lstinline|false| is returned. Failures of \lstinline|delete_min| may occur
+from the queue and \lstinline|false| is returned. Failures of \lstinline|delete_min| may occur
 spuriously even if the queue is non-empty, but the number of such failures are low in practice.
 
 The \klsm is a composite data structure consisting of a global component called the \ac{SLSM},
@@ -147,7 +147,7 @@ and \ac{DLSM} are based on the \ac{LSM} \cite{o1996log} data structure which wil
 upon below. Both structures may be used as standalone priority queues, but have complementing
 advantages and disadvantages which motivates their composition.
 
-Throughout this section, we ignore over the complexities of lock-free memory management and simply
+Throughout this section, we ignore the complexities of lock-free memory management and simply
 assume the existence of a garbage collector. The implementation by \citeauthor{wimmerphd}
 uses their own lock-free memory allocator to handle items, while blocks and block arrays are
 allocated in a pool and reused. Memory management will be discussed in further detail in Chapter
@@ -185,10 +185,10 @@ invariants after the completion of each operation:
 
 \begin{itemize}
 \item Each block $B$ is associated with a level $i$ such that $B$ has a capacity of $2^i$ items.
-\item Consider block $B$ (with associated level $i$ and position within the LSM $ix$)
-      and block $B'$ (with level $i'$ and position $ix'$); if $ix < ix$
+\item Consider two blocks, $B$ (with associated level $i$ and position $ix$ within the LSM)
+      and $B'$ (with level $i'$ and position $ix'$); if $ix < ix$
       then $i > i'$.
-\item For each block $B$ with level $i$, $2^{i-1} \leq |B| \leq 2^i$ where $|B|$ is the number of items
+\item For each block $B$ with level $i$, $2^{i-1} \leq |B| \leq 2^i$, where $|B|$ is the number of items
       stored in $B$.
 \end{itemize}
 
@@ -363,7 +363,7 @@ are stored in contiguous chunks of memory.
 
 \subsection{\acl{DLSM}} \label{ssec:dlsm}
 
-The \ac{DLSM} is a priority queue with purely thread-local guarantees. It adheres to the same
+The \ac{DLSM} is a concurrent priority queue with purely thread-local guarantees. It adheres to the same
 interface as the \klsm as given in Figure \ref{fig:klsm_interface}, but with subtly altered semantics
 in that there is no relaxation parameter $k$ --- the \ac{DLSM}'s \lstinline|delete_min| simply
 removes the thread-locally minimal item. If the local queue is empty an operation called \lstinline|spy|
@@ -377,9 +377,6 @@ a \lstinline|peek_min| on the underlying local \ac{LSM} and mark the returned it
 an atomic \ac{CAS} instruction. Special care is taken in order to eventually physically remove taken items
 from the \ac{LSM}: merges skip taken items, and whenever a block is noted to be less than half-full
 the block is shrunk and \ac{LSM} invariants are reasserted.
-
-% TODO: Revise following paragraph - explanations are unclear and I'm not sure whether
-% it is even possible to encounter an item multiple times.
 
 So far, all operations have been exclusively thread-local, and thus no attention had to be given
 to concurrency complications. Unfortunately, \lstinline|spy| does access other thread's \acp{LSM}
@@ -395,12 +392,14 @@ by a single thread when its flag is set atomically.
 
 The \ac{DLSM} is essentially embarassingly parallel as long as all local queues remain nonempty,
 and scales exceedingly well even at very high thread counts. This is to be expected, since the \ac{LSM}
-is very efficient, and most, if not all operations are thread-local. However, its major weakness
-is the lack of global quality guarantees. The next section discusses the \ac{SLSM}, which is utilized
-in the \klsm in order to reintroduce global guarantees.
-
+is very efficient, and most, if not all operations are thread-local.
 Insertions and deletions are again of amortized logarithmic complexity and benefit
 from high cache locality as well as mostly thread-local operations.
+
+However, the \ac{DLSM} has one major weakness
+in the lack of any global quality guarantees. The next section discusses the \ac{SLSM}, which is utilized
+in the \klsm in order to reintroduce global guarantees.
+
 
 \subsection{\acl{SLSM}} \label{ssec:slsm}
 
@@ -435,6 +434,7 @@ cannot offer any guarantees as to the quality of returned items, while the \ac{S
 has a significant global bottleneck.
 
 \begin{figure}[ht]
+\centering
 \begin{tikzpicture}[mindmap,
   level 1 concept/.append style={level distance = 130, sibling angle = 60},
   level 2 concept/.append style={sibling angle = 45},

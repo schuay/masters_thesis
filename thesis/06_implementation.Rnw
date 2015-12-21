@@ -102,7 +102,7 @@ Memory management is handled by several classes, covered further in Section \ref
         \node[box, below = of barray] (bpivots) {\verb|block_pivots|};
 
         \begin{pgfonlayer}{background}
-            \draw[box] ($(abpt.north west) - (2mm, 0)$) rectangle ($(mm.south east) + (1mm, 0)$);
+            \draw[box] ($(abpt.north west) - (2mm, 0)$) rectangle ($(mm.north east) + (1mm, 0)$);
         \end{pgfonlayer}
 
         \path[->, every node/.style= { font = \sffamily\small }]
@@ -126,7 +126,7 @@ Memory management is handled by several classes, covered further in Section \ref
 While the general \klsm interface has been covered previously in Section \ref{sec:wimmer},
 several details have been omitted for clarity. Figure \ref{fig:klsm.h} displays the full
 header file containing the \lstinline|k_lsm| class. In this instance, implementation
-details such constructors and destructors, as the \lstinline|init_thread| function,
+details such constructors and destructors, as well as the \lstinline|init_thread| function,
 are included in order to present a complete picture of what a class implementation
 looks like. Future code listings will skip these details.
 
@@ -231,7 +231,8 @@ and only if it previously matched the given expected version. In the presence
 of two identical \ac{CAS} calls by different threads, only one will succeed
 while the other must fail. The thread which has seen a \ac{CAS} failure will
 return from from \lstinline|delete_min| with a so-called spurious failure,
-returning \lstinline|false| even though the queue might be non-empty.
+returning \lstinline|false| even though the queue might be non-empty; while the
+other thread will successfully return the item.
 
 \subsection{Linearizability, Lock-freedom \& Complexity}
 
@@ -280,7 +281,7 @@ prove these statements but attempt to give a rough sketch for each:
 The \ac{SLSM} is the central, global component of the \klsm and contains
 all items that have overflowed the local \ac{DLSM} capacities. The \ac{SLSM}
 batches insertions by inserting blocks rather than items, and relaxes deletions
-by keeping track of a so-called pivot range, which contains a subset of $k$
+by keeping track of a so-called pivot range, which contains a subset of the $k$
 smallest items. 
 
 \begin{figure}[ht]
@@ -310,9 +311,10 @@ the \ac{SLSM} may be used as a standalone priority queue. However, it also has
 a batched insertion function which takes a block argument, and a \lstinline|find_min|
 function used by the \klsm to retrieve one of the smallest items without removing it.
 
-The \ac{SLSM} itself contains a versioned pointer to the global block array, which is
-used by all threads to determine the contents of the \ac{SLSM}. A versioned pointer (also known
-as tagged pointers) reserves a subset of the available bits which contain a version number,
+The \ac{SLSM} itself contains a versioned pointer (see Figure \ref{fig:versioned_array_ptr_structure})
+to the global block array, which is
+used by all threads to determine the contents of the \ac{SLSM}. Versioned pointers (also known
+as tagged pointers) reserve a subset of the available bits for a version number,
 incremented each time the global block array is modified. The
 pointer is versioned since block arrays are heavily reused --- each thread allocates
 two block arrays and uses them in an alternating fashion when setting the global
@@ -321,19 +323,54 @@ array pointer (see Section \ref{sec:mm_internals}).
 Without versioning, this might
 cause issues: consider a case in which thread A retrieves the global array
 pointer $ptr$ (which has been allocated by thread B) and then stalls. Thread B then
-reuses the array $ptr$ and fills it with new contents. When thread A continues
+reuses the array located at $ptr$ and fills it with new contents. When thread A continues
 execution and successfully verifies that the global pointer appears to be unchanged, 
-$ptr$ contains different content than A expects - this is an instance
+$ptr$ contains different content than A expects --- this is an instance
 of the ABA problem.
 
 Versioning is used to solve several aspects of this issue. First, the block array
-itself contains an integral version number which may compared with a local copy
+itself contains an integral version number which may be compared with a local copy
 the check whether the array has remained unchanged. Second, a portion of the version
 number (more precisely, the least 11 bits) is packed into the global array pointer
 itself to ensure valid results of \ac{CAS} operations when setting the global pointer.
 The class \lstinline|versioned_array_ptr| handles operations on such packed pointers,
 and itself contains an \lstinline|aligned_block_array|, which is simply a block
 array allocated at a 2048 byte boundary (i.e., the least 11 bits are zeroed).
+
+\begin{figure}
+\centering
+    \begin{tikzpicture}[
+        every node/.style={ font = \small}
+      ]
+
+        \begin{scope}[start chain = 1 going base right, node distance = 2mm]
+            \node [on chain = 1] (ptr_begin) {0};
+            \node [on chain = 1] {x};
+            \node [on chain = 1] {7};
+            \node [on chain = 1] {f};
+            \node [on chain = 1] {f};
+            \node [on chain = 1] {f};
+            \node [on chain = 1] {f};
+            \node [on chain = 1] {f};
+            \node [on chain = 1] {f};
+            \node [on chain = 1] {f};
+            \node [on chain = 1] {e};
+            \node [on chain = 1] (ptr_end) {5};
+            \node [on chain = 1] (ver_begin) {a};
+            \node [on chain = 1] (ver_end) {8};
+        \end{scope}
+
+        \draw[serif cm-serif cm] ($(ptr_begin.south west) - (0, 3mm)$) -- node[below] {Address}
+                                 ($(ptr_end.south east) - (0, 3mm)$);
+        \draw[serif cm-serif cm] ($(ver_begin.south west) - (0, 3mm)$) -- node[below] {Version}
+                                 ($(ver_end.south east) - (0, 3mm)$);
+    \end{tikzpicture}
+\caption[Structure of a versioned array pointer.]
+        {Structure of a versioned array pointer, in this case containing an 8 bit version.
+        This particular versioned pointer contains an address to the array located at \lstinline|0x7fffffffe500|,
+        with an associated version of \lstinline|0xa8|, or 168 in decimal notation.}
+\label{fig:versioned_array_ptr_structure}
+\end{figure}
 
 The thread-local \ac{SLSM} component is wrapped within the \lstinline|thread_local_ptr|
 class (see Section \ref{sec:component_internals}), which allows lock-free retrieval
@@ -1285,28 +1322,7 @@ block<K, V>::merge(const block<K, V> *lhs,
     while (l < lend) *dst++ = *l++;
     while (r < rend) *dst++ = *r++;
 
-    /* Prune. */
-
-    const size_t skipped_prunes = std::max(lhs->m_skipped_prunes,
-            rhs->m_skipped_prunes);
-    if (skipped_prunes > MAX_SKIPPED_PRUNES) {
-        const auto end = dst;
-        dst = m_block_items;
-        for (auto src = dst; src < end; src++) {
-            if (src->taken()) {
-                continue;
-            } else if (src != dst) {
-                *dst = *src;
-            }
-            dst++;
-        }
-
-        m_last = dst - m_block_items;
-        m_skipped_prunes = 0;
-    } else {
-        m_last = size;
-        m_skipped_prunes = skipped_prunes + 1;
-    }
+    /* Prune (code omitted). */
 }
 \end{lstlisting}
 \caption{The \lstinline|block::merge| implementation.}
