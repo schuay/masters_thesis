@@ -3,7 +3,7 @@
 \usepackage{TUINFPST}
 
 \usepackage{acronym}
-\usepackage[backend=bibtex,sortcites=true]{biblatex}
+\usepackage[backend=bibtex,sortcites=true,maxnames=99]{biblatex}
 \usepackage{comment}
 \usepackage{hyperref}
 \usepackage{lipsum}
@@ -166,7 +166,7 @@ priority queues in order to lessen the global bottleneck at the minimal (maximal
 
 \justifying
 The \emph{\klsm} is a relaxed, linearizable and lock-free priority queue design by
-\citeauthor{wimmerphd}, composed of two independent but
+Wimmer, composed of two independent but
 complementary priority queues: the \ac{SLSM}, a centralized queue with strong
 guarantees but limited performance; and the \ac{DLSM}, a distributed design without
 global guarantees but having very high throughput. The \klsm is:
@@ -334,9 +334,11 @@ result in good cache locality properties and high performance.
 \begin{column}{.45\textwidth}
 
 \begin{block}{Our Implementation}
+\justifying
 Previously only available as part of the task-scheduling framework \emph{Pheet}
 (\url{www.pheet.org}), we have implemented an efficient standalone version
 of the \klsm. Our implementation is:
+
 \begin{itemize}
 \justifying
 \item \emph{Scalable}: Under ideal circumstances and with sufficient
@@ -346,9 +348,11 @@ machines.
 \item \emph{Performant}: The \klsm outperforms the best other concurrent
 priority queues by up to a factor of ten.
 
-\item \emph{Maintainable}:
+\item \emph{Maintainable}: Our implementation values classical software
+engineering concepts such as  composability, readability, and separation of concerns.
 
-\item \emph{Portable}:
+\item \emph{Portable}: The \klsm is implemented using C++11 atomics and
+does not rely on any external libraries.
 \end{itemize}
 \end{block}
 
@@ -360,7 +364,17 @@ the SprayList (relaxed, lock-free, SkipList-based, probabilistic guarantees), th
 Lind\'en queue (strict, lock-free, SkipList-based), and
 the Multiqueues (relaxed, lock-based, no guarantees).
 
-\item \emph{Benchmarks}. Throughput benchmarks measure the millions of operations per second.
+\item \emph{Benchmarks.}
+The algorithms were compared extensively under a variety of experiments.
+Besides the standard benchmark in which each thread performs an equal mixture
+of insertions and deletions and keys are generated uniformly at random,
+we also examined scenarios with uneven workloads between
+threads and ascending/descending key generation.
+
+\item \emph{Throughput} benchmarks measure performance in millions of operations per second.
+Results are varied: in evenly distributed settings, the \klsm outperforms all
+other data structures by a factor of 10, while in others, performance suffers since
+more stress is placed on the \ac{SLSM}.
 
 \vspace{1cm}
 
@@ -374,28 +388,17 @@ the Multiqueues (relaxed, lock-based, no guarantees).
 pqplot("results/20151112_mars_uni_uni")
 @
 \end{center}
-\caption{Uniform workload, uniform key generation.}
-\label{fig:mars_uni_uni}
 \end{figure}
-
-In addition to the standard benchmark (equal mixture of operations on each thread,
-uniform key generation), we experimented with split workloads (threads are either
-dedicated inserters or deleters) and ascending/descending key generation.
-
-The \klsm demonstrates exceptional performance under the standard uniform/uniform
-benchmark.
-Unfortunately, the \klsm is less successful under split workloads and ascending
-key generation, since both place more stress on the centralized \ac{SLSM} component.
-
-We also present the first evaluation of result quality, demonstrating that
-on average, the \klsm's results are within the best $5\%$ of their guaranteed
-range.
-
+\item \emph{Quality} benchmarks measure ranks of returned items, e.g., for each returned item,
+how many other items within the priority queue were skipped when determining it as the minimal item.
+The \klsm more than fulfills its semantic guarantees, usually delivering results
+within the best fifth percentile.
 \end{itemize}
 
 \end{block}
 
 \begin{block}{Publications}
+\nocite{wimmer2015lock}
 \printbibliography
 \end{block}
 \end{column}
