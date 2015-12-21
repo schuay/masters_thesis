@@ -9,6 +9,7 @@
 \usepackage{lipsum}
 \usepackage{listings}
 \usepackage{ragged2e}
+\usepackage{tikz}
 \usepackage{xspace}
 
 \newcommand{\klsm}{$k$-LSM\xspace}
@@ -55,12 +56,60 @@
 % for crop marks, uncomment the following line
 \usepackage[cross,width=88truecm,height=123truecm,center]{crop}
 
+\usetikzlibrary{ arrows
+               , automata
+               , backgrounds
+               , calc
+               , chains
+               , fit
+               , mindmap
+               , petri
+               , shapes
+               , topaths
+               }
+
 \input{acronyms}
 \bibliography{bibliography.bib}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+
+\tikzstyle{box} =
+    [ draw,
+    , rectangle,
+    , text centered,
+    , minimum width = 5mm,
+    , minimum height = 5mm,
+    , font = \footnotesize,
+    , fill = black!10
+    ]
+
+\tikzstyle{deleted_box} =
+    [ draw,
+    , rectangle,
+    , text centered,
+    , minimum width = 5mm,
+    , minimum height = 5mm,
+    , font = \footnotesize,
+    , text = black!50
+    ]
+
+\tikzstyle{flag_true} =
+    [ draw,
+    , circle,
+    , inner sep = 0mm,
+    , text width = 0.75mm,
+    , fill = black
+    ]
+
+\tikzstyle{flag_false} =
+    [ draw,
+    , circle,
+    , inner sep = 0mm,
+    , text width = 0.75mm,
+    ]
+
 \begin{frame}
 \begin{columns}[t]
 % ---------------------------------------------------------%
@@ -99,6 +148,34 @@ priority queues.
 \end{block}
 
 \begin{block}{The \klsm}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[mindmap,
+  level 1 concept/.append style={level distance = 300, text width = 200, minimum size = 200, sibling angle = 60},
+  level 2 concept/.append style={level distance = 250, text width = 150, minimum size = 155, sibling angle = 45},
+  extra concept/.append style={color=blue!50, text=black}]
+
+  \begin{scope}[mindmap, concept color = black!10]
+    \node [concept, text width = 200] {\klsm}[clockwise from=-60]
+      child {node [concept] (dlsm) {\ac{DLSM}}
+        [clockwise from = 75]
+        child {node [concept] {Thread-local}}
+        child {node [concept] {Distributed}}
+        child {node [concept] {Efficient}}
+        child {node [concept] {Scalable}}
+        child {node [concept] {Strict}}}
+      child {node [concept] (slsm) {\ac{SLSM}}
+        [clockwise from = -90]
+        child {node [concept] {Shared}}
+        child {node [concept] {Global}}
+        child {node [concept] {Relaxed}}
+        child {node [concept] {Global Bottleneck}}};
+  \end{scope}
+\end{tikzpicture}
+\caption{A high-level view of the \klsm concept.}
+\end{figure}
+
 \justifying
 The \emph{\klsm} is a relaxed, linearizable and lock-free priority queue design by
 \citeauthor{wimmer2015lock} \cite{wimmer2015lock}, composed of two independent but
