@@ -1,6 +1,13 @@
 \begin{acknowledgements*}
-To Martin and Jesper --- without your enthusiasm, ideas, and support, this thesis
-would not have been possible.
+With thanks to
+
+\ldots Martin and Jesper, for your enthusiasm, ideas, and support.
+
+\ldots Moni, for being my longstanding partner in everything.
+
+\ldots My family, for the financial support and encouragement.
+
+Without you, this thesis would not have been possible.
 \end{acknowledgements*}
 
 \begin{kurzfassung}
