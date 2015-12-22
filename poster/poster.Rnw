@@ -384,7 +384,7 @@ more stress is placed on the \ac{SLSM}.
 
 \begin{figure}[ht]
 \begin{center}
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 11, echo = FALSE>>=
 pqplot("results/20151112_mars_uni_uni")
 @
 \end{center}
