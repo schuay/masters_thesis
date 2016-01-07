@@ -16,7 +16,9 @@
 \newcommand{\klsm}{$k$-LSM\xspace}
 
 \title[Software Engineering \& Internet Computing]{
-  \klsm: A Relaxed Lock-Free Priority Queue
+  \klsm:\\
+  \vspace{4mm}
+  A Relaxed Lock-Free Priority Queue
 }
 \author[gruber@par.tuwien.ac.at]{Jakob Gruber}
 \institute[]{%
@@ -348,7 +350,7 @@ machines.
 \item \emph{Performant}: The \klsm outperforms the best other concurrent
 priority queues by up to a factor of ten.
 
-\item \emph{Maintainable}: Our implementation values classical software
+\item \emph{Maintainable}: The \klsm is implemented using classical software
 engineering concepts such as  composability, readability, and separation of concerns.
 
 \item \emph{Portable}: The \klsm is implemented using C++11 atomics and
@@ -362,7 +364,7 @@ does not rely on any external libraries.
 \item \emph{Algorithms}. The \klsm was evaluated against other state of the art designs, including
 the SprayList (relaxed, lock-free, SkipList-based, probabilistic guarantees), the
 Lind\'en queue (strict, lock-free, SkipList-based), and
-the Multiqueues (relaxed, lock-based, no guarantees).
+Multiqueues (relaxed, lock-based, no guarantees).
 
 \item \emph{Benchmarks.}
 The algorithms were compared extensively under a variety of experiments.
