@@ -165,7 +165,7 @@ priority queues to lessen the global bottleneck at the minimal (maximal) element
 \end{figure}
 
 \justifying
-The \textbf{\klsm} is a relaxed, linearizable and lock-free priority queue design by
+The \emph{\klsm} is a relaxed, linearizable and lock-free priority queue design by
 Wimmer, composed of two independent but
 complementary priority queues: the \ac{SLSM}, a centralized queue with strong
 guarantees but limited performance; and the \ac{DLSM}, a distributed design without
@@ -199,7 +199,7 @@ result in good cache locality properties and high performance.
 
 \begin{block}{Our Implementation}
 \justifying
-Previously only available as part of the task-scheduling framework \textbf{Pheet},
+Previously only available as part of the task-scheduling framework \emph{Pheet},
 we have implemented an efficient standalone version
 of the \klsm. Our implementation is:
 
