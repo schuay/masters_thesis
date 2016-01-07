@@ -4,6 +4,7 @@
 
 \usepackage{acronym}
 \usepackage[backend=bibtex,sortcites=true,maxnames=99]{biblatex}
+\usepackage{booktabs}
 \usepackage{comment}
 \usepackage{hyperref}
 \usepackage{lipsum}
@@ -120,21 +121,18 @@
 \begin{block}{Concurrent Priority Queues}
 \begin{itemize}
 \justifying
-\item \emph{Priority queues} are abstract data structures which store a set of key/value pairs
-and allow efficient access to the item with the minimal (maximal) key.
+\item \emph{Priority queues}: Abstract data structures which store a set of key/value pairs;
+efficient access to the item with the minimal (maximal) key.
 
-\item It is becoming ever more vital to develop data structure designs that scale well to a large number
-of threads in \emph{concurrent} systems.
-
-\item \emph{Concurrent priority queues} have developed over the years from early locking heaps,
+\item \emph{Concurrent priority queues}: Developed from early locking heaps,
 through lock-free SkipList-based designs, to modern research into relaxed priority queues.
 
-\item \emph{Lock-freedom} is a strong progress condition which has been shown to be
+\item \emph{Lock-freedom}: A strong progress condition, has been shown to be
 efficient in practice.
 
-\item \emph{Relaxation} is an approach which weakens semantic guarantees in return for
-higher efficience and/or scalability. It is especially useful in the context of
-priority queues in order to lessen the global bottleneck at the minimal (maximal) element.
+\item \emph{Relaxation}: An approach which weakens semantic guarantees in return for
+higher efficience and/or scalability; especially useful in the context of
+priority queues to lessen the global bottleneck at the minimal (maximal) element.
 \end{itemize}
 \end{block}
 
@@ -183,151 +181,15 @@ process makes progress at all times.
 \item \emph{Relaxed}: Deletions may return one of the $kP$ minimal items, where
 $k$ is a configuration parameter and $P$ is the number of threads.
 
-\begin{figure}
-\begin{minipage}[t]{.33\textwidth}
-\centering
-    \begin{tikzpicture}[start chain,
-        ->,
-        every node/.style={font = \small},
-        label/.style={rectangle,minimum size = 5mm}]
-
-        \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
-            \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
-            \node [on chain=1, minimum width = 10mm] (ba1) {$b_1$};
-            \node [on chain=1, minimum width = 10mm] (ba2) {$b_2$};
-            \node [on chain=1, minimum width = 10mm] (ba3) {$b_3$};
-        \end{scope}
-
-        \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
-                every on chain/.style={anchor=south},
-                node distance = -0.15mm]
-            \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
-            \node[on chain, box] {3};
-            \node[on chain, box] {4};
-            \node[on chain, box] (03) {4};
-            \node[on chain, box] {6};
-            \node[on chain, box] {9};
-        \end{scope}
-
-        \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
-                every on chain/.style={anchor=south},
-                node distance = -0.15mm, every node/.style = box]
-            \node[on chain, box, above = of ba1, yshift = 3mm] (10) {5};
-            \node[on chain, box] {8};
-        \end{scope}
-
-        \begin{scope}[start chain = 5 going {above=of \tikzchainprevious.north},
-                every on chain/.style={anchor=south},
-                node distance = -0.15mm, every node/.style = box]
-            \node[on chain, box, above = of ba2, yshift = 3mm] (20) {2};
-        \end{scope}
-
-        \begin{scope}[start chain = 6 going {above=of \tikzchainprevious.north},
-                every on chain/.style={anchor=south},
-                node distance = -0.15mm, every node/.style = box]
-            \node[on chain, box, above = of ba3, yshift = 3mm] (30) {7};
-        \end{scope}
-
-        \path[->, every node/.style= { font = \sffamily\small }]
-        (ba0) edge node [right] {} (00)
-        (ba1) edge node [right] {} (10)
-        (ba2) edge node [right] {} (20)
-        (ba3) edge node [right] {} (30);
-    \end{tikzpicture}
-\subcaption{The initial state with item 7 as a new block.}
-\end{minipage}%
-\begin{minipage}[t]{.33\textwidth}
-\centering
-    \begin{tikzpicture}[start chain,
-        ->,
-        every node/.style={font = \small},
-        label/.style={rectangle,minimum size = 5mm}]
-
-        \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
-            \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
-            \node [on chain=1, minimum width = 10mm] (ba1) {$b_1$};
-            \node [on chain=1, minimum width = 10mm] (ba2) {$b_2$};
-            \node [on chain=1, minimum width = 10mm] (ba3) {$b_3$};
-        \end{scope}
-
-        \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
-                every on chain/.style={anchor=south},
-                node distance = -0.15mm]
-            \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
-            \node[on chain, box] {3};
-            \node[on chain, box] {4};
-            \node[on chain, box] (03) {4};
-            \node[on chain, box] {6};
-            \node[on chain, box] {9};
-        \end{scope}
-
-        \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
-                every on chain/.style={anchor=south},
-                node distance = -0.15mm, every node/.style = box]
-            \node[on chain, box, above = of ba1, yshift = 3mm] (10) {5};
-            \node[on chain, box] {8};
-        \end{scope}
-
-        \begin{scope}[start chain = 5 going {above=of \tikzchainprevious.north},
-                every on chain/.style={anchor=south},
-                node distance = -0.15mm, every node/.style = box]
-            \node[on chain, box, above = of ba2, yshift = 3mm] (20) {2};
-            \node[on chain, box] {7};
-        \end{scope}
-
-        \path[->, every node/.style= { font = \sffamily\small }]
-        (ba0) edge node [right] {} (00)
-        (ba1) edge node [right] {} (10)
-        (ba2) edge node [right] {} (20);
-    \end{tikzpicture}
-\subcaption{After the first merge.}
-\end{minipage}%
-\begin{minipage}[t]{.33\textwidth}
-\centering
-    \begin{tikzpicture}[start chain,
-        ->,
-        every node/.style={font = \small},
-        label/.style={rectangle,minimum size = 5mm}]
-
-        \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
-            \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
-            \node [on chain=1, minimum width = 10mm] (ba1) {$b_1$};
-            \node [on chain=1, minimum width = 10mm] (ba2) {$b_2$};
-            \node [on chain=1, minimum width = 10mm] (ba3) {$b_3$};
-        \end{scope}
-
-        \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
-                every on chain/.style={anchor=south},
-                node distance = -0.15mm]
-            \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
-            \node[on chain, box] {3};
-            \node[on chain, box] {4};
-            \node[on chain, box] (03) {4};
-            \node[on chain, box] {6};
-            \node[on chain, box] {9};
-        \end{scope}
-
-        \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
-                every on chain/.style={anchor=south},
-                node distance = -0.15mm, every node/.style = box]
-            \node[on chain, box, above = of ba1, yshift = 3mm] (10) {2};
-            \node[on chain, box] {5};
-            \node[on chain, box] {7};
-            \node[on chain, box] {8};
-        \end{scope}
-
-        \path[->, every node/.style= { font = \sffamily\small }]
-        (ba0) edge node [right] {} (00)
-        (ba1) edge node [right] {} (10);
-    \end{tikzpicture}
-\subcaption{After the second merge.}
-\end{minipage}
-\end{figure}
-
 \item \emph{Cache-efficient}: Usage of arrays and the standard merge algorithm
 result in good cache locality properties and high performance.
 \end{itemize}
 
+\end{block}
+
+\begin{block}{Publications}
+\nocite{wimmer2015lock}
+\printbibliography
 \end{block}
 \end{column}
 % ---------------------------------------------------------%
@@ -347,33 +209,30 @@ of the \klsm. Our implementation is:
 relaxation, the \klsm scales until the maximal thread-count on all tested
 machines.
 
-\item \emph{Performant}: The \klsm outperforms the best other concurrent
+\item \emph{Performant}: Outperforms the best other concurrent
 priority queues by up to a factor of ten.
 
-\item \emph{Maintainable}: The \klsm is implemented using classical software
-engineering concepts such as  composability, readability, and separation of concerns.
+\item \emph{Maintainable}: Implemented using classical software
+engineering concepts such as composability, readability, and separation of concerns.
 
-\item \emph{Portable}: The \klsm is implemented using C++11 atomics and
-does not rely on any external libraries.
+\item \emph{Portable}: Implemented using C++11 atomics without reliance on external libraries.
 \end{itemize}
 \end{block}
 
 \begin{block}{Results}
 \begin{itemize}
 \justifying
-\item \emph{Algorithms}. The \klsm was evaluated against other state of the art designs, including
-the SprayList (relaxed, lock-free, SkipList-based, probabilistic guarantees), the
-Lind\'en queue (strict, lock-free, SkipList-based), and
+\item \emph{Algorithms}: Evaluated against other state of the art designs, including
+the SprayList (relaxed, lock-free, probabilistic guarantees), the
+Lind\'en queue (strict, lock-free, linearizable), and
 Multiqueues (relaxed, lock-based, no guarantees).
 
-\item \emph{Benchmarks.}
-The algorithms were compared extensively under a variety of experiments.
-Besides the standard benchmark in which each thread performs an equal mixture
-of insertions and deletions and keys are generated uniformly at random,
-we also examined scenarios with uneven workloads between
-threads and ascending/descending key generation.
+\item \emph{Benchmarks}:
+Extensive evaluation under a variety of experiments, including balanced and unbalanced
+workloads combined with different key generation algorithms. We demonstrate
+that these parameters have a high impact on some data structures.
 
-\item \emph{Throughput} benchmarks measure performance in millions of operations per second.
+\item \emph{Throughput benchmarks} measure performance in millions of operations per second.
 Results are varied: in evenly distributed settings, the \klsm outperforms all
 other data structures by a factor of 10, while in others, performance suffers since
 more stress is placed on the \ac{SLSM}.
@@ -391,17 +250,32 @@ pqplot("results/20151112_mars_uni_uni")
 @
 \end{center}
 \end{figure}
-\item \emph{Quality} benchmarks measure ranks of returned items, e.g., for each returned item,
+\item \emph{Quality benchmarks} measure ranks of returned items, e.g., for each returned item,
 how many other items within the priority queue were skipped when determining it as the minimal item.
 The \klsm more than fulfills its semantic guarantees, usually delivering results
 within the best fifth percentile.
 \end{itemize}
 
-\end{block}
+\vspace{5mm}
 
-\begin{block}{Publications}
-\nocite{wimmer2015lock}
-\printbibliography
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{lrrrrrr}
+& \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
+\cmidrule(r){2-3}\cmidrule(r){4-5}\cmidrule(r){6-7}
+Rank Error & Mean & Std. Dev. & Mean & Std. Dev & Mean & Std. Dev \\
+\midrule%
+\lstinline|globallock| & 1.9 & 1.0 & 2.9 & 1.7 & 4.8 & 2.9 \\
+\lstinline|klsm128|  & 33 & 31 & 55 & 46 & 430 & 294 \\
+\lstinline|klsm256|  & 42 & 42 & 71 & 61 & 750 & 828 \\
+\lstinline|klsm4096| & 297 & 496 & 625 & 1014 & 10353 & 12667 \\
+\lstinline|multiq|   & 984 & 2899 & 2252 & 7433 & 3787 & 12549 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\label{tbl:mars_uni_uni_q}
+\end{table}
+
 \end{block}
 \end{column}
 % ---------------------------------------------------------%
