@@ -121,16 +121,16 @@
 \begin{block}{Concurrent Priority Queues}
 \begin{itemize}
 \justifying
-\item \emph{Priority queues}: Abstract data structures which store a set of key/value pairs;
+\item \textbf{Priority queues}: Abstract data structures which store a set of key/value pairs;
 efficient access to the item with the minimal (maximal) key.
 
-\item \emph{Concurrent priority queues}: Developed from early locking heaps,
+\item \textbf{Concurrent priority queues}: Developed from early locking heaps,
 through lock-free SkipList-based designs, to modern research into relaxed priority queues.
 
-\item \emph{Lock-freedom}: A strong progress condition, has been shown to be
+\item \textbf{Lock-freedom}: A strong progress condition, has been shown to be
 efficient in practice.
 
-\item \emph{Relaxation}: An approach which weakens semantic guarantees in return for
+\item \textbf{Relaxation}: An approach which weakens semantic guarantees in return for
 higher efficience and/or scalability; especially useful in the context of
 priority queues to lessen the global bottleneck at the minimal (maximal) element.
 \end{itemize}
@@ -165,23 +165,23 @@ priority queues to lessen the global bottleneck at the minimal (maximal) element
 \end{figure}
 
 \justifying
-The \emph{\klsm} is a relaxed, linearizable and lock-free priority queue design by
+The \textbf{\klsm} is a relaxed, linearizable and lock-free priority queue design by
 Wimmer, composed of two independent but
 complementary priority queues: the \ac{SLSM}, a centralized queue with strong
 guarantees but limited performance; and the \ac{DLSM}, a distributed design without
 global guarantees but having very high throughput.
 \begin{itemize}
 \justifying
-\item \emph{Linearizable}: Each operation appears to take effect at some instant
+\item \textbf{Linearizable}: Each operation appears to take effect at some instant
 in time within the operation invocation.
 
-\item \emph{Lock-free}: No blocking primitives are used, at least one
+\item \textbf{Lock-free}: No blocking primitives are used, at least one
 process makes progress at all times.
 
-\item \emph{Relaxed}: Deletions may return one of the $kP$ minimal items, where
+\item \textbf{Relaxed}: Deletions may return one of the $kP$ minimal items, where
 $k$ is a configuration parameter and $P$ is the number of threads.
 
-\item \emph{Cache-efficient}: Usage of arrays and the standard merge algorithm
+\item \textbf{Cache-efficient}: Usage of arrays and the standard merge algorithm
 result in good cache locality properties and high performance.
 \end{itemize}
 
@@ -199,40 +199,40 @@ result in good cache locality properties and high performance.
 
 \begin{block}{Our Implementation}
 \justifying
-Previously only available as part of the task-scheduling framework \emph{Pheet},
+Previously only available as part of the task-scheduling framework \textbf{Pheet},
 we have implemented an efficient standalone version
 of the \klsm. Our implementation is:
 
 \begin{itemize}
 \justifying
-\item \emph{Scalable}: Under ideal circumstances and with sufficient
+\item \textbf{Scalable}: Under ideal circumstances and with sufficient
 relaxation, the \klsm scales until the maximal thread-count on all tested
 machines.
 
-\item \emph{Performant}: Outperforms the best other concurrent
+\item \textbf{Performant}: Outperforms the best other concurrent
 priority queues by up to a factor of ten.
 
-\item \emph{Maintainable}: Uses classical software
+\item \textbf{Maintainable}: Uses classical software
 engineering concepts such as composability, readability, and separation of concerns.
 
-\item \emph{Portable}: Implemented using C++11 atomics without reliance on external libraries.
+\item \textbf{Portable}: Implemented using C++11 atomics without reliance on external libraries.
 \end{itemize}
 \end{block}
 
 \begin{block}{Results}
 \begin{itemize}
 \justifying
-\item \emph{Algorithms}: Evaluated against other state of the art designs, including
+\item \textbf{Algorithms}: Evaluated against other state of the art designs, including
 the SprayList (relaxed, lock-free, probabilistic guarantees), the
 Lind\'en queue (strict, lock-free, linearizable), and
 Multiqueues (relaxed, lock-based, no guarantees).
 
-\item \emph{Benchmarks}:
+\item \textbf{Benchmarks}:
 Extensive evaluation under a variety of experiments, including balanced and unbalanced
 workloads combined with different key generation algorithms. We demonstrate
 that these parameters have a high impact on some data structures.
 
-\item \emph{Throughput benchmarks} measure performance in millions of operations per second.
+\item \textbf{Throughput benchmarks} measure performance in millions of operations per second.
 Results are varied: in evenly distributed settings, the \klsm outperforms all
 other data structures by a factor of 10, while in others, performance suffers since
 more stress is placed on the centralized \ac{SLSM}.
@@ -250,7 +250,7 @@ pqplot("results/20151112_mars_uni_uni")
 @
 \end{center}
 \end{figure}
-\item \emph{Quality benchmarks} measure ranks of returned items, e.g., for each returned item,
+\item \textbf{Quality benchmarks} measure ranks of returned items, e.g., for each returned item,
 how many other items within the priority queue were skipped when determining it as the minimal item.
 The \klsm more than fulfills its semantic guarantees, usually delivering results
 within the best fifth percentile.
