@@ -169,13 +169,13 @@ The \emph{\klsm} is a relaxed, linearizable and lock-free priority queue design 
 Wimmer, composed of two independent but
 complementary priority queues: the \ac{SLSM}, a centralized queue with strong
 guarantees but limited performance; and the \ac{DLSM}, a distributed design without
-global guarantees but having very high throughput. The \klsm is:
+global guarantees but having very high throughput.
 \begin{itemize}
 \justifying
 \item \emph{Linearizable}: Each operation appears to take effect at some instant
 in time within the operation invocation.
 
-\item \emph{Lock-free}: No blocking primitives are used, and at least one
+\item \emph{Lock-free}: No blocking primitives are used, at least one
 process makes progress at all times.
 
 \item \emph{Relaxed}: Deletions may return one of the $kP$ minimal items, where
@@ -199,8 +199,8 @@ result in good cache locality properties and high performance.
 
 \begin{block}{Our Implementation}
 \justifying
-Previously only available as part of the task-scheduling framework \emph{Pheet}
-(\url{www.pheet.org}), we have implemented an efficient standalone version
+Previously only available as part of the task-scheduling framework \emph{Pheet},
+we have implemented an efficient standalone version
 of the \klsm. Our implementation is:
 
 \begin{itemize}
@@ -212,7 +212,7 @@ machines.
 \item \emph{Performant}: Outperforms the best other concurrent
 priority queues by up to a factor of ten.
 
-\item \emph{Maintainable}: Implemented using classical software
+\item \emph{Maintainable}: Uses classical software
 engineering concepts such as composability, readability, and separation of concerns.
 
 \item \emph{Portable}: Implemented using C++11 atomics without reliance on external libraries.
@@ -235,7 +235,7 @@ that these parameters have a high impact on some data structures.
 \item \emph{Throughput benchmarks} measure performance in millions of operations per second.
 Results are varied: in evenly distributed settings, the \klsm outperforms all
 other data structures by a factor of 10, while in others, performance suffers since
-more stress is placed on the \ac{SLSM}.
+more stress is placed on the centralized \ac{SLSM}.
 
 \vspace{1cm}
 
@@ -263,13 +263,13 @@ within the best fifth percentile.
 \begin{tabular}{lrrrrrr}
 & \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
 \cmidrule(r){2-3}\cmidrule(r){4-5}\cmidrule(r){6-7}
-Rank Error & Mean & Std. Dev. & Mean & Std. Dev & Mean & Std. Dev \\
+Rank Error & Mean & StdDev & Mean & StdDev& Mean & StdDev\\
 \midrule%
-\lstinline|globallock| & 1.9 & 1.0 & 2.9 & 1.7 & 4.8 & 2.9 \\
-\lstinline|klsm128|  & 33 & 31 & 55 & 46 & 430 & 294 \\
-\lstinline|klsm256|  & 42 & 42 & 71 & 61 & 750 & 828 \\
-\lstinline|klsm4096| & 297 & 496 & 625 & 1014 & 10353 & 12667 \\
-\lstinline|multiq|   & 984 & 2899 & 2252 & 7433 & 3787 & 12549 \\
+\texttt{globallock} & 1.9 & 1.0 & 2.9 & 1.7 & 4.8 & 2.9 \\
+\texttt{klsm128}  & 33 & 31 & 55 & 46 & 430 & 294 \\
+\texttt{klsm256}  & 42 & 42 & 71 & 61 & 750 & 828 \\
+\texttt{klsm4096} & 297 & 496 & 625 & 1014 & 10353 & 12667 \\
+\texttt{multiq}   & 984 & 2899 & 2252 & 7433 & 3787 & 12549 \\
 \bottomrule
 \end{tabular}
 \end{center}
