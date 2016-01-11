@@ -23,16 +23,16 @@ pqplot <- function(csvfile) {
     # p <- ggplot(df2, aes(x = factor(p), y = mean, fill = factor(kernel))) +
     #             geom_bar(stat = "identity", position = dodge) +
     #             geom_errorbar(aes(ymin = lower, ymax = upper), position = dodge, width = 0.3) +
-    #             ylab("throughput [Mops/s]") +
-    #             xlab("number of threads")
+    #             ylab("Throughput in Mops/s") +
+    #             xlab("Number of threads")
 
     p <- ggplot(df2, aes(x = p, y = mean, color = kernel, shape = kernel)) +
                 geom_line() +
                 geom_point(size = 3) +
                 geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.3) +
                 scale_y_continuous(limits = c(0, NA), oob = squish) +
-                ylab("throughput in Mops/s") +
-                xlab("number of threads") +
+                ylab("Throughput in Mops/s") +
+                xlab("Number of threads") +
     # Themes
                 theme_bw() +
                 theme(axis.text = element_text(size = 16),
