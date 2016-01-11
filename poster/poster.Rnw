@@ -121,22 +121,25 @@
 \begin{block}{Concurrent Priority Queues}
 \begin{itemize}
 \justifying
-\item \textbf{Priority queues}: Abstract data structures which store a set of key/value pairs;
+\item \textbf{Priority queues}: Abstract data structures for storing key/value pairs;
 efficient access to the item with the minimal (maximal) key.
 
-\item \textbf{Concurrent priority queues}: Developed from early locking heaps,
-through lock-free SkipList-based designs, to modern research into relaxed priority queues.
+\item \textbf{Concurrent priority queues}: From early locking heaps,
+through lock-free SkipList-based designs, to current research into relaxed priority queues.
 
-\item \textbf{Lock-freedom}: A strong progress condition, has been shown to be
+\item \textbf{Lock-freedom}: Strong progress condition that can be
 efficient in practice.
 
-\item \textbf{Relaxation}: An approach which weakens semantic guarantees in return for
-higher efficience and/or scalability; especially useful in the context of
-priority queues to lessen the global bottleneck at the minimal (maximal) element.
+\item \textbf{Linearizability}: Each operation appears to take effect at some instant
+in time within the operation invocation.
+
+\item \textbf{Relaxed}: Weaken semantic guarantees in return for
+higher efficiency and/or scalability; useful for concurrent
+priority queues to alleviate the global bottleneck at the minimal (maximal) element.
 \end{itemize}
 \end{block}
 
-\begin{block}{The \klsm}
+\begin{block}{The \klsm Concurrent Priority Queue}
 
 \begin{figure}[ht]
 \centering
@@ -165,20 +168,16 @@ priority queues to lessen the global bottleneck at the minimal (maximal) element
 \end{figure}
 
 \justifying
-The \emph{\klsm} is a relaxed, linearizable and lock-free priority queue design by
-Wimmer, composed of two independent but
-complementary priority queues: the \ac{SLSM}, a centralized queue with strong
+The \klsm (Log-structured Merge Tree) is a \textbf{relaxed}, \textbf{linearizable} and \textbf{lock-free} priority queue design by
+Wimmer, composed of two complementary priority queues; the \ac{SLSM}, a centralized queue with strong
 guarantees but limited performance; and the \ac{DLSM}, a distributed design without
-global guarantees but having very high throughput.
+global guarantees but very high throughput.
 \begin{itemize}
 \justifying
-\item \textbf{Linearizable}: Each operation appears to take effect at some instant
-in time within the operation invocation.
+\item \textbf{Idea}: An \acs{LSM} maintains items in a logarithmic number of ordered arrays
+to achieve amortized logarithmic times for deletions and insertions.
 
-\item \textbf{Lock-free}: No blocking primitives are used, at least one
-process makes progress at all times.
-
-\item \textbf{Relaxed}: Deletions may return one of the $kP$ minimal items, where
+\item \textbf{Relaxation}: Deletions may return one of the $kP$ minimal items, where
 $k$ is a configuration parameter and $P$ is the number of threads.
 
 \item \textbf{Cache-efficient}: Usage of arrays and the standard merge algorithm
@@ -199,9 +198,9 @@ result in good cache locality properties and high performance.
 
 \begin{block}{Our Implementation}
 \justifying
-Previously only available as part of the task-scheduling framework \emph{Pheet},
-we have implemented an efficient standalone version
-of the \klsm. Our implementation is:
+We improve on the \klsm by providing a new, efficient, standalone implementation
+in addition to the previously available version as part of the task-scheduling framework \emph{Pheet}.
+Our implementation is:
 
 \begin{itemize}
 \justifying
@@ -219,7 +218,7 @@ engineering concepts such as composability, readability, and separation of conce
 \end{itemize}
 \end{block}
 
-\begin{block}{Results}
+\begin{block}{Evaluation \& Results}
 \begin{itemize}
 \justifying
 \item \textbf{Algorithms}: Evaluated against other state of the art designs, including
@@ -228,9 +227,9 @@ Lind\'en queue (strict, lock-free, linearizable), and
 Multiqueues (relaxed, lock-based, no guarantees).
 
 \item \textbf{Benchmarks}:
-Extensive evaluation under a variety of experiments, including balanced and unbalanced
+Evaluation under a variety of scenarios, including balanced and unbalanced
 workloads combined with different key generation algorithms. We demonstrate
-that these parameters have a high impact on some data structures.
+that these parameters have a high impact on the performance of some data structures.
 
 \item \textbf{Throughput benchmarks} measure performance in millions of operations per second.
 Results are varied: in evenly distributed settings, the \klsm outperforms all
@@ -261,9 +260,9 @@ within the best fifth percentile.
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{lrrrrrr}
-& \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
+Rank Error & \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
 \cmidrule(r){2-3}\cmidrule(r){4-5}\cmidrule(r){6-7}
-Rank Error & Mean & StdDev & Mean & StdDev& Mean & StdDev\\
+(in \# items) & Mean & StdDev & Mean & StdDev& Mean & StdDev\\
 \midrule%
 \texttt{globallock} & 1.9 & 1.0 & 2.9 & 1.7 & 4.8 & 2.9 \\
 \texttt{klsm128}  & 33 & 31 & 55 & 46 & 430 & 294 \\
