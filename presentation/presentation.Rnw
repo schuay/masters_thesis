@@ -2,6 +2,7 @@
 
 \usepackage{acronym}
 \usepackage[backend=bibtex]{biblatex}
+\usepackage{booktabs}
 \usepackage{default}
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
@@ -420,10 +421,6 @@ struct node_t {
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
-\framesubtitle{Gruber}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:Results}}
 \framesubtitle{\citeauthor{alistarhspraylist}}
 % 10^6
 \begin{figure}
@@ -432,6 +429,49 @@ struct node_t {
 elements.
 (Image source: \cite{alistarhspraylist})}
 \end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Gruber}
+<<echo = FALSE>>=
+\SweaveInput{pqplot.Rnw}
+@
+
+\begin{figure}[ht]
+\begin{center}
+<<fig = TRUE, width = 11, echo = FALSE>>=
+pqplot("results/20151112_mars_uni_uni")
+@
+\end{center}
+\caption{GCC 5.3.1, 80-core Intel Xeon E7-8850 @ 2 GHz. Initial \ac{PQ} size $10^6$ elements.}
+\end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Gruber}
+
+\begin{table}[ht]
+\small
+\begin{center}
+\begin{tabular}{lrrrrrr}
+\toprule
+& \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
+\cmidrule(r){2-3}\cmidrule(r){4-5}\cmidrule(r){6-7}
+& Mean & Std. Dev. & Mean & Std. Dev & Mean & Std. Dev \\
+\midrule
+\lstinline|globallock| & 1.9 & 1.0 & 2.9 & 1.7 & 4.8 & 2.9 \\
+\lstinline|klsm16|   & 20 & 15 & 23 & 20 & 15 & 9 \\
+\lstinline|klsm128|  & 33 & 31 & 55 & 46 & 430 & 294 \\
+\lstinline|klsm256|  & 42 & 42 & 71 & 61 & 750 & 828 \\
+\lstinline|klsm4096| & 297 & 496 & 625 & 1014 & 10353 & 12667 \\
+\lstinline|multiq|   & 984 & 2899 & 2252 & 7433 & 3787 & 12549 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\caption{Rank error for the uniform workload, uniform key generation benchmark
+on \lstinline|mars|.}
+\label{tbl:mars_uni_uni_q}
+\end{table}
 \end{frame}
 
 % --------------------------------------------------------------------------------------------------
