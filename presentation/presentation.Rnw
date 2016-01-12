@@ -3,6 +3,7 @@
 \usepackage{acronym}
 \usepackage[backend=bibtex]{biblatex}
 \usepackage{booktabs}
+\usepackage{comment}
 \usepackage{default}
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
@@ -38,6 +39,16 @@
 \begin{document}
 
 \maketitle
+
+\begin{comment}
+In general:
+* less background. Mention some examples, add CBPQ, but less detail and time.
+  Candidates: linden, multiq, spraylist.
+* more about klsm. Principles, ideas (show the merge figure), architecture,
+  implementation.
+* more benchmarks. Different benchmark types, possibly add discussion points to
+  slides.
+\end{comment}
 
 % --------------------------------------------------------------------------------------------------
 \section{Introduction} \label{sec:intro}
