@@ -42,7 +42,9 @@
 \section{Introduction} \label{sec:intro}
 % --------------------------------------------------------------------------------------------------
 
-\begin{frame}[fragile,allowframebreaks]{\nameref{sec:intro}}
+\begin{frame}[fragile]{\nameref{sec:intro}}
+\framesubtitle{Sequential priority queues}
+
 \acp{PQ}:
 
 \begin{itemize}
@@ -51,14 +53,17 @@
 \item Interface consists of two $O(\log n)$ operations:
 
 \begin{lstlisting}
-void Insert(pq_t *pq, key_t k, value_t v)
-bool DeleteMin(pq_t *pq, value_t *v)
+void insert(const K &key, const V &val);
+bool delete_min(V &val);
 \end{lstlisting}
 
 \item Typical backing data structures: heaps \& search trees
 \end{itemize}
 
-\framebreak
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:intro}}
+\framesubtitle{Concurrent priority queues}
 
 \begin{itemize}
 \item In the past decade, processor clock speeds have remained the same, trend towards multiple cores
@@ -68,7 +73,7 @@ bool DeleteMin(pq_t *pq, value_t *v)
 \end{itemize}
 
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{Concepts and Definitions}
 \framesubtitle{Safety conditions: nothing bad has happened yet}
 
@@ -77,7 +82,7 @@ bool DeleteMin(pq_t *pq, value_t *v)
 \item \emph{Quiescent consistency}: in a period of quiescence, semantics equivalent to some sequential ordering
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{Concepts and Definitions}
 \framesubtitle{Liveness conditions: something good eventually happens}
 
@@ -86,7 +91,7 @@ bool DeleteMin(pq_t *pq, value_t *v)
 \item \emph{Wait-freedom}: every process finishes in a bounded number of steps
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}[fragile]{Concepts and Definitions}
 \framesubtitle{Miscellaneous}
 
@@ -165,7 +170,7 @@ bool CAS(T *ptr, T *expected, T value) {
 \item \fullcite{hunt1996efficient}
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:locking}}
 \framesubtitle{\citeauthor{hunt1996efficient}: Innovations}
 
@@ -176,7 +181,7 @@ bool CAS(T *ptr, T *expected, T value) {
 \item Successive insertions take disjoint paths towards the root
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:locking}}
 \framesubtitle{\citeauthor{hunt1996efficient}: Limitations}
 
@@ -205,7 +210,7 @@ bool CAS(T *ptr, T *expected, T value) {
 \item Excellent disjoint-access properties
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}[fragile]{\nameref{sec:lockfree}}
 \framesubtitle{SkipLists}
 
@@ -228,8 +233,7 @@ struct node_t {
 };
 \end{lstlisting}
 \end{frame}
-
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:lockfree}}
 \framesubtitle{\citeauthor{shavit2000skiplist}}
 
@@ -241,7 +245,7 @@ struct node_t {
 \item \fullcite{herlihy2012art}
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:lockfree}}
 \framesubtitle{\citeauthor{shavit2000skiplist}}
 
@@ -250,7 +254,7 @@ struct node_t {
 \caption{The \citeauthor{shavit2000skiplist} \ac{PQ} (Image source: \cite{shavit2000skiplist})}
 \end{figure}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:lockfree}}
 \framesubtitle{\citeauthor{shavit2000skiplist}}
 
@@ -268,7 +272,7 @@ struct node_t {
 \item \lstinline|Insert| is equivalent to the \ac{SL} insertion
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:lockfree}}
 \framesubtitle{\citeauthor{shavit2000skiplist}}
 
@@ -286,7 +290,7 @@ struct node_t {
 \item Improved scalability, but heavy contention at list head
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:lockfree}}
 \framesubtitle{\citeauthor{sundell2003fast}}
 
@@ -300,7 +304,7 @@ struct node_t {
 \item \fullcite{sundell2003fast}
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:lockfree}}
 \framesubtitle{\citeauthor{linden2013skiplist}}
 
@@ -316,7 +320,7 @@ struct node_t {
 \item \fullcite{linden2013skiplist}
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:lockfree}}
 \framesubtitle{\citeauthor{linden2013skiplist}}
 
@@ -342,7 +346,7 @@ struct node_t {
       return one of the $k$ minimal elements
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:relaxed}}
 \framesubtitle{\citeauthor{alistarhspraylist}}
 
@@ -361,7 +365,7 @@ struct node_t {
 \item \fullcite{alistarhspraylist}
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:relaxed}}
 \framesubtitle{\citeauthor{wimmer2013data}}
 % Essence: Local list, if necessary push to global
@@ -378,7 +382,7 @@ struct node_t {
 \item \fullcite{wimmer2013data}
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:lockfree}}
 \framesubtitle{\citeauthor{wimmer2013data}}
 
@@ -401,7 +405,7 @@ struct node_t {
       \lstinline|Insert| and \lstinline|DeleteMin|
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{\citeauthor{linden2013skiplist}}
 
@@ -414,11 +418,11 @@ struct node_t {
 (Image source: \cite{linden2013skiplist})}
 \end{figure}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{Gruber}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{\citeauthor{alistarhspraylist}}
 % 10^6
@@ -445,7 +449,7 @@ elements.
       \textrightarrow ~ future research
 \end{itemize}
 \end{frame}
-
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:conclusion}}
 \centering
 Questions?
