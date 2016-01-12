@@ -65,6 +65,8 @@ themselves be both scalable and lock-free to avoid limiting the SkipList itself.
 which frees a memory segment only once all threads that could have seen a pointer to it have
 exited the data structure.
 
+The following sections cover several prominent examples of such lock-free priority queues.
+
 
 \section{The \citeauthor{shavit2000skiplist} Priority Queue} \label{sec:shavit}
 

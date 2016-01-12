@@ -9,7 +9,7 @@
 
 Priority queues have a long history, having been extensively studied since the early
 days of the field of computer science. Some of the oldest designs, such as the
-heap, have remained popular in practical use up today. This chapter will
+heap, have remained popular in practical use up to today. This chapter will
 detail syntax and semantics of general shared memory priority queues,
 and provide an overview of important sequential priority queue types,
 going into further detail for those designs which are also relevant for
@@ -147,7 +147,7 @@ complexity of $\Theta(n)$.
 
 More efficient implementation techniques have been known for over half a century.
 Binary heaps \cite{williams1964algorithm} were invented as part of the sorting
-algorithm Heapsort in \citedate{williams1964algorithm} and are still arguable the most
+algorithm Heapsort in \citedate{williams1964algorithm} and are still arguably the most
 popular design for general purpose priority queues. For example, the priority queue
 container class contained in the C++ \ac{STL} implements a binary heap on top of
 any compatible backing structure. When using a heap, both deletions and insertions require
