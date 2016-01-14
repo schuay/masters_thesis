@@ -10,7 +10,9 @@
 \usepackage{listings}
 \usepackage{lmodern}
 \usepackage{nameref}
+\usepackage{pgf}
 \usepackage{textcomp}
+\usepackage{tikz}
 
 \graphicspath{{figures/}}
 \input{acronyms}
@@ -31,12 +33,59 @@
     numbers=none,
 }
 
+\usetikzlibrary{ arrows
+               , automata
+               , backgrounds
+               , calc
+               , chains
+               , fit
+               , mindmap
+               , petri
+               , shapes
+               , topaths
+               }
+
 \title{Concurrent Priority Queues}
 \subtitle{Seminar in Algorithms, 2013W}
 \author{Jakob Gruber, 0203440}
 \date{\today}
 
 \begin{document}
+
+\tikzstyle{box} =
+    [ draw,
+    , rectangle,
+    , text centered,
+    , minimum width = 5mm,
+    , minimum height = 5mm,
+    , font = \footnotesize,
+    , fill = black!10
+    ]
+
+\tikzstyle{deleted_box} =
+    [ draw,
+    , rectangle,
+    , text centered,
+    , minimum width = 5mm,
+    , minimum height = 5mm,
+    , font = \footnotesize,
+    , text = black!50
+    ]
+
+\tikzstyle{flag_true} =
+    [ draw,
+    , circle,
+    , inner sep = 0mm,
+    , text width = 0.75mm,
+    , fill = black
+    ]
+
+\tikzstyle{flag_false} =
+    [ draw,
+    , circle,
+    , inner sep = 0mm,
+    , text width = 0.75mm,
+    ]
 
 \maketitle
 
@@ -405,6 +454,61 @@ struct node_t {
 \end{frame}
 
 % --------------------------------------------------------------------------------------------------
+\section{Implementation} \label{sec:implementation}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:implementation}}
+% Note that beamer does not like \verb apparently.
+\begin{figure}
+\centering
+    \begin{tikzpicture}[start chain,
+        ->,
+        every node/.style={font = \small},
+        label/.style={rectangle,minimum size = 5mm}
+      ]
+
+        \begin{scope}[start chain = 1 going {below=of \tikzchainprevious.south},
+                every on chain/.style = {anchor = north},
+                node distance = -0.15mm]
+            \node[on chain, box] (klsm) {\texttt{k\_lsm}};
+            \node[on chain, yshift = -5mm] (abpt) {\texttt{aligned\_block\_ptr}};
+            \node[on chain] (bpool) {\texttt{block\_pool}};
+            \node[on chain] (italloc) {\texttt{item\_allocator}};
+            \node[on chain] (bstorage) {\texttt{block\_storage}};
+            \node[on chain] (mm) {\emph{\small Memory Management}};
+            \node[on chain, box, yshift = -5mm] (block) {\texttt{block}};
+            \node[on chain, box, yshift = -5mm] (item) {\texttt{item}};
+        \end{scope}
+
+        \node[box, left = of italloc] (dlsm) {\texttt{dist\_lsm}};
+        \node[box, right = of italloc] (slsm) {\texttt{shared\_lsm}};
+
+        \node[box, below = of slsm] (barray) {\texttt{block\_array}};
+        \node[box, below = of barray] (bpivots) {\texttt{block\_pivots}};
+
+        \begin{pgfonlayer}{background}
+            \draw[box] ($(abpt.north west) - (2mm, 0)$) rectangle ($(mm.north east) + (1mm, 0)$);
+        \end{pgfonlayer}
+
+        \path[->, every node/.style= { font = \sffamily\small }]
+            (klsm.west) edge[bend right = 30] node [right] {} (dlsm)
+            (klsm.east) edge[bend left = 30] node [right] {} (slsm)
+            (dlsm.east) edge[bend right = 10] node [right] {} (italloc.west)
+            (dlsm.east) edge[bend right = 10] node [right] {} (bstorage.west)
+            (slsm.west) edge[bend left = 10] node [right] {} (abpt.east)
+            (slsm.west) edge[bend left = 10] node [right] {} (bpool.east)
+            (slsm.west) edge[bend left = 10] node [right] {} (italloc.east)
+            (slsm.south) edge node [right] {} (barray.north)
+            (barray.west) edge[bend left = 10] node [right] {} (block.east)
+            (barray.south) edge node [right] {} (bpivots.north)
+            (dlsm.south) edge[bend right = 30] node [right] {} (block.west)
+            (block.south) edge node [right] {} (item.north);
+    \end{tikzpicture}
+\caption{Overview of the \lstinline|k_lsm| class structure.}
+\label{fig:klsm_structure}
+\end{figure}
+\end{frame}
+
+% --------------------------------------------------------------------------------------------------
 \section{Results} \label{sec:Results}
 % --------------------------------------------------------------------------------------------------
 
@@ -420,7 +524,7 @@ struct node_t {
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{\citeauthor{linden2013skiplist}}
-
+% TODO: Possibly remove.
 \begin{figure}
 \includegraphics[width=0.6 \textwidth]{results_linden}
 \caption{GCC 4.7.2, 32-core Intel Xeon E5-4650 @ 2.7 GHz. Initial \ac{PQ} size unknown.
@@ -433,7 +537,7 @@ struct node_t {
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{\citeauthor{alistarhspraylist}}
-% 10^6
+% TODO: Possibly remove.
 \begin{figure}
 \includegraphics[width=\textwidth]{results_spraylist}
 \caption{GCC version unknown, 80-core Intel Xeon E7-4870 @ 2.4 GHz. \ac{PQ} initialized with $10^6$
@@ -450,7 +554,7 @@ elements.
 
 \begin{figure}[ht]
 \begin{center}
-<<fig = TRUE, width = 11, echo = FALSE>>=
+<<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot("results/20151112_mars_uni_uni")
 @
 \end{center}
@@ -483,6 +587,54 @@ pqplot("results/20151112_mars_uni_uni")
 on \lstinline|mars|.}
 \label{tbl:mars_uni_uni_q}
 \end{table}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Gruber}
+<<echo = FALSE>>=
+\SweaveInput{pqplot.Rnw}
+@
+
+\begin{figure}[ht]
+\begin{center}
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_mars_uni_asc")
+@
+\end{center}
+\caption{Uniform workload, ascending keygeneration.}
+\end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Gruber}
+<<echo = FALSE>>=
+\SweaveInput{pqplot.Rnw}
+@
+
+\begin{figure}[ht]
+\begin{center}
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_mars_spl_uni")
+@
+\end{center}
+\caption{Split workload, uniform key generation.}
+\end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Gruber}
+<<echo = FALSE>>=
+\SweaveInput{pqplot.Rnw}
+@
+
+\begin{figure}[ht]
+\begin{center}
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_mars_spl_asc")
+@
+\end{center}
+\caption{Split workload, ascending keygeneration.}
+\end{figure}
 \end{frame}
 
 % --------------------------------------------------------------------------------------------------
