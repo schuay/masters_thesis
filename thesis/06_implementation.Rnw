@@ -1049,7 +1049,7 @@ The \ac{DLSM} is linearizable, lock-free, and \lstinline|insert| as well as
       or \ref{ln:dist_lsm_local::peek.spied}).
 \item \emph{Lock-freedom}. Both insertions and deletions use only
       non-blocking primitives and execute
-      at most $\lceil \log n \rceil$ loop iterations for block merges and are thus lock-free.
+      at most $\lceil \log n \rceil$ loop iterations for block merges and are thus wait- and lock-free.
 \item \emph{Complexity}. An insertion executes at most a logarithmic number
       of merges. As in the \ac{SLSM}, this incurs an amortized complexity of
       $O(\log n)$ per item, since in a size $n$ \ac{LSM} each item has been

@@ -180,7 +180,7 @@ public:
 \label{fig:lsm_interface}
 \end{figure}
 
-In more detail, the \ac{LSM} consists of an ordered set of sorted arrays (called blocks) fulfilling a set of
+In more detail, the \ac{LSM} consists of an ordered collection of sorted arrays (called blocks) fulfilling certain
 invariants after the completion of each operation:
 
 \begin{itemize}
