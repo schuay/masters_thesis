@@ -195,16 +195,17 @@ are reported for benchmarks on \lstinline|mars|.
 
 \begin{figure}[ht]
 \begin{center}
-\begin{minipage}[b]{.5\textwidth}
+\begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151112_saturn_uni_uni")
 @
 \subcaption{\lstinline|saturn|}
-\end{minipage}%
-\begin{minipage}[b]{.5\textwidth}
+\end{minipage}
+
+\begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151116_ceres_uni_uni")
 @
 \subcaption{\lstinline|ceres|}
@@ -212,7 +213,7 @@ pqplot("results/20151116_ceres_uni_uni")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151112_mars_uni_uni")
 @
 \subcaption{\lstinline|mars|}
@@ -220,16 +221,6 @@ pqplot("results/20151112_mars_uni_uni")
 \end{center}
 \caption{Uniform workload, uniform keys.}
 \label{fig:uni_uni}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{center}
-<<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot("results/20151112_mars_uni_uni_slow")
-@
-\end{center}
-\caption{Uniform workload, uniform keys on \lstinline|mars| (detail view of slower queues).}
-\label{fig:mars_uni_uni_slow}
 \end{figure}
 
 Figures \ref{fig:uni_uni} and \ref{fig:mars_uni_uni_slow}
@@ -262,6 +253,18 @@ on \lstinline|saturn| the \klsm with $k = 128$ only makes minor gains when
 utilizing more than one processor, while the Multiqueues barely scale at all.
 On the other hand, on \lstinline|ceres| even $k = 128$ seems to be able
 to scale further beyond the maximum number of cores.
+
+\FloatBarrier
+
+\begin{figure}[ht]
+\begin{center}
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot("results/20151112_mars_uni_uni_slow")
+@
+\end{center}
+\caption{Uniform workload, uniform keys on \lstinline|mars| (detail view of slower queues).}
+\label{fig:mars_uni_uni_slow}
+\end{figure}
 
 \begin{figure}[ht]
 \begin{center}
@@ -329,16 +332,17 @@ but the error increases less rapidly at higher concurrency.
 
 \begin{figure}[ht]
 \begin{center}
-\begin{minipage}[b]{.5\textwidth}
+\begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151112_saturn_uni_asc")
 @
 \subcaption{\lstinline|saturn|}
-\end{minipage}%
-\begin{minipage}[b]{.5\textwidth}
+\end{minipage}
+
+\begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151116_ceres_uni_asc")
 @
 \subcaption{\lstinline|ceres|}
@@ -346,7 +350,7 @@ pqplot("results/20151116_ceres_uni_asc")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151112_mars_uni_asc")
 @
 \subcaption{\lstinline|mars|}
@@ -409,6 +413,8 @@ Finally, behavior on \lstinline|mars| is similar, but with Multiqueues reaching
 a lower initial peak at one processor, and a more pronounced oscillating behavior
 of the \klsm.
 
+\FloatBarrier
+
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{lrrrrrr}
@@ -453,16 +459,17 @@ than the \ac{DLSM}. And since the \ac{SLSM} has a lower rank guarantee than the
 
 \begin{figure}[ht]
 \begin{center}
-\begin{minipage}[b]{.5\textwidth}
+\begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151112_saturn_spl_uni")
 @
 \subcaption{\lstinline|saturn|}
-\end{minipage}%
-\begin{minipage}[b]{.5\textwidth}
+\end{minipage}
+
+\begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151116_ceres_spl_uni")
 @
 \subcaption{\lstinline|ceres|}
@@ -489,6 +496,8 @@ as in other scenarios, while the \klsm does not scale at all. Surprisingly,
 the \lstinline|klsm16| performs at least as well as more relaxed \klsm variants;
 on \lstinline|ceres|, it even outperforms the other variants by more than a factor
 of two at low thread counts.
+
+\FloatBarrier
 
 \begin{table}[ht]
 \begin{center}
@@ -523,16 +532,17 @@ generated uniformly, and the \ac{SLSM} is therefore biased towards larger keys.
 
 \begin{figure}[ht]
 \begin{center}
-\begin{minipage}[b]{.5\textwidth}
+\begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151112_saturn_spl_asc")
 @
 \subcaption{\lstinline|saturn|}
-\end{minipage}%
-\begin{minipage}[b]{.5\textwidth}
+\end{minipage}
+
+\begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151116_ceres_spl_asc")
 @
 \subcaption{\lstinline|ceres|}
@@ -540,7 +550,7 @@ pqplot("results/20151116_ceres_spl_asc")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151112_mars_spl_asc")
 @
 \subcaption{\lstinline|mars|}
@@ -566,6 +576,8 @@ is because of improved spacial cache locality: inserter threads insert at the
 back of the skiplist, and can keep the tail of the list as well as high-level
 shortcut nodes within their cache, while deleter threads only access the front
 of the skiplist.
+
+\FloatBarrier
 
 \begin{table}[ht]
 \begin{center}
@@ -605,16 +617,17 @@ to the degree that the distributed component is utilized.
 
 \begin{figure}[ht]
 \begin{center}
-\begin{minipage}[b]{.5\textwidth}
+\begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151120_saturn_uni_desc")
 @
 \subcaption{\lstinline|saturn|}
-\end{minipage}%
-\begin{minipage}[b]{.5\textwidth}
+\end{minipage}
+
+\begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151117_ceres_uni_desc")
 @
 \subcaption{\lstinline|ceres|}
@@ -622,7 +635,7 @@ pqplot("results/20151117_ceres_uni_desc")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12, echo = FALSE>>=
 pqplot("results/20151123_mars_uni_desc")
 @
 \subcaption{\lstinline|mars|}
