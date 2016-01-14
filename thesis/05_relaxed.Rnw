@@ -61,7 +61,7 @@ more fair to narrow that statement down to SkipList-based structures).
 
 Multiqueues, published in \citeyear{rihani2014multiqueues} by \citeauthor{rihani2014multiqueues} \cite{rihani2014multiqueues}, 
 are a simple and elegant relaxed 
-priority queues design using probabilistic techniques. The published design uses
+priority queue design using probabilistic techniques. The published design uses
 a lock-based approach in combination with any sequential priority queue to construct
 a scalable concurrent priority queue, but unfortunately without being able to offer
 any defined quality guarantees (probabilistic or otherwise). In their benchmarks,
@@ -186,9 +186,9 @@ invariants after the completion of each operation:
 \begin{itemize}
 \item Each block $B$ is associated with a level $i$ such that $B$ has a capacity of $2^i$ items.
 \item Consider two blocks, $B$ (with associated level $i$ and position $ix$ within the LSM)
-      and $B'$ (with level $i'$ and position $ix'$); if $ix < ix$
+      and $B'$ (with level $i'$ and position $ix'$); if $ix < ix'$
       then $i > i'$.
-\item For each block $B$ with level $i$, $2^{i-1} \leq |B| \leq 2^i$, where $|B|$ is the number of items
+\item For each block $B$ with level $i$, $2^{i-1} < |B| \leq 2^i$, where $|B|$ is the number of items
       stored in $B$.
 \end{itemize}
 
@@ -386,7 +386,7 @@ exclusively by the owning thread, while the set of pointers to the next element 
 all threads (but written only by the owning thread). When a maintenance operation triggers
 changes to the block set, merges are performed locally and the new tail of the linked list is
 spliced in atomically using a \ac{CAS} instruction. While other threads currently reading the local list
-may encounter pointers to the same item multiple items within a single \lstinline|spy| operation if the linked
+may encounter pointers to the same item multiple times within a single \lstinline|spy| operation if the linked
 list has been updated concurrently, this is not an issue since the item may only be taken successfully
 by a single thread when its flag is set atomically.
 

@@ -14,7 +14,7 @@ There are several reasons:
       thesis) has been demonstrated to perform very well; but how well exactly
       when compared to other state of the art queues is not easy to determine
       since the Pheet \klsm implementation is tied tightly to the Pheet framework.
-      A standalone \klsm will allow other for easy comparability against other
+      A standalone \klsm will allow for easy comparability against other
       queues and answer how its performance compares to the state of the art.
 \item Use in practice. A standalone \klsm can easily be integrated into applications
       for use in practice.
@@ -23,7 +23,7 @@ There are several reasons:
       \klsm also aims to achieve high performance, the reimplementation also 
       explicitly values classical software engineering concepts such as 
       composability, readability, and separation of concerns \cite{hunt2000pragmatic}.
-\item Scientific reproducability. The standalone \klsm verifies performance
+\item Scientific reproducibility. The standalone \klsm verifies performance
       claims by \citeauthor{wimmerphd}.
 \item Further insight and improvements. Finally, a reimplementation by a fresh
       set of eyes can create new insight into the design and might result in
@@ -958,7 +958,7 @@ An interesting
 facet of the current implementation is that since the \ac{DLSM} and \ac{SLSM}
 use different memory management methods for blocks, the \ac{DLSM} block
 must be copied into an \ac{SLSM} block upon insertion. However, since this copy
-is only performed at most once for each item, it only adds an overhead of $O(1)$.
+is only performed at most once for each item, it only adds an amortized overhead of $O(1)$.
 
 \begin{figure}[ht]
 \begin{lstlisting}
