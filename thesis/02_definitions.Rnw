@@ -124,7 +124,7 @@ wait-free data structures from lock-free cases \cite{kogan2012methodology}.
             ($(t1_start.east) + (70mm, 0)$);
     \end{tikzpicture}
     \subcaption{Sequentially consistent, quiescently consistent and linearizable.}
-    \label{fig:correctness_criteria_b}
+    \label{fig:correctness_criteria_c}
 \end{minipage}
 \caption{A history of concurrent operations on an initially empty min-priority queue.}
 \label{fig:correctness_criteria}
@@ -147,13 +147,15 @@ executed in parallel to be equivalent to the result of some sequential ordering 
 operations. Contrary to linearizability and quiescent consistency, sequential consistency is
 not composable.
 
-Figure \ref{fig:correctness_criteria} shows two examples of thread histories. The
+Figure \ref{fig:correctness_criteria} shows three examples of thread histories. The
 first is sequentially consistent since intra-thread reordering (delaying Thread B
 such that key 1 is inserted before it is deleted) results in a valid
 sequential history. It is is neither quiescently consistent (no valid history
 exists during the period of quiescence after \lstinline|delete_min|), nor
 linearizable (there are no linearization points resulting in a valid history).
-Example \ref{fig:correctness_criteria_b} on the other hand is sequentially consistent,
+The second in Figure \ref{fig:correctness_criteria_b} is quiescently consistent,
+but can neither be linearized, nor is it sequentially consistent.
+Example \ref{fig:correctness_criteria_c} on the other hand is sequentially consistent,
 quiescently consistent, and linearizable (if \lstinline|delete_min| has its
 linearization point after that of \lstinline|insert(1)|).
 
