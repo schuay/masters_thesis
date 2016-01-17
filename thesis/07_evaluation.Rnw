@@ -236,12 +236,12 @@ of $k$ improve scalability up to 50 ($k = 256$) and 80 threads ($k = 4096$).
 Multiqueues (\verb|multiq|) perform
 the best out of all other data structures, reaching around 30 \ac{MOps} at 75
 threads. Although their performance suffers once cores on more than one processor
-are used (this occurs at 15 threads in our figure), they eventually recover and keep
+are used (this occurs at $> 12$ threads in our figure), they eventually recover and keep
 scaling until almost the maximal thread count.
 
 Likewise, the SprayList initially peaks at 10 threads, loses performance
-at 15 threads, but then never manages to scale beyond the performance of a single
-processor. As expected, the
+at 15 threads, but then never manages to significantly scale beyond the performance of a single
+processor (i.e., 12 threads). As expected, the
 \citeauthor{linden2013skiplist} queue performs well while executed on a single
 processor, but throughput stays constant at just over 2 \ac{MOps} above 10 threads.
 The \verb|globallock| is the highest performer when executed sequentially, but
