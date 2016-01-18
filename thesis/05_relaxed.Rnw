@@ -6,13 +6,14 @@ In particular, \citeauthor{linden2013skiplist} conclude that scalability is sole
 and that less than one modified memory location per thread and operation would have to be read
 in order to achieve improved performance \cite{linden2013skiplist} through SkipLists. 
 Through a novel concept, the CBPQ \cite{cbpq} manages to improve on the Linden queue
-by up to a factor of two, but only scales while executed on a single processor.
+by up to a factor of two, but only scales while executed on a single processor (recall the definition
+in Figure \ref{fig:system_topology}).
 
 Recently, relaxation of provided guarantees have been investigated as another method of reducing
 contention and improving disjoint-access parallelism.
 For instance, k-FIFO queues \cite{kirsch2012fast} have achieved considerable
 speed-ups compared to strict FIFO queues by allowing {\lstset{breaklines,breakatwhitespace} \lstinline|dequeue|} to return elements
-up to $k$ positions out of order.
+up to $k$ positions out of order (i.e., one of the $k$ most recently inserted elements).
 
 Relaxation has also been applied to concurrent priority queues with some success, and in the following
 sections we discuss three such approaches.
@@ -38,7 +39,8 @@ starting at some initial level, walking a randomized number of steps, descending
 and repeating this procedure until a node $n$ is reached on the lowest level. If $n$ is not deleted,
 it is logically deleted and returned. Otherwise, a \emph{spray} is either reattempted, or the thread
 becomes a cleaner, traversing the lowest level of the SkipList and physically removing logically deleted
-nodes it comes across. A number of dummy nodes are added to the beginning of the list in order to counteract
+nodes it comes across. A preconfigured number of dummy nodes are added to the beginning of the list in
+order to counteract
 the algorithm's bias against initial items.
 
 The \emph{spray} parameters are chosen such that with high probability, one of the $O(P \log^3 P)$
@@ -87,25 +89,7 @@ has yet been given due to the complications arising through priority queue seman
 While the Multiqueue is inherently lock-based, it could be made lock-free
 by simply using lock-free queues as its backing structures.
 
-% TODO: It might be nice to have one long-form example within each chapter
-% (sequential, strict, relaxed). In this chapter, the multiq seems to be a great
-% fit since it's compact and easy to understand.
-
 \section{$k$-LSM} \label{sec:wimmer}
-
-\begin{comment}
-We need to more or less rewrite this entire section since the technical description is unclear and 
-outdated. Structure could be as follows:
-
-* LSM - what is it?
-* Dist LSM.
-* Shared LSM.
-* K LSM.
-
-Detail should be such that it is clear how the PQ works, but not too low level since that is what
-the next section will be about. We should briefly mention memory management but not go into too much
-detail.
-\end{comment}
 
 We now finally come to the main topic of this thesis, the relaxed, linearizable, and lock-free
 $k$-LSM priority queue.
@@ -140,6 +124,8 @@ it returns \lstinline|true|, one of the $kP$ minimal items is removed from the q
 and its value is written into the given argument; or it can fail, in which case no item is removed
 from the queue and \lstinline|false| is returned. Failures of \lstinline|delete_min| may occur
 spuriously even if the queue is non-empty, but the number of such failures are low in practice.
+
+% TODO_FINAL: Elaborate on spurious failures.
 
 The \klsm is a composite data structure consisting of a global component called the \ac{SLSM},
 and a thread-local component called the \ac{DLSM}. As implied by their names, both the \ac{SLSM}
@@ -184,8 +170,10 @@ In more detail, the \ac{LSM} consists of an ordered collection of sorted arrays 
 invariants after the completion of each operation:
 
 \begin{itemize}
-\item Each block $B$ is associated with a level $i$ such that $B$ has a capacity of $2^i$ items.
-\item Consider two blocks, $B$ (with associated level $i$ and position $ix$ within the LSM)
+\item Each block $B$ is associated with a level $i$ such that $B$ has a capacity of $2^i$ items, and
+      a position $ix$ within the \ac{LSM}. For instance, in Figure \ref{fig:lsm_insertion},
+      the block at position $b_0$ has a level of $3$ and a capacity of $2^3$.
+\item Consider two blocks, $B$ (with associated level $i$ and position $ix$)
       and $B'$ (with level $i'$ and position $ix'$); if $ix < ix'$
       then $i > i'$.
 \item For each block $B$ with level $i$, $2^{i-1} < |B| \leq 2^i$, where $|B|$ is the number of items
@@ -194,12 +182,10 @@ invariants after the completion of each operation:
 
 Insertions initially create a singleton block $B$ containing the given item. $B$ is then inserted
 at the tail end of the \ac{LSM}, possibly violating invariants temporarily. While invariants remain unsatisfied,
-i.e. while the \ac{LSM} contains multiple blocks of the same level, $B$ is merged with its
+i.e., while the \ac{LSM} contains multiple blocks of the same level, $B$ is merged with its
 predecessor block, replacing both $B$ and the successor block with a new block of doubled capacity.
 Figure \ref{fig:lsm_insertion} displays an insertion example in which the new element with key $7$
 is inserted, triggering two block merges before completion.
-
-% TODO: Ensure we have the correct logic (head block is largest) everywhere.
 
 Peek operations iterate through each block in the \ac{LSM} and return the minimal encountered item.
 Note that this operation is $O(1)$ for each block since the minimal item is
@@ -357,7 +343,7 @@ located at the head of each block, and thus of logarithmic complexity for the en
 \label{fig:lsm_insertion}
 \end{figure}
 
-Both insertions and deletions are of amortized complexity $O(\log n)$ and are usually extremely
+Both insertions and deletions are of amortized complexity $O(\log n)$ and are usually highly
 cache-efficient since the central merge operation accesses items in sequence, and items
 are stored in contiguous chunks of memory.
 
@@ -369,7 +355,7 @@ in that there is no relaxation parameter $k$ --- the \ac{DLSM}'s \lstinline|dele
 removes the thread-locally minimal item. If the local queue is empty an operation called \lstinline|spy|
 is performed, which attempts to copy items from a randomly chosen thread's queue.
 
-The implementation is essentially a thin wrapper on top of a thread-local \ac{LSM} with some complicating
+The implementation is essentially a thin wrapper on top of a thread-local \ac{LSM} with some additional
 factors. Items store both the key-value pair as well as an atomic flag indicating whether an item
 has been taken (removed) from the \ac{DLSM} or not. The \ac{LSM} itself stores pointers to these items.
 \lstinline|delete_min| operations perform
@@ -380,7 +366,7 @@ the block is shrunk and \ac{LSM} invariants are reasserted.
 
 So far, all operations have been exclusively thread-local, and thus no attention had to be given
 to concurrency complications. Unfortunately, \lstinline|spy| does access other thread's \acp{LSM}
-and we cannot ignore these issues entirely. The set of blocks in the \ac{LSM} is implemented
+and we cannot ignore these issues. The set of blocks in the \ac{LSM} is implemented
 as a doubly-linked list of blocks. The set of pointers to the previous element may be accessed
 exclusively by the owning thread, while the set of pointers to the next element can by read by
 all threads (but written only by the owning thread). When a maintenance operation triggers
@@ -403,7 +389,7 @@ in the \klsm in order to reintroduce global guarantees.
 
 \subsection{\acl{SLSM}} \label{ssec:slsm}
 
-The \acl{SLSM} could be considered the antipole of the previous section's
+The \acl{SLSM} could be considered the antipode of the previous section's
 \ac{DLSM}: it consists of a single, global \ac{LSM} whereas the \ac{DLSM} has a local \ac{LSM}
 for each thread; it is relaxed, returning one of the $k$ minimal items from \lstinline|delete_min|
 whereas the \ac{DLSM} is strict on a local basis; and unfortunately,
@@ -466,11 +452,12 @@ limited to a capacity of $k$ per thread, and \lstinline|delete_min| returns the 
 item returned from the \ac{DLSM} and \ac{SLSM}. Note that we skip up to $k (P - 1)$
 potentially smaller items located within other thread's local \ac{DLSM} and up to
 $k$ items through relaxation of the \ac{SLSM}. We therefore satisfy
-the claimed guarantees of returning one of the $kP$ minimal items.
+the claimed guarantees of returning one of the $kP$ minimal items at the linearization
+point of \lstinline|delete_min|.
 
 The remaining issue of the \ac{SLSM}'s scalability is ultimately caused by updates
 to the global \ac{LSM}, which in turn mostly occur through item insertions.
-The \klsm reduces the occurrence of these insertions by a factor of $O(k)$ by
+The \klsm reduces the occurrence of these insertions by a factor of $\Theta(k)$ by
 only inserting blocks of size $> \frac{k}{2}$ into the \ac{SLSM}. This harmonizes
 well with the quality guarantee solution from the previous paragraph - when
 a local \ac{DLSM} exceeds its maximal size, the largest block is simply inserted
