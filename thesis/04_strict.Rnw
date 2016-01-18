@@ -1,13 +1,10 @@
 \chapter{Strict Concurrent Priority Queues} \label{ch:strict}
 
-% TODO: Below: clarify technical details that might not be apparent to reader.
-%       Possibly more code & figures.
-
 This chapter deals with priority queues with strict semantics which guarantee
 that deletions return the minimal element within the queue. We provide an overview
 of the development of such priority queues, from early locking heap-based designs,
 through more recent lock-free queues backed by SkipList, to one of the latest
-designs called the CBPQ.
+designs called the \ac{CBPQ}.
 
 \section{Fine-grained Locking Heaps} \label{sec:hunt}
 
@@ -60,9 +57,9 @@ deleted, with physical deletion following as a second step.
 SkipLists are dynamic data structures in the sense that they grow and shrink
 at runtime. In consequence, careful handling of memory accesses and (de)allocations
 are required. As an additional requirement, these memory management schemes must
-themselves be both scalable and lock-free to avoid limiting the SkipList itself.
+themselves be both scalable and lock-free to avoid limiting the SkipList themselves.
 \citeauthor{fraser2004practical} in particular employs lock-free epoch-based garbage-collection,
-which frees a memory segment only once all threads that could have seen a pointer to it have
+which frees a memory segment once all threads that could have seen a pointer to it have
 exited the data structure.
 
 The following sections cover several prominent examples of such lock-free priority queues.
@@ -119,14 +116,20 @@ been deleted, then thread A will return node $k$. This execution is not lineariz
 it is quiescently consistent since operations can be reordered to correspond to some sequential
 execution at quiescent periods.
 
+% TODO_FINAL: Add a figure.
+
 \citeauthor{shavit2000skiplist} counteract this by introducing a \lstinline|timestamp| for each
 node which is set upon successful insertion. In this variant, each \lstinline|delete_min| operation
-simply ignores all nodes it sees that have not been fully inserted at the time it was called.
+simply ignores all nodes it sees that have not been fully inserted at the time it was called. In the
+above example, both newly inserted nodes would be ignored by the slow thread A and thus linearizability
+is preserved.
 
 Explicit memory management is required to avoid dereferencing pointers to freed memory areas
 by other threads after physical deletion. This implementation uses a dedicated garbage collector
 thread in combination with a timestamping mechanism which frees \lstinline|node|'s memory only
 when all threads that might have seen a pointer to \lstinline|node| have exited the data structure.
+
+% TODO_FINAL: How?
 
 \citeauthor{herlihy2012art} \cite{herlihy2012art} recently described and implemented a lock-free,
 quiescently consistent version of this idea in Java. While mostly identical, notable differences are
@@ -156,13 +159,13 @@ struct node_t {
 \label{fig:sundellsl}
 \end{figure}
 
-The structure of each node is basically identical to Figure \ref{fig:skiplist_members}.
+The structure of each node is as indicated in Figure \ref{fig:skiplist_members}.
 However, \citeauthor{sundell2003fast}
 exploit the fact that the two least significant bits of pointers on 32- and 64-bit systems
 are unused (due to alignment of allocated memory) and reuse these as deletion marks.
 A simple \ac{CAS} operation can then be used to atomically update the pointer and the deletion marks:
 \lstinline!CAS(node.next[i], ptr, ptr | 1)!.
-A set least significant bit on a pointer signifies
+A set least significant bit of a pointer signifies
 that the current node is about to be deleted.
 This packed use of \lstinline|node.next[i]| pointers
 prevents situations in which a new node is inserted while its predecessor is being removed,
@@ -177,8 +180,6 @@ allows many other concurrent operations to simply skip these nodes, further impr
 The \lstinline|node.valid_level| variable is updated during inserts to always equal the highest level of the SkipList
 at which pointers in this node have already been set (as opposed to \lstinline|node.level|, which equals
 the final level of the node).
-
-% TODO: Helping necessary why?
 
 A helping mechanism is employed whenever a node is encountered that has its deletion bit set, which attempts
 to set the deletion bits on all next pointers and then removes the node from the current level. The
@@ -251,6 +252,8 @@ minimizing the number of \ac{CAS} operations within most \lstinline|delete_min| 
         Note that deletion flags are located in their predecessors of deleted nodes $0$ and $1$.}
 \end{figure}
 
+% TODO_FINAL: Why is the following paragraph here?
+
 A priority queue implementation is called strict when \lstinline|delete_min| is
 guaranteed to return the minimal element currently within the queue
 (in contrast to relaxed data structures which are discussed further in the next chapter).
@@ -282,7 +285,7 @@ lowest level \lstinline|next| pointer of the previous node, preventing insertion
 logically deleted nodes.
 
 Once the prefix of logically deleted nodes reaches a specified length (represented by \lstinline|BoundOffset|),
-the first thread to observe this fact within \lstinline|delete_min| performs the actual physical
+the first thread to observe this fact within a \lstinline|delete_min| performs the actual physical
 deletions by updating \lstinline|slist.head[0]|, the lowest level pointer to the head of the list,
 to point at the last logically deleted node with a
 single \ac{CAS} operation. The remaining \lstinline|slist.head| pointers are then updated, and
@@ -336,7 +339,7 @@ in the appropriate spot. If a chunk exceeds its maximum size after insertion, it
 into two new chunks, each owning half of the original keyrange.
 
 Deletions take items exclusively from the first chunk since it contains the lowest range of keys.
-This initial chunk is a special case within the design; its item array is immutable 
+This initial chunk is a special case within the design; its item array is immutable (read-only)
 and may thus be efficiently read
 by all threads with reduced cache coherence traffic. Again, a shared index is used in
 conjuction with the \ac{FAA} instruction to determine an item to remove in an
