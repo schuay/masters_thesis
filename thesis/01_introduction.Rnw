@@ -3,7 +3,7 @@
 % Move to many cores, why do we need concurrent algorithms/data structures?
 
 In the past decade, advancements in computer performance have been made mostly
-through an increasing number of processors instead of higher clock speeds.
+through an increase in the number of processors instead of through higher clock speeds.
 This development necessitates new approaches to data structures and algorithms
 that take advantage of concurrent execution by multiple threads and processors.
 
@@ -15,7 +15,7 @@ In their most basic form, priority queues support two operations
 traditionally called \lstinline|insert| and \lstinline|delete_min|. The \lstinline|insert| operation
 places an item into the queue together with its priority, while \lstinline|delete_min|
 removes and returns the highest priority item. Both of these operations are expected to have
-a complexity of at most $O(\log n)$.
+a complexity of at most $O(\log n)$, where $n$ is the number of elements in the priority queue.
 
 % Concurrent priority queues - heaps, trees, skiplists.
 
@@ -35,10 +35,10 @@ relaxed data structures which trade
 strictness of provided guarantees for improved scalability. For instance,
 the SprayList \cite{alistarhspraylist} is
 an extension of SkipList-based priority queue designs which allows \lstinline|delete_min|
-to randomly return one of the $O(P \log^3 P)$ minimal elements, where $P$ is the number
+to randomly return one of the $O(P \log^3 P)$ smallest elements, where $P$ is the number
 of threads. Multiqueues \cite{rihani2014multiqueues} have a simple and elegant design, and use a number
 of sequential priority queues --- items are inserted into a random queue,
-and deletions return the minimal element of two random queues. Finally,
+and deletions return the minimal element from two random queues. Finally,
 the \klsm \cite{wimmer2015lock} is a composition of two complementing priority queues: a relaxed queue
 called the \ac{SLSM} which can offer global guarantees; and the \ac{DLSM},
 which has extremely high throughput but only observes local guarantees.
@@ -57,7 +57,7 @@ this point, we have implemented a standalone \klsm variant in order to verify th
 In order to evaluate the performance of concurrent priority queue designs,
 recent literature
 \cite{hunt1996efficient,alistarhspraylist,linden2013skiplist,shavit2000skiplist,sundell2003fast,wimmer2015lock,cbpq}
-has overwhelmingly relied on a uniform workload, uniform key generation throughput benchmark,
+has for the most part relied on a uniform workload, uniform key generation throughput benchmark,
 in which all threads perform a roughly equal mix of insertions and deletions,
 and item keys are generated uniformly at random within the key domain. It is, however,
 important to realize that this style of benchmarking induces a near-\ac{LIFO}-like
@@ -90,7 +90,7 @@ its throughput drops in other cases.
 Finally, quality of returned results are yet another facet in evaluation of
 relaxed data structures. Neither the Multiqueues, nor the SprayList offer
 fixed quality bounds; and while the \klsm does guarantee that each returned
-item is one of the $kP$ minimal elements, it would also be useful
+item is one of the $kP$ smallest elements, it would also be useful
 to determine how well the data structure performs on average.
 
 In addition to the throughput benchmarks, we have also performed such quality

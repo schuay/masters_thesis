@@ -1,13 +1,13 @@
 \chapter{Definitions} \label{ch:definitions}
 
-This chapter introduces basic terms and concepts required by the remaining
+This chapter introduces basic terms and concepts required in the remainder of the
 thesis.
 
 % Blocking, lock-free and wait-free data structures.
 \section{Lock-freedom}
 
-Concurrent data structures are intended to be accessed simultaneously by several processes
-at at the same time. \emph{Lock-based} structures limit the  number of processes that may enter
+Concurrent data structures are intended to be accessed and updated simultaneously by several processes
+at the same time. \emph{Lock-based} structures limit the  number of processes that may enter
 a critical section at once through the use of locks.
 \emph{Lock-free} data structures eschew the use of locks, and guarantee
 that at least one process makes progress at all times. Since lock-free structures are
@@ -16,8 +16,9 @@ prevented from running by a low priority process) and deadlock (two processes wa
 \emph{Wait-freedom} further guarantees that every process finishes each operation in a bounded number of steps.
 In practice, wait-freedom often introduces an unacceptable overhead; lock-freedom
 however has turned out to be both efficient and to scale well to large numbers of processes.
-Recently, \citeauthor{kogan2012methodology} have also developed a methodology for implementing efficient
-wait-free data structures from lock-free cases \cite{kogan2012methodology}.
+Recently, \citeauthor{kogan2012methodology} have developed a methodology for implementing efficient
+wait-free data structures from lock-free cases \cite{kogan2012methodology}, but it is neither trivial
+to implement, nor is it clear whether performance improvements apply to all types of data structures.
 
 % Linearizability, sequential and quiescent consistency.
 \section{Correctness Conditions}
@@ -145,7 +146,12 @@ any data structure composed of linearizable (quiescently consistent) objects is 
 \emph{Sequential consistency} \cite{lamport1979make} requires the result of a set of operations
 executed in parallel to be equivalent to the result of some sequential ordering of the same
 operations. Contrary to linearizability and quiescent consistency, sequential consistency is
-not composable.
+neither composable nor a realtime condition (i.e., the realtime order of operations may not be equivalent to some
+sequential execution with the same effect).
+
+Sequential and quiescent consistency are incomparable; a history may be sequentially consistent
+without being quiescently consistent and vice versa. Linearizability on the other hand
+implies both sequential and quiescent consistency.
 
 Figure \ref{fig:correctness_criteria} shows three examples of thread histories. The
 first is sequentially consistent since intra-thread reordering (delaying Thread B
@@ -171,8 +177,11 @@ to distinct local copies are not linearized between threads. \emph{Quantitative
 relaxation} is recent model, which relaxes semantic guarantees such that
 operations may occur out of order in relation to a valid sequential operation sequence.
 
+% TODO_FINAL: Elaborate on relaxation guarantees.
 Quasi-linearizability \cite{afek2010quasi}, proposed in \citeyear{afek2010quasi},
-was the first relaxed correctness condition and sets a fixed upper bound to the distance
+was possibly the first relaxed correctness condition and sets a fixed upper bound to the distance\footnote{
+Distance is a concept founded on the semantics of the data structure compared to its strict pendant; in the context of
+priority queues, a \lstinline|delete_min| operation which removes the $k^{\text{th}}$ smallest element is said to have a distance of $k$.}
 to a valid sequential operation sequence. Quantitative relaxation
 \cite{henzinger2013quantitative} is a closely related concept but is based
 on the semantics of a data structure, e.g., allowing a priority queue to return
@@ -182,7 +191,7 @@ of how many items may be skipped, or ignored, by an operation. \citeauthor{wimme
 distinguishes between temporal $\rho$-relaxation, based on the recency of items,
 and structural $\rho$-relaxation, which relies on the position of an item within
 the data structure. Local linearizability \cite{haas2015local} is a recent,
-relatively weak guarantee, and simply requires each thread-induced history
+relatively weak guarantee that simply requires each thread-induced history
 (containing only operations on items inserted by that thread) to be linearizable.
 
 % Synchronization primitives.
@@ -200,7 +209,7 @@ to be used \cite{harris2002practical}.
 \section{Hardware Topologies}
 
 Multiprocessor machines (Figure \ref{fig:system_topology})
-are often built by combining several physical processors, each containing a collection
+are often built by combining several physical processors (often called sockets), each containing a collection
 of processing cores (and their associated cache hierarchy), which themselves may contain
 one or more processing units each. Every processing unit is capable of running
 one independent hardware thread.
@@ -245,20 +254,20 @@ one independent hardware thread.
 \end{figure}
 
 Shared memory multiprocessor machines usually have a so-called \ac{NUMA} architecture,
-in which the efficiency of memory accesses is determined by both the physical location
+in which the cost of memory accesses is determined by both the physical location
 of the memory and the active processing core. Often, each processing core
 has one or more dedicated levels of memory cache (typically L1 and L2 caches),
-and a level of shared cache per processor (typically L3). Access to these
+and a level of shared cache per processor (typically L3). Access time to these
 cache levels rises by about an order of magnitude with each level; L1 caches
 being the fastest, followed by accesses to L2 and L3 caches, \ac{RAM}, and finally
-the hard disk. Many concurrent algorithms are only efficient while all participating
-threads are located on a single processor and may share an L3 cache.
+the hard disk. Many concurrent algorithms are only efficient as long as all participating
+threads are located on a single processor and share an L3 cache.
 
 Cache coherency is a problem which arises in programs executed concurrently
-whenever multiple threads have an identical memory location (variable)
+whenever multiple threads have the same memory location (variable)
 cached in their local caches. Whenever a thread updates the variable, other threads'
-caches must be notified that a the variable has changed, and its value must be
-updated if required. This type of traffic is called the \emph{cache coherency protocol}.
+caches must be notified that the variable has changed, and its value must be
+updated if required. This type of traffic is guided by the \emph{cache coherency protocol}.
 
 Locality is another critical aspect of effective cache use. Cache contents are
 loaded by blocks containing not just the requested location, but also its neighborhood.
@@ -266,19 +275,21 @@ Thus algorithms with sequential data access patterns incur fewer cache loads tha
 with random accesses, adding up to significant performance gains.
 
 An area in memory accessed frequently by a large number of processes is said to be \emph{contended}.
-Contention is a limiting factor regarding scalability: concurrent reads and writes to the same
+Contention is a limiting factor for scalability: concurrent reads and writes to the same
 location must be serialized by the cache coherence protocol, and only a single concurrent \ac{CAS}
 can succeed while all others must retry. \emph{Disjoint-access parallelism} is the concept of
 spreading such accesses in order to reduce contention as much as possible.
 
 \section{C++11 Memory Model}
 
-While thread support has previously only been added on to the C++ language through the
+While thread support has previously only been available for the C++ language through the
 \ac{pthreads} library (and others) \cite{boehm2005threads},
-the C++11 standard finally specifies a fully multi-threaded abstract state machine with a
+the C++11 standard now specifies a fully multi-threaded abstract state machine with a
 clearly defined memory model. A memory model restricts the order in which changes to memory locations by one
-thread may become visible to other threads; for instance, usage of the the \lstinline|std::atomic|
+thread can become visible to other threads; for instance, usage of the the \lstinline|std::atomic|
 type together with its \lstinline|load()| and \lstinline|store()| operations ensures
 portable multithreaded behavior across different architectures. It is possible to vary
 the strictness of provided guarantees between sequential consistency (on the strict end)
 and relaxed behavior (guaranteeing only atomicity).
+
+% TODO_FINAL: Elaborate on what we use.
