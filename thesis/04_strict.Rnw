@@ -236,10 +236,8 @@ consisting of a SkipList protected by a single global lock.
 
 \section{\citeauthor{linden2013skiplist}} \label{sec:linden}
 
-A recent priority queue implementations was published by \citeauthor{linden2013skiplist}
-in \citeyear{linden2013skiplist} \cite{linden2013skiplist}. They present a linearizable, lock-free concurrent priority
-queue which achieves a speed-up of $30-80\%$ compared to other SkipList-based priority queues by
-minimizing the number of \ac{CAS} operations within most \lstinline|delete_min| operations.
+A recent linearizable and lock-free priority queue implementations was published by \citeauthor{linden2013skiplist}
+in \citeyear{linden2013skiplist} \cite{linden2013skiplist}.
 
 \begin{figure}
 \centering
@@ -287,15 +285,18 @@ minimizing the number of \ac{CAS} operations within most \lstinline|delete_min| 
         Note that deletion flags are located in their predecessors of deleted nodes $0$ and $1$.}
 \end{figure}
 
-% TODO_FINAL: Why is the following paragraph here?
-
-A priority queue implementation is called strict when \lstinline|delete_min| is
+Recall that a priority queue implementation is called strict when \lstinline|delete_min| is
 guaranteed to return the minimal element currently within the queue
 (in contrast to relaxed data structures which are discussed further in the next chapter).
 All such priority queues have an inherent bottleneck, since all threads calling \lstinline|delete_min| compete
 for the minimal element, causing both contention through concurrent \ac{CAS} operations on the same variable
 as well as serialization effort by the cache coherence protocol for all other processor accessing the same cache
 line.
+
+The \citeauthor{sundell2003fast} queue improves on previous designs by optimizing the cost of the inherent
+bottleneck through reduction of the number of 
+\ac{CAS} operations within such \lstinline|delete_min| operations, and achieves a 
+speed-up of $30-80\%$ compared to other SkipList-based priority queues.
 
 \begin{figure}[ht]
 \begin{lstlisting}
