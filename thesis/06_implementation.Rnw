@@ -940,11 +940,10 @@ private:
 \label{fig:dist_lsm_local.h}
 \end{figure}
 
-% TODO_FINAL: Not expected.
-
 Contrary to the \ac{SLSM}, the \ac{DLSM} uses a linked list of blocks to represent
 the local \ac{LSM}; this is due to historical reasons and is not expected to make
-any difference in achieved performance.
+any difference in achieved performance --- access to the array-based \ac{LSM}
+is cheaper, but updates are more expensive.
 Blocks (covered further in Section \ref{sec:component_internals})
 contain \lstinline|next| pointers accessible by all threads, and \lstinline|prev|
 pointers which may only be used by the owning thread. Insertions proceed
