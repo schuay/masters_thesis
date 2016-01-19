@@ -162,8 +162,9 @@ Explicit memory management is required to avoid dereferencing pointers to freed 
 by other threads after physical deletion. This implementation uses a dedicated garbage collector
 thread in combination with a timestamping mechanism which frees \lstinline|node|'s memory only
 when all threads that might have seen a pointer to \lstinline|node| have exited the data structure.
-
-% TODO_FINAL: How?
+All threads write their last access times into a dedicated space in shared memory. Deleted nodes
+are appended to a deletion list. The garbage collector thread continually scans this list and
+frees all nodes that have been deleted prior to the earliest last-accessed time by any thread.
 
 \citeauthor{herlihy2012art} \cite{herlihy2012art} recently described and implemented a lock-free,
 quiescently consistent version of this idea in Java. While mostly identical, notable differences are
