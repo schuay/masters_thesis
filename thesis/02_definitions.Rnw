@@ -23,8 +23,6 @@ to implement, nor is it clear whether performance improvements apply to all type
 % Linearizability, sequential and quiescent consistency.
 \section{Correctness Conditions}
 
-% TODO: Expand. Review definitions, extend explanations, relate to sequential sequence of operations.
-
 \begin{figure}
 \begin{minipage}[b]{\textwidth}
     \centering
@@ -173,26 +171,86 @@ promising approaches towards higher scalability. Correctness criteria such as
 linearizability are usually applied to all operations and all threads (so-called
 \emph{global ordering semantics}). On the other hand, in \emph{local ordering semantics},
 threads maintain thread-local copies of a central data structure, and modification
-to distinct local copies are not linearized between threads. \emph{Quantitative
-relaxation} is recent model, which relaxes semantic guarantees such that
-operations may occur out of order in relation to a valid sequential operation sequence.
+to distinct local copies are not linearized between threads.
 
-% TODO_FINAL: Elaborate on relaxation guarantees.
-Quasi-linearizability \cite{afek2010quasi}, proposed in \citeyear{afek2010quasi},
-was possibly the first relaxed correctness condition and sets a fixed upper bound to the distance\footnote{
-Distance is a concept founded on the semantics of the data structure compared to its strict pendant; in the context of
-priority queues, a \lstinline|delete_min| operation which removes the $k^{\text{th}}$ smallest element is said to have a distance of $k$.}
-to a valid sequential operation sequence. Quantitative relaxation
-\cite{henzinger2013quantitative} is a closely related concept but is based
+\begin{figure}
+\footnotesize
+\begin{minipage}[b]{0.33\textwidth}
+\centering
+\begin{tikzpicture}[start chain=going right,
+	node distance=0pt]
+
+\node[box] at (0, 0) {$A$};
+\node[box] at (0, 5mm) {$B$};
+\node[box] at (0, 10mm) {$C$};
+
+\path[serif cm-serif cm] (5mm, 12.5mm) edge node [sloped, above] {$\rho_t$} (5mm, 2.5mm);
+\path[serif cm-serif cm] (-5mm,2.5mm) edge node[sloped, above] {$\rho_s$} (-5mm, 12.5mm);
+\end{tikzpicture}
+\subcaption{The initial stack.}
+\end{minipage}%
+\begin{minipage}[b]{0.33\textwidth}
+\centering
+\begin{tikzpicture}[start chain=going right,
+	node distance=0pt]
+
+\node[box] at (0, 0) {$A$};
+\node[box] at (0, 5mm) {$B$};
+\node[box] at (0, 10mm) {$C$};
+\node[box] at (0, 15mm) {$D$};
+
+\path[serif cm-serif cm] (5mm,17.5mm) edge node[sloped, above] {$\rho_t$} (5mm, 7.5mm);
+\path[serif cm-serif cm] (-5mm,7.5mm) edge node[sloped, above] {$\rho_s$} (-5mm, 17.5mm);
+\end{tikzpicture}
+\subcaption{\lstinline|push(D)|}
+\end{minipage}%
+\begin{minipage}[b]{0.33\textwidth}
+\centering
+\begin{tikzpicture}[start chain=going right,
+	node distance=0pt]
+
+\node[box] at (0, 0) {$A$};
+\node[box] at (0, 5mm) {$B$};
+\node[deleted_box] at (0, 10mm) {$C$};
+\node[box] at (0, 15mm) {$D$};
+
+\path[serif cm-serif cm] (5mm,17.5mm) edge node[sloped, above] {$\rho_t$} (5mm, 7.5mm);
+\path[serif cm-serif cm] (-5mm,2.5mm) edge node[sloped, above] {$\rho_s$} (-5mm, 17.5mm);
+\end{tikzpicture}
+\subcaption{\lstinline|pop(C)|}
+\end{minipage}
+\caption{Temporal vs. structural $\rho$ relaxation on a stack for $\rho=2$. The items that can be relaxed by structural $\rho$-relaxation are marked with $\rho_s$, by temporal with $\rho_t$. After the pop, temporal $\rho$-relaxation is not allowed to skip $B$, since two items were added to the stack after $B$, even though $C$ was deleted in the meantime.}
+\label{fig:temp_vs_struct_rho}
+\end{figure}
+
+\emph{Quasi-linearizability} \cite{afek2010quasi}, proposed in \citeyear{afek2010quasi},
+was possibly the first relaxed correctness condition and sets a fixed upper bound to the 
+distance to a valid sequential operation sequence. 
+Distance is a concept founded on the comparison of a concurrent history (a sequence of method invocation and completion events) against
+its sequential pendant; the distance of a method invocation is, roughly, the difference of its position within both histories.
+\citeauthor{afek2010quasi} give an example in which a stack history is allowed to skip up to $k$
+\lstinline|enqueue| operations and an infinite number of \lstinline|dequeue| operations.
+
+\emph{Quantitative relaxation}
+\cite{henzinger2013quantitative} is a closely related concept to quasi-linearizability. However,
+unlike quasi-linearizability which is based on synax, quantitative relaxation is based
 on the semantics of a data structure, e.g., allowing a priority queue to return
-the second-minimal item. $\rho$-relaxation \cite{wimmer2013data,wimmerphd}
+the $k$-smallest item. 
+
+\emph{$\rho$-relaxation} \cite{wimmer2013data,wimmerphd}
 is similar to quantitative relaxation, and defines correctness guarantees in terms
 of how many items may be skipped, or ignored, by an operation. \citeauthor{wimmerphd}
-distinguishes between temporal $\rho$-relaxation, based on the recency of items,
+further distinguishes between temporal $\rho$-relaxation, based on the recency of items,
 and structural $\rho$-relaxation, which relies on the position of an item within
-the data structure. Local linearizability \cite{haas2015local} is a recent,
-relatively weak guarantee that simply requires each thread-induced history
+the data structure (see Figure \ref{fig:temp_vs_struct_rho}). 
+
+\emph{Local linearizability} \cite{haas2015local} is a recent guarantee that simply requires each thread-induced history
 (containing only operations on items inserted by that thread) to be linearizable.
+Note that local linearizability provides only weak guarantees; for instance, consider a concurrent priority
+queue consisting of thread-local queues protected by a lock, in which all insertions are local
+and deletions take items from a random thread's queue. This queue is locally linearizable, even though
+it cannot provide any global guarantees as to the quality of its returned items. In the worst case,
+it may even continually return the largest item within the entire priority queue.
 
 % Synchronization primitives.
 \section{Synchronization Primitives}
@@ -292,4 +350,8 @@ portable multithreaded behavior across different architectures. It is possible t
 the strictness of provided guarantees between sequential consistency (on the strict end)
 and relaxed behavior (guaranteeing only atomicity).
 
-% TODO_FINAL: Elaborate on what we use.
+In our implementation, we extensively use the previously mentioned \lstinline|std::atomic| type
+together with its \lstinline|load|, \lstinline|store|, \lstinline|fetch_add|, and 
+\lstinline|compare_exchange_strong| operations. When possible, we explicitly use 
+relaxed memory ordering (\lstinline|std::memory_order_relaxed|) as it is the most
+efficient (and weakest) of all memory ordering types, requiring only atomicity.
