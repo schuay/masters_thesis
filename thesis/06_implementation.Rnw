@@ -637,7 +637,8 @@ conforming to the \ac{LSM} invariants at the boundaries of functions (see Sectio
 
 The \ac{LSM} is represented through member variables holding the block pointer
 array together with its size. Additionally, block arrays contain pivot ranges
-(storing ranges within the blocks that contain a subset of the $k$ smallest items),
+(storing ranges within the blocks that contain a subset of the $k$ smallest items, used to
+return one of the $k$ smallest items from \lstinline|peek|),
 a version (to avoid the ABA problem), and an efficient random number generator.
 
 An example block array is shown in Figure \ref{fig:block_array_structure}. It contains
@@ -679,15 +680,12 @@ of the same capacity, it is merged with its predecessor block until all \ac{LSM}
 invariants are satisfied. The block array is then compacted: blocks which are less
 than half-filled are shrunk (possibly triggering other merges), and empty blocks are removed.
 
-% TODO_FINAL: Pivot range explanation.
-
 Finally, pivot ranges are updated (if possible) or recalculated (if necessary).
 Most pivot range modifications are incremental updates --- when a range is
 less than half-filled (i.e., $\text{range size } < \frac{k}{2}$), the range
 is grown from its current state. On the other hand, if new range exceeds its upper
 bounds ($\text{range size } > k$), a completely new pivot range is determined.
 
-% TODO: The figure might be redundant.
 \begin{figure}[ht]
 \begin{lstlisting}
 template <class K, class V, int Rlx>
@@ -728,8 +726,6 @@ block_array<K, V, Rlx>::peek()
 \caption{The partial \lstinline|block_array::peek| implementation.}
 \label{fig:block_array::peek}
 \end{figure}
-
-% TODO: Consistency: find_min / peek.
 
 Peeks, shown in Figure \ref{fig:block_array::peek}, use the pivot range
 to determine a random item within the $k$ least items in the block array.
