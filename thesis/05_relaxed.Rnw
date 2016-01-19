@@ -123,9 +123,9 @@ inserted into the queue. \lstinline|delete_min| can either complete successfully
 it returns \lstinline|true|, one of the $kP$ minimal items is removed from the queue
 and its value is written into the given argument; or it can fail, in which case no item is removed
 from the queue and \lstinline|false| is returned. Failures of \lstinline|delete_min| may occur
-spuriously even if the queue is non-empty, but the number of such failures are low in practice.
-
-% TODO_FINAL: Elaborate on spurious failures.
+spuriously (see Section \ref{sec:klsm_internals}) even if the queue is non-empty. However, 
+the number of such failures is low in practice, and each spurious failure implies a successful
+deletion by another thread.
 
 The \klsm is a composite data structure consisting of a global component called the \ac{SLSM},
 and a thread-local component called the \ac{DLSM}. As implied by their names, both the \ac{SLSM}
