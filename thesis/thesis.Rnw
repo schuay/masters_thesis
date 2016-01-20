@@ -7,7 +7,7 @@
 
 \usepackage{acronym}
 \usepackage{amsmath}
-\usepackage[backend=bibtex,sortcites=true]{biblatex}
+\usepackage[backend=bibtex,sortcites=true,maxnames=4]{biblatex}
 \usepackage{booktabs}
 \usepackage{comment}
 \usepackage{graphicx}
