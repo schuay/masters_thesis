@@ -48,7 +48,7 @@ excellent disjoint-access parallelism properties, and do not require rebalancing
 reliance on randomization.
 
 A state of the art lock-free SkipList implementation based on the \ac{CAS} instruction
-by \citeauthor{fraser2004practical} \cite{fraser2004practical} is freely available\footnote{
+by \citeauthor{fraser2004practical} \cite{fraser2004practical} is freely available\footnote{%
 \url{http://www.cl.cam.ac.uk/research/srg/netos/lock-free/}, last visited on December 9\textsuperscript{th}, 2015.}
 under a BSD license.
 \citeauthor{fraser2004practical} exploits unused pointer bits to mark nodes as logically

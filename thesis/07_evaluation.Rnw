@@ -55,7 +55,8 @@ deletions on the other half. The second parameter concerns \emph{key generation}
 and we have experimented both with uniform key generation (uniformly at random
 within the range of 32-bit integers), and ascending key generation (uniformly at random
 within a smaller range that grows over time, i.e. selection from $[0, 512] + t$),
-as well as descending generation (selection from $\texttt{INT\_MAX} - [0, 512] - t$).
+as well as descending generation (selection from $\texttt{INT\_MAX} - [0, 512] - t$)
+and uniform generation within a restricted key domain.
 
 % TODO_FINAL: Add keyrange benchmark here.
 
@@ -94,7 +95,7 @@ the measured priority queue against a strict sequential queue
 (Figure \ref{fig:rank_determination}). Each insertion
 and deletion is tagged with a timestamp, which is then used to reconstruct a global,
 approximate linear sequence of insertions and deletions. This sequence is then
-replayed using a strict sequential queue, and ranks\footnote{
+replayed using a strict sequential queue, and ranks\footnote{%
 The rank of an item is its position within the sequence of all items in an ascending order.}
 of each deleted item
 within the queue at the time of deletion are then recorded (with the rank of the least
@@ -107,11 +108,11 @@ quality of a queue's returned results.
 The strict priority queue used within the quality benchmark is required to support an operation which
 deletes a specific element and return its rank. Contrary to similar benchmarks by
 \citeauthor{rihani2014multiqueues} \cite{rihani2014multiqueues} who rely on the C++ standard library's \lstinline|multiset|
-class (resulting in $O(r)$ deletions, where $r$ is the rank of the deleted item), we use a custom
+class (resulting in a cost of $O(r)$ per deletion, where $r$ is the rank of the deleted item), we use a custom
 data structure based on a \ac{BST} which supports the required operation in logarithmic time.
 This allows us to efficiently evaluate results with higher ranks than would otherwise be possible.
 Additionally, we minimize interference with the actual benchmark by storing the
-thread-local sequences temporarily and processing them offline, while \citeauthor{rihani2014multiqueues}
+thread-local operation sequences temporarily and processing them offline, while \citeauthor{rihani2014multiqueues}
 perform rank determination interleaved with the actual benchmark operations.
 
 \section{Algorithms} \label{sec:algorithms}
@@ -128,7 +129,7 @@ used algorithms are as follows:
       performance of a concurrent priority queue.
 \item \textit{Linden} (\verb|linden|)
       Code for the \citeauthor{linden2013skiplist} priority queue \cite{linden2013skiplist}
-      is provided by the authors under an open source license\footnote{
+      is provided by the authors under an open source license\footnote{%
       \url{http://user.it.uu.se/~jonli208/priorityqueue},
       last visited on December 9\textsuperscript{th}, 2015.}.
       It is lock-free and uses \citeauthor{fraser2004practical}'s lock-free
