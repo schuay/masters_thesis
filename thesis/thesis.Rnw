@@ -51,7 +51,7 @@
 
 \setaddress{Kirschenallee 6/1, 2120 Wolkersdorf}
 \setregnumber{0203440}
-\setdate{23}{09}{2015}
+\setdate{20}{01}{2016}
 \settitle{\thesistitle}{KLSM: Ein Relaxed Lock-Free Priority Queue}
 
 \setthesis{master}
