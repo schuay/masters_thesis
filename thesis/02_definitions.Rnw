@@ -219,7 +219,8 @@ to distinct local copies are not linearized between threads.
 \end{tikzpicture}
 \subcaption{\lstinline|pop(C)|}
 \end{minipage}
-\caption{Temporal vs. structural $\rho$ relaxation on a stack for $\rho=2$. The items that can be relaxed by structural $\rho$-relaxation are marked with $\rho_s$, by temporal with $\rho_t$. After the pop, temporal $\rho$-relaxation is not allowed to skip $B$, since two items were added to the stack after $B$, even though $C$ was deleted in the meantime.}
+\caption[Temporal vs. structural $\rho$ relaxation on a stack for $\rho=2$.]
+        {Temporal vs. structural $\rho$ relaxation on a stack for $\rho=2$. The items that can be relaxed by structural $\rho$-relaxation are marked with $\rho_s$, by temporal with $\rho_t$. After the pop, temporal $\rho$-relaxation is not allowed to skip $B$, since two items were added to the stack after $B$, even though $C$ was deleted in the meantime.}
 \label{fig:temp_vs_struct_rho}
 \end{figure}
 

@@ -54,15 +54,49 @@ a split workload performs only insertions on half of all threads, and only
 deletions on the other half. The second parameter concerns \emph{key generation},
 and we have experimented both with uniform key generation (uniformly at random
 within the range of 32-bit integers), and ascending key generation (uniformly at random
-within a smaller range that grows over time, i.e. selection from $[0, U] + t$),
-as well as descending generation.
+within a smaller range that grows over time, i.e. selection from $[0, 512] + t$),
+as well as descending generation (selection from $\texttt{INT\_MAX} - [0, 512] - t$).
+
+% TODO_FINAL: Add keyrange benchmark here.
+
+\begin{figure}[ht]
+\begin{lstlisting}
+static void
+evaluate_quality(operation_sequence_t &operation_sequence,
+                 double *mean)
+{
+    /* Details omitted. */
+    kpqbench::itree pq;
+    while (/* operations left in sequence */) {
+        for (/* each insertion until next deletion */) {
+            pq.insert(/* the inserted element */);
+        }
+
+        for (/* each deletion until next insertion */) {
+            uint64_t rank;
+            pq.erase(/* the deleted element */, &rank);
+            rank_sum += rank;
+        }
+    }
+
+    *mean = rank_sum / ranks.size();
+}
+\end{lstlisting}
+\caption[Pseudo-code for rank determination.]
+        {Pseudo-code for rank determination. \lstinline|pq| is a sequential, strict priority queue
+         with a specialized \lstinline|erase| method which returns the rank of the deleted item.}
+\label{fig:rank_determination}
+\end{figure}
 
 Finally, the quality of the produced output is evaluated by using a variant of
 the throughput benchmark. Quality in this sense compares the output sequence of
-the measured priority queue against a strict sequential queue. Each insertion
+the measured priority queue against a strict sequential queue
+(Figure \ref{fig:rank_determination}). Each insertion
 and deletion is tagged with a timestamp, which is then used to reconstruct a global,
 approximate linear sequence of insertions and deletions. This sequence is then
-replayed using a strict sequential queue, and ranks of each deleted item
+replayed using a strict sequential queue, and ranks\footnote{
+The rank of an item is its position within the sequence of all items in an ascending order.}
+of each deleted item
 within the queue at the time of deletion are then recorded (with the rank of the least
 item being $1$). Theoretically, strict queues should result in an average rank
 of $1$, but in practice we can expect deviations of this value due to `simultaneous'
@@ -94,7 +128,8 @@ used algorithms are as follows:
       performance of a concurrent priority queue.
 \item \textit{Linden} (\verb|linden|)
       Code for the \citeauthor{linden2013skiplist} priority queue \cite{linden2013skiplist}
-      is provided by the authors under an open source license\footnote{\url{http://user.it.uu.se/~jonli208/priorityqueue},
+      is provided by the authors under an open source license\footnote{
+      \url{http://user.it.uu.se/~jonli208/priorityqueue},
       last visited on December 9\textsuperscript{th}, 2015.}.
       It is lock-free and uses \citeauthor{fraser2004practical}'s lock-free
       SkipList design. The aim of this implementation is to minimize contention in
@@ -111,7 +146,7 @@ used algorithms are as follows:
 \item \textit{Multiqueues} (\verb|multiq|)
       A simple, elegant recent relaxed concurrent priority queue
       design by \citeauthor{rihani2014multiqueues}. Contrary to the SprayList, the
-      Multiqueue implementation is lock-based. Since code for the SprayList is
+      Multiqueue implementation is lock-based. Since code for the Multiqueues is
       not publicly available, we use our own reimplementation for benchmarks.
 \item \textit{Pheet \klsm} (\verb|pheet16, pheet128, ...|)
       \citeauthor{wimmerphd}'s original implementation
@@ -197,7 +232,7 @@ are reported for benchmarks on \lstinline|mars|.
 \begin{center}
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151112_saturn_uni_uni")
 @
 \subcaption{\lstinline|saturn|}
@@ -205,7 +240,7 @@ pqplot("results/20151112_saturn_uni_uni")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151116_ceres_uni_uni")
 @
 \subcaption{\lstinline|ceres|}
@@ -213,7 +248,7 @@ pqplot("results/20151116_ceres_uni_uni")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151112_mars_uni_uni")
 @
 \subcaption{\lstinline|mars|}
@@ -227,7 +262,7 @@ Figures \ref{fig:uni_uni} and \ref{fig:mars_uni_uni_slow}
 displays the throughput in operations per second
 over a range of threads. The \klsm dominates all other priority queues at
 medium to high relaxation ($k \in \{ 128, 256, 4096 \}$), reaching over 200
-\ac{MOps} and scaling up to 80 threads. The \klsm's scalability heavily depends on the value
+\ac{MOps} per second and scaling up to 80 threads. The \klsm's scalability heavily depends on the value
 of $k$; at low values the \klsm behaves similar to other concurrent priority
 queues (see Figure \ref{fig:mars_uni_uni_slow} for a detail view of slower queues).
 At $k = 128$, the \klsm scales well until around 25 threads, and higher values
@@ -272,7 +307,8 @@ pqplot("results/20151112_mars_uni_uni_slow")
 pqplot("results/20151112_mars_uni_uni_pheet")
 @
 \end{center}
-\caption{Uniform workload, uniform keys on \lstinline|mars|.
+\caption[Uniform workload, uniform keys on \lstinline|mars| (Pheet).]
+        {Uniform workload, uniform keys on \lstinline|mars|.
          Comparison of the standalone \klsm against Pheet's \klsm.}
 \label{fig:mars_uni_uni_pheet}
 \end{figure}
@@ -305,14 +341,15 @@ and \ac{SLSM}, \ldots).
 \bottomrule
 \end{tabular}
 \end{center}
-\caption{Rank error for the uniform workload, uniform key generation benchmark
+\caption[Rank error: uniform workload, uniform key generation, \lstinline|mars|.]
+        {Rank error for the uniform workload, uniform key generation benchmark
 on \lstinline|mars|.}
 \label{tbl:mars_uni_uni_q}
 \end{table}
 
 We also evaluated the quality of the results using a rank error metric, shown
 in Table \ref{tbl:mars_uni_uni_q}. For each item that is removed from
-a priority queue, a rank of $r$ signifies that it is the $r$-lowest item within
+a priority queue, a rank of $r$ signifies that it is the $r$-smallest item within
 the queue. Therefore, by definition, a strict priority queue such as
 \lstinline|globallock| should have a mean rank of $1.0$ and a standard deviation
 of $0$. Unfortunately, our quality benchmark only reports approximate results ---
@@ -334,7 +371,7 @@ but the error increases less rapidly at higher concurrency.
 \begin{center}
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151112_saturn_uni_asc")
 @
 \subcaption{\lstinline|saturn|}
@@ -342,7 +379,7 @@ pqplot("results/20151112_saturn_uni_asc")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151116_ceres_uni_asc")
 @
 \subcaption{\lstinline|ceres|}
@@ -350,7 +387,7 @@ pqplot("results/20151116_ceres_uni_asc")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151112_mars_uni_asc")
 @
 \subcaption{\lstinline|mars|}
@@ -379,7 +416,7 @@ that when using uniform key generation, $97\%$ of all deleted items are taken
 from the \ac{DLSM} --- and this is obviously the reason for the \klsm's high
 performance. But how is this kind of skewed balance between the \ac{SLSM} and the
 \ac{DLSM} possible? Since \lstinline|k_lsm::delete_min| peeks at one item from
-the \ac{SLSM} and one from the \ac{DLSM}, wouldn't it be reasonable to expect
+the \ac{SLSM} and one from the \ac{DLSM}, would it not be reasonable to expect
 a $50/50$ proportion of items taken from the either component?
 
 It turns out that the answer to this question is a definite ``no'' in the case of
@@ -403,7 +440,7 @@ usually be initially inserted into the local \ac{DLSM}; then moved to the \ac{SL
 over time, and finally deleted from the \ac{SLSM} once most lower items have
 been removed from the priority queue. Contrary to uniform key generation, emphasis
 is placed on the \ac{SLSM} and the efficient \ac{DLSM} cannot be exploited
-for its full potential.
+to its full potential.
 
 Again, behavior across the different machines differs significantly. On \lstinline|saturn|,
 no algorithm appears to scale well, with Multiqueues reaching maximal absolute
@@ -432,7 +469,8 @@ of the \klsm.
 \bottomrule
 \end{tabular}
 \end{center}
-\caption{Rank error for the uniform workload, ascending key generation benchmark
+\caption[Rank error, uniform workload, ascending key generation, \lstinline|mars|.]
+        {Rank error for the uniform workload, ascending key generation benchmark
 on \lstinline|mars|.}
 \label{tbl:mars_uni_asc_q}
 \end{table}
@@ -461,7 +499,7 @@ than the \ac{DLSM}. And since the \ac{SLSM} has a lower rank guarantee than the
 \begin{center}
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151112_saturn_spl_uni")
 @
 \subcaption{\lstinline|saturn|}
@@ -469,7 +507,7 @@ pqplot("results/20151112_saturn_spl_uni")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151116_ceres_spl_uni")
 @
 \subcaption{\lstinline|ceres|}
@@ -477,7 +515,7 @@ pqplot("results/20151116_ceres_spl_uni")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151112_mars_spl_uni")
 @
 \subcaption{\lstinline|mars|}
@@ -516,7 +554,8 @@ of two at low thread counts.
 \bottomrule
 \end{tabular}
 \end{center}
-\caption{Rank error for the split workload, uniform key generation benchmark
+\caption[Rank error, split workload, uniform key generation, \lstinline|mars|.]
+        {Rank error for the split workload, uniform key generation benchmark
 on \lstinline|mars|.}
 \label{tbl:mars_spl_uni_q}
 \end{table}
@@ -534,7 +573,7 @@ generated uniformly, and the \ac{SLSM} is therefore biased towards larger keys.
 \begin{center}
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151112_saturn_spl_asc")
 @
 \subcaption{\lstinline|saturn|}
@@ -542,7 +581,7 @@ pqplot("results/20151112_saturn_spl_asc")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151116_ceres_spl_asc")
 @
 \subcaption{\lstinline|ceres|}
@@ -550,7 +589,7 @@ pqplot("results/20151116_ceres_spl_asc")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151112_mars_spl_asc")
 @
 \subcaption{\lstinline|mars|}
@@ -596,7 +635,8 @@ of the skiplist.
 \bottomrule
 \end{tabular}
 \end{center}
-\caption{Rank error for the split workload, ascending key generation benchmark
+\caption[Rank error, split workload, ascending key generation, \lstinline|mars|.]
+        {Rank error for the split workload, ascending key generation benchmark
 on \lstinline|mars|.}
 \label{tbl:mars_spl_asc_q}
 \end{table}
@@ -605,7 +645,7 @@ As in the uniform workload, ascending key generation benchmark, rank errors (Tab
 \ref{tbl:mars_spl_asc_q} are fairly low. However, the Multiqueues show very unpredictable
 behavior while within a single processor ($\leq 10$ threads), with high mean rank
 errors and a wide spread ($2452$ mean rank error and $8790$ standard deviation on
-10 threads).
+10 threads, not shown in the Table).
 
 \subsection{Generic throughput, uniform workload, descending key generation}
 
@@ -619,7 +659,7 @@ to the degree that the distributed component is utilized.
 \begin{center}
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151120_saturn_uni_desc")
 @
 \subcaption{\lstinline|saturn|}
@@ -627,7 +667,7 @@ pqplot("results/20151120_saturn_uni_desc")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151117_ceres_uni_desc")
 @
 \subcaption{\lstinline|ceres|}
@@ -635,7 +675,7 @@ pqplot("results/20151117_ceres_uni_desc")
 
 \begin{minipage}[b]{\textwidth}
 \centering
-<<fig = TRUE, width = 12, echo = FALSE>>=
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
 pqplot("results/20151123_mars_uni_desc")
 @
 \subcaption{\lstinline|mars|}
