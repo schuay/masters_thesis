@@ -58,8 +58,6 @@ within a smaller range that grows over time, i.e. selection from $[0, 512] + t$)
 as well as descending generation (selection from $\texttt{INT\_MAX} - [0, 512] - t$)
 and uniform generation within a restricted key domain.
 
-% TODO_FINAL: Add keyrange benchmark here.
-
 \begin{figure}[ht]
 \begin{lstlisting}
 static void
@@ -647,6 +645,37 @@ As in the uniform workload, ascending key generation benchmark, rank errors (Tab
 behavior while within a single processor ($\leq 10$ threads), with high mean rank
 errors and a wide spread ($2452$ mean rank error and $8790$ standard deviation on
 10 threads, not shown in the Table).
+
+\subsection{Generic throughput, uniform workload, restricted key generation}
+
+We also experimented with various sizes of the key domain (Figure \ref{fig:uni_rest}). In particular,
+we measured throughput of Multiqueues and the \klsm (with $k = 256$) when
+generated keys were restricted to 8, 16, and 32-bit integer domains.
+
+\begin{figure}[ht]
+\centering
+<<fig = TRUE, width = 12.5, echo = FALSE>>=
+pqplot("results/20160119_mars_uni_uni_range")
+@
+\caption[Uniform workload, restricted keys on \lstinline|mars|.]
+        {Uniform workload, restricted keys on \lstinline|mars|. Both \klsm and Multiqueues
+        were benchmarked with key generation restricted to 8, 16, and 32-bit integer ranges. Performance
+        of Multiqueues was stable and is thus shown as a single data set.}
+\label{fig:uni_rest}
+\end{figure}
+
+The \klsm again appears to be sensitive to the key domain size, performing best
+for very large key domains and worst with small domains. When keys were generated
+within an 8-bit range (i.e. in $[0, 256[$), the \klsm did not scale and absolute
+performance was comparable to \lstinline|globallock|. Using a 16-bit range,
+scalability was similar to experiments using the usual full range, but absolute
+throughput was still decreased by around $25\%$ at higher thread counts.
+Multiqueues showed stable performance in all key domain sizes and are thus shown
+as a single data set.
+
+The reason for throughput decrease is similar to previous cases: smaller
+key domains cause a shift in the balance between \ac{SLSM} and \ac{DLSM}
+utilization, placing more stress on the centralized, slower \ac{SLSM}.
 
 \subsection{Generic throughput, uniform workload, descending key generation}
 

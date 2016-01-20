@@ -18,8 +18,9 @@ benchmark suite with several other state-of-the-art queues such as the Linden
 queue, the Multiqueue, and the SprayList as comparisons. We not only test
 priority queues under the standard scenario of uniform workload and uniform
 key generation, but also examine combinations of split workloads (in which
-threads are either dedicated inserters or deleters) and ascending/descending key generation
-(in which the value of generated item keys increases/decreases over time).
+threads are either dedicated inserters or deleters), ascending/descending key generation
+(in which the value of generated item keys increases/decreases over time), and restricted
+key domains (in which we vary the size of the key domain).
 
 As demonstrated previously by \citeauthor{wimmer2015lock} in \cite{wimmer2015lock},
 the \klsm scales exceptionally
@@ -34,8 +35,10 @@ Unfortunately, this result does not carry over to the other benchmarking scenari
 Ascending key generation causes priority queues to behave in a quasi-\ac{FIFO}
 manner, which places more emphasis on the global, slower \ac{SLSM} component.
 Split workloads increases stress on the \ac{SLSM} because the local \ac{DLSM} does
-not have a continual flow of new items. In both cases, performance of the \klsm
-drops dramatically while the Multiqueues continues to perform reliably, delivering
+not have a continual flow of new items. Restricted key domains also result
+in higher stress on the \ac{SLSM} since it becomes more likely to generate large keys.
+In all cases, performance of the \klsm
+can drop dramatically while the Multiqueues continues to perform reliably, delivering
 better performance than all \klsm variants in these altered benchmark environments.
 
 The distribution of item keys over time is critical to the \klsm; ascending keys
@@ -77,10 +80,10 @@ advantage of the \klsm is that it can provide a fixed upper bound to the rank
 error.
 
 The \klsm remains an highly interesting
-data structure. It is highly sensitive to key distribution over time and the mixture
+data structure. It is highly sensitive to the key domain, key distribution over time and the mixture
 of performed operations, performing exceptionally well under ideal circumstances
 but below average in others. Thus the \klsm might be an ideal candidate
-for some applications, while others might be better served by a more universal
+for some applications, while others might be better served by a slower but more universal
 data structure such as the Multiqueue.
 
 The \klsm's throughput depends directly on the degree that the global \ac{SLSM}
