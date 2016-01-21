@@ -13,6 +13,7 @@
 \usepackage{pgf}
 \usepackage{textcomp}
 \usepackage{tikz}
+\usepackage{xspace}
 
 \graphicspath{{figures/}}
 \input{acronyms}
@@ -22,7 +23,7 @@
 
 \lstset{
     language=C++,
-    basicstyle=\ttfamily,
+    basicstyle=\ttfamily \small,
     keywordstyle=\color{OliveGreen},
     commentstyle=\color{Gray},
     captionpos=b,
@@ -44,6 +45,8 @@
                , shapes
                , topaths
                }
+
+\newcommand{\klsm}{$k$-LSM\xspace}
 
 \title{Concurrent Priority Queues}
 \subtitle{Seminar in Algorithms, 2013W}
@@ -130,7 +133,6 @@ bool delete_min(V &val);
 \item In the past decade, processor clock speeds have remained the same, trend towards multiple cores
 \item New data structures required to take advantage of concurrent execution
 \item The topic of this presentation: efficient concurrent \acp{PQ}
-\item Fine-grained locking \textrightarrow ~ Lock-free \textrightarrow ~ Relaxed data structures
 \end{itemize}
 
 \end{frame}
@@ -153,12 +155,19 @@ bool delete_min(V &val);
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
-\begin{frame}[fragile]{Concepts and Definitions}
+\begin{frame}{Concepts and Definitions}
 \framesubtitle{Miscellaneous}
 
 \begin{itemize}
 \item \emph{Disjoint-access parallelism}: how well a data structure handles concurrent use by multiple
       threads within disjoint areas
+\end{itemize}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}[fragile]{Concepts and Definitions}
+\framesubtitle{Miscellaneous}
+
+\begin{itemize}
 \item Synchronization primitives:
     \begin{itemize}
     \item \ac{CAS}, \ac{FAA}, \ac{FAO}, \ac{TAS}
@@ -185,31 +194,25 @@ bool CAS(T *ptr, T *expected, T value) {
 
 \begin{frame}{\nameref{sec:related}}
 \begin{itemize}
-\item Non-standard synchronization primitives
-    \begin{itemize}
-    \item \citeauthor{liu2012lock}: Array-based \ac{PQ} with \lstinline|ExtractMany|
-    \item \citeauthor{israeli1993efficient}: Wait-free \ac{PQ}
-    \end{itemize}
-
-\item Bounded range priorities
-    \begin{itemize}
-    \item \citeauthor{shavit1999scalable}: Combining funnels \& bins
-    \end{itemize}
-
 \item Strict \acp{PQ}
     \begin{itemize}
     \item \citeauthor{hunt1996efficient}: \textcolor{BrickRed}{Fine-grained locking heap}
-    \item \citeauthor{shavit2000skiplist}: \textcolor{BrickRed}{First SkipList-based \ac{PQ}}
-    \item \citeauthor{sundell2003fast}: \textcolor{BrickRed}{First lock-free \ac{PQ}}
+    \item \citeauthor{shavit2000skiplist}: First SkipList-based \ac{PQ}
+    \item \citeauthor{sundell2003fast}: First lock-free \ac{PQ}
     \item \citeauthor{linden2013skiplist}: \textcolor{BrickRed}{Minimizes contention}
+    \item \citeauthor{cbpq}: \textcolor{BrickRed}{\ac{CBPQ}}
     \end{itemize}
 
-\item Relaxed data structures
+\item Relaxed \acp{PQ}
     \begin{itemize}
     \item \citeauthor{kirsch2012fast}: k-FIFO queues
-    \item \citeauthor{wimmer2013data}: \textcolor{BrickRed}{k-\ac{PQ}}
     \item \citeauthor{alistarhspraylist}: \textcolor{BrickRed}{SprayList}
+    \item \citeauthor{rihani2014multiqueues}: \textcolor{BrickRed}{Multiqueues}
+    \item \citeauthor{wimmer2013data}: \textcolor{BrickRed}{k-\ac{LSM}}
     \end{itemize}
+
+\item Non-standard synchronization primitives
+\item Bounded range priorities
 
 \let\thefootnote\relax\footnote{Highlighted \acp{PQ} are presented in the following}
 
@@ -442,6 +445,36 @@ struct node_t {
 \item Very good scalability up to 10 threads, further limited gains with rising thread counts
 \item \fullcite{wimmer2013data}
 \end{itemize}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:relaxed}}
+\framesubtitle{\citeauthor{wimmer2013data}}
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[mindmap,
+  level 1 concept/.append style={level distance = 130, sibling angle = 60},
+  level 2 concept/.append style={sibling angle = 45},
+  extra concept/.append style={color=blue!50, text=black}]
+
+  \begin{scope}[mindmap, concept color = black!10]
+    \node [concept] {\klsm}[clockwise from=-60]
+      child {node [concept] (dlsm) {\ac{DLSM}}
+        [clockwise from = 45]
+        child {node [concept] {Thread-local}}
+        child {node [concept] {Distributed}}
+        child {node [concept] {Efficient}}
+        child {node [concept] {Scalable}}
+        child {node [concept] {Strict}}}
+      child {node [concept] (slsm) {\ac{SLSM}}
+        [clockwise from = -90]
+        child {node [concept] {Shared}}
+        child {node [concept] {Global}}
+        child {node [concept] {Relaxed}}
+        child {node [concept] {Global Bottleneck}}};
+  \end{scope}
+\end{tikzpicture}
+\caption{A high-level view of the \klsm concept. }
+\end{figure}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:lockfree}}
