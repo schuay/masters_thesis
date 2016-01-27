@@ -1,0 +1,37 @@
+\begin{tikzpicture}[start chain,
+    ->,
+    every node/.style={font = \small},
+    label/.style={rectangle,minimum size = 5mm}]
+
+    \begin{scope}[start chain = 1 going right, node distance = -0.15mm, every node/.style = box]
+        \node [on chain=1, minimum width = 10mm] (ba0) {$b_0$};
+        \node [on chain=1, minimum width = 10mm] (ba1) {$b_1$};
+        \node [on chain=1, minimum width = 10mm] (ba2) {$b_2$};
+        \node [on chain=1, minimum width = 10mm] (ba3) {$b_3$};
+    \end{scope}
+
+    \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
+            every on chain/.style={anchor=south},
+            node distance = -0.15mm]
+        \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
+        \node[on chain, box] {3};
+        \node[on chain, box] {4};
+        \node[on chain, box] (03) {4};
+        \node[on chain, box] {6};
+        \node[on chain, box] {9};
+        \node[on chain, box] {};
+        \node[on chain, box] (07) {};
+    \end{scope}
+
+    \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
+            every on chain/.style={anchor=south},
+            node distance = -0.15mm, every node/.style = box]
+        \node[on chain, box, above = of ba1, yshift = 3mm] (10) {2};
+        \node[on chain, box] {7};
+        \node[on chain, box] {8};
+    \end{scope}
+
+    \path[->, every node/.style= { font = \sffamily\small }]
+    (ba0) edge node [right] {} (00)
+    (ba1) edge node [right] {} (10);
+\end{tikzpicture}
