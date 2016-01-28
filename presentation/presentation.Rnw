@@ -51,7 +51,7 @@
 
 \title{\klsm}
 \subtitle{A Relaxed Lock-Free Priority Queue}
-\author{Jakob Gruber, 0203440}
+\author{Jakob Gruber}
 \date{\today}
 
 \begin{document}
@@ -133,7 +133,8 @@ bool delete_min(V &val);
 \begin{itemize}
 \item In the past decade, processor clock speeds have remained the same, trend towards multiple cores
 \item New data structures required to take advantage of concurrent execution
-\item The topic of this presentation: efficient concurrent \acp{PQ}
+\item The topic of this presentation: efficient concurrent \acp{PQ} in general,
+      the linearizable, relaxed and lock-free \klsm priority queue in particular.
 \end{itemize}
 
 \end{frame}
@@ -614,15 +615,35 @@ struct node_t {
 % --------------------------------------------------------------------------------------------------
 
 \begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput}
 
 \begin{itemize}
 \item We present throughput, i.e. the number of operations performed per second
-\item Each thread repeatedly chooses uniformly at random between
-      \lstinline|Insert| and \lstinline|DeleteMin|
+\item Measured on 3 machines, presented here: \lstinline|mars|, an 80-core (8x10 cores) Intel Xeon
+      E7-8850 @ 2 GHz and 1 TB of RAM. 32 KB L1, 256 KB L2, 24 MB L3 cache.
+\item Algorithms: \lstinline|globallock|, \lstinline|linden|, \lstinline|multiq|,
+      \lstinline|klsm16|, \lstinline|klsm128|, \ldots
+\item Prefilled with $10^6$ elements.
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput}
+
+\begin{itemize}
+\item \emph{Uniform workload}: Each thread repeatedly chooses uniformly at random between
+    \lstinline|Insert| and \lstinline|DeleteMin|.
+\item \emph{Split workload}: Half of all threads insert only, the other half deletes.
+\item \emph{Uniform key generation}: Keys for insertions are generated uniformly at random
+        within the range of 32 bit integers.
+\item \emph{Ascending key generation}: Small range which rises over time:
+        $\text{key}_t \in [0, 512[ + t$.
+\item \emph{Restricted key generation}: Restricted key range, e.g. 8-bit integers.
+\end{itemize}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput}
 <<echo = FALSE>>=
 \SweaveInput{pqplot.Rnw}
 @
@@ -638,32 +659,7 @@ pqplot("results/20151112_mars_uni_uni")
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
-
-\begin{table}[ht]
-\small
-\begin{center}
-\begin{tabular}{lrrrrrr}
-\toprule
-& \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
-\cmidrule(r){2-3}\cmidrule(r){4-5}\cmidrule(r){6-7}
-& Mean & Std. Dev. & Mean & Std. Dev & Mean & Std. Dev \\
-\midrule
-\lstinline|globallock| & 1.9 & 1.0 & 2.9 & 1.7 & 4.8 & 2.9 \\
-\lstinline|klsm16|   & 20 & 15 & 23 & 20 & 15 & 9 \\
-\lstinline|klsm128|  & 33 & 31 & 55 & 46 & 430 & 294 \\
-\lstinline|klsm256|  & 42 & 42 & 71 & 61 & 750 & 828 \\
-\lstinline|klsm4096| & 297 & 496 & 625 & 1014 & 10353 & 12667 \\
-\lstinline|multiq|   & 984 & 2899 & 2252 & 7433 & 3787 & 12549 \\
-\bottomrule
-\end{tabular}
-\end{center}
-\caption{Rank error for the uniform workload, uniform key generation benchmark
-on \lstinline|mars|.}
-\label{tbl:mars_uni_uni_q}
-\end{table}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput}
 <<echo = FALSE>>=
 \SweaveInput{pqplot.Rnw}
 @
@@ -679,6 +675,7 @@ pqplot("results/20151112_mars_uni_asc")
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput}
 <<echo = FALSE>>=
 \SweaveInput{pqplot.Rnw}
 @
@@ -694,6 +691,7 @@ pqplot("results/20151112_mars_spl_uni")
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput}
 <<echo = FALSE>>=
 \SweaveInput{pqplot.Rnw}
 @
@@ -707,6 +705,48 @@ pqplot("results/20151112_mars_spl_asc")
 \caption{Split workload, ascending keygeneration.}
 \end{figure}
 \end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Quality}
+
+\begin{itemize}
+\item Are semantic guarantees fulfilled? And how good is the quality of results?
+\item Determined by rank: for each \lstinline|delete_min|, if the removed item
+is the $k$-smallest item at that time, it has rank $k$.
+\item Reminder: The \klsm allows deletions to return up to rank $kP$ ($P$ is the number of threads).
+\end{itemize}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Quality}
+
+\begin{table}[ht]
+\footnotesize
+\begin{center}
+\begin{tabular}{lrrrrrr}
+\toprule
+& \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
+\cmidrule(r){2-3}\cmidrule(r){4-5}\cmidrule(r){6-7}
+& Mean & StdDev & Mean & StdDev & Mean & StdDev \\
+\midrule
+\lstinline|globallock| & 1.9 & 1.0 & 2.9 & 1.7 & 4.8 & 2.9 \\
+\lstinline|klsm16|   & 20 & 15 & 23 & 20 & 15 & 9 \\
+~(max)  & 320 & - & 640 & - & 1280 & - \\
+\lstinline|klsm128|  & 33 & 31 & 55 & 46 & 430 & 294 \\
+~(max)  & 2560 & - & 5120 & - & 10240 & - \\
+\lstinline|klsm256|  & 42 & 42 & 71 & 61 & 750 & 828 \\
+~(max)  & 5120 & - & 10240 & - & 20480 & - \\
+\lstinline|klsm4096| & 297 & 496 & 625 & 1014 & 10353 & 12667 \\
+~(max)  & 81920 & - & 163840 & - & 327680 & - \\
+\lstinline|multiq|   & 984 & 2899 & 2252 & 7433 & 3787 & 12549 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\caption{Rank error for the uniform workload, uniform key generation benchmark
+on \lstinline|mars|.}
+\label{tbl:mars_uni_uni_q}
+\end{table}
+\end{frame}
 
 % --------------------------------------------------------------------------------------------------
 \section{Conclusion} \label{sec:conclusion}
@@ -714,13 +754,11 @@ pqplot("results/20151112_mars_spl_asc")
 
 \begin{frame}{\nameref{sec:conclusion}}
 \begin{itemize}
-\item Parallelizing \acp{PQ} is hard
-\item SkipLists currently dominate practical implementations
-\item Main limiting factor are list head accesses in \lstinline|DeleteMin|
-\item \citeauthor{linden2013skiplist} \ac{PQ} is state of the art in strict
-      semantics
-\item Much potential remains in relaxed \acp{PQ} and data structures in general
-      \textrightarrow ~ future research
+\item The \klsm can have exceptional performance.
+\item \ldots under the right conditions.
+\item Multiqueues have lower peak performance, but have stable behavior in all experiments.
+\item Although SkipList-based designs have dominated recent research, their performance is fairly low.
+
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
