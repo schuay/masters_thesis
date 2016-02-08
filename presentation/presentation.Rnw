@@ -128,13 +128,66 @@ bool delete_min(V &val);
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:intro}}
+\framesubtitle{Sequential priority queues: Heaps}
+
+\begin{figure}
+\begin{minipage}[b]{.5\textwidth}
+\centering
+\begin{tikzpicture}[every node/.style = box]
+\node (1) at (0, 0)    {$0$};
+\node (2) at (5mm, 0)  {$2$};
+\node (3) at (10mm, 0) {$1$};
+\node (4) at (15mm, 0) {$4$};
+\node (5) at (20mm, 0) {$6$};
+\node (6) at (25mm, 0) {$5$};
+\node (7) at (30mm, 0) {$3$};
+\node (8) at (35mm, 0) {$7$};
+\node (9) at (40mm, 0) {$8$};
+
+\path[->, dashed, every node/.style= { font = \sffamily\small }]
+(1) edge[bend right = 60] node [right] {} (2)
+(1) edge[bend right = 60] node [right] {} (3)
+(2) edge[bend left = 60] node [right] {} (4)
+(2) edge[bend left = 60] node [right] {} (5)
+(3) edge[bend right = 60] node [right] {} (6)
+(3) edge[bend right = 60] node [right] {} (7)
+(4) edge[bend left = 60] node [right] {} (8)
+(4) edge[bend left = 60] node [right] {} (9);
+\end{tikzpicture}
+\subcaption{Heap-ordered array.}
+\end{minipage}%
+\begin{minipage}[b]{.5\textwidth}
+\centering
+\begin{tikzpicture}[
+    ->,
+    every node/.style = box,
+    level distance = 10mm,
+    level 1/.style = { sibling distance = 20mm },
+    level 2/.style = { sibling distance = 10mm }]]
+  \node {$0$}
+    child { node {$2$}
+      child { node {$4$}
+        child { node {$7$} }
+        child { node {$8$} } }
+      child { node {$6$} } }
+    child { node {$1$}
+      child { node {$5$} }
+      child { node {$3$} } };
+\end{tikzpicture}
+\subcaption{Heap-ordered binary tree.}
+\end{minipage}
+\label{fig:heap_structure}
+\end{figure}
+
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:intro}}
 \framesubtitle{Concurrent priority queues}
 
 \begin{itemize}
-\item In the past decade, processor clock speeds have remained the same, trend towards multiple cores
-\item New data structures required to take advantage of concurrent execution
-\item The topic of this presentation: efficient concurrent \acp{PQ} in general,
-      the linearizable, relaxed and lock-free \klsm priority queue in particular.
+\item Why? In the past decade, processor clock speeds have remained the same, trend towards multiple cores.
+\item How? New data structures required to take advantage of concurrent execution.
+\item This thesis: The \klsm, linearizable and lock-free priority queue with relaxed semantics.
 \end{itemize}
 
 \end{frame}
@@ -143,9 +196,123 @@ bool delete_min(V &val);
 \framesubtitle{Safety conditions: nothing bad has happened yet}
 
 \begin{itemize}
-\item \emph{Linearizability}: operations appear to take effect at a single point in time, the linearization point
-\item \emph{Quiescent consistency}: in a period of quiescence, semantics equivalent to some sequential ordering
+\item \emph{Quiescent consistency}: In a period of quiescence, semantics equivalent to some sequential ordering
+\item \emph{Linearizability}: Operations appear to take effect at a single point in time between method invocation
+      and return, called the linearization point.
 \end{itemize}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{Concepts and Definitions}
+\framesubtitle{Safety conditions: nothing bad has happened yet}
+
+\only<1>{
+\begin{figure}
+\centering
+\begin{tikzpicture}[start chain,
+    ->,
+    every node/.style={font = \small},
+    label/.style={rectangle,minimum size = 5mm}
+    ]
+
+    \begin{scope}[start chain = 1 going right]
+        \node [on chain=1] (t1_start) {Thread A};
+        \node [on chain=1, xshift = 70mm] (t1_end) {};
+    \end{scope}
+
+    \begin{scope}[start chain = 2 going right]
+        \node [on chain=2, below = of t1_start, yshift = 7.5mm] (t2_start) {Thread B};
+        \node [on chain=2, xshift = 70mm] (t2_end) {};
+    \end{scope}
+
+    \path[dashed, -stealth'] (t1_start) edge node [above] {} (t1_end);
+    \path[dashed, -stealth'] (t2_start) edge node [above] {} (t2_end);
+
+    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+        ($(t2_start.east) + (05mm, 0)$) edge node [above] {\lstinline|insert(5)|}
+        ($(t2_start.east) + (20mm, 0)$)
+        ($(t2_start.east) + (30mm, 0)$) edge node [above] {\lstinline|delete_min(1)|}
+        ($(t2_start.east) + (45mm, 0)$);
+
+    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+        ($(t1_start.east) + (55mm, 0)$) edge node [above] {\lstinline|insert(1)|}
+        ($(t1_start.east) + (70mm, 0)$);
+\end{tikzpicture}
+\caption{Neither quiescently consistent nor linearizable.}
+\end{figure}
+}
+
+\only<2>{
+\begin{figure}
+\centering
+\begin{tikzpicture}[start chain,
+    ->,
+    every node/.style={font = \small},
+    label/.style={rectangle,minimum size = 5mm}
+    ]
+
+    \begin{scope}[start chain = 1 going right]
+        \node [on chain=1] (t1_start) {Thread A};
+        \node [on chain=1, xshift = 70mm] (t1_end) {};
+    \end{scope}
+
+    \begin{scope}[start chain = 2 going right]
+        \node [on chain=2, below = of t1_start, yshift = 7.5mm] (t2_start) {Thread B};
+        \node [on chain=2, xshift = 70mm] (t2_end) {};
+    \end{scope}
+
+    \path[dashed, -stealth'] (t1_start) edge node [above] {} (t1_end);
+    \path[dashed, -stealth'] (t2_start) edge node [above] {} (t2_end);
+
+    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+        ($(t2_start.east) + (10mm, 0)$) edge node [above] {\lstinline|delete_min(5)|}
+        ($(t2_start.east) + (30mm, 0)$)
+        ($(t2_start.east) + (40mm, 0)$) edge node [above] {\lstinline|insert(5)|}
+        ($(t2_start.east) + (60mm, 0)$);
+
+    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+        ($(t1_start.east) + (25mm, 0)$) edge node [above] {\lstinline|insert(1)|}
+        ($(t1_start.east) + (45mm, 0)$);
+\end{tikzpicture}
+\caption{Quiescently consistent, but not linearizable.}
+\end{figure}
+}
+
+\only<3>{
+\begin{figure}
+\centering
+\begin{tikzpicture}[start chain,
+    ->,
+    every node/.style={font = \small},
+    label/.style={rectangle,minimum size = 5mm}
+    ]
+
+    \begin{scope}[start chain = 1 going right]
+        \node [on chain=1] (t1_start) {Thread A};
+        \node [on chain=1, xshift = 70mm] (t1_end) {};
+    \end{scope}
+
+    \begin{scope}[start chain = 2 going right]
+        \node [on chain=2, below = of t1_start, yshift = 7.5mm] (t2_start) {Thread B};
+        \node [on chain=2, xshift = 70mm] (t2_end) {};
+    \end{scope}
+
+    \path[dashed, -stealth'] (t1_start) edge node [above] {} (t1_end);
+    \path[dashed, -stealth'] (t2_start) edge node [above] {} (t2_end);
+
+    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+        ($(t2_start.east) + (10mm, 0)$) edge node [above] {\lstinline|insert(5)|}
+        ($(t2_start.east) + (30mm, 0)$)
+        ($(t2_start.east) + (40mm, 0)$) edge node [above] {\lstinline|delete_min(1)|}
+        ($(t2_start.east) + (60mm, 0)$);
+
+    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
+        ($(t1_start.east) + (50mm, 0)$) edge node [above] {\lstinline|insert(1)|}
+        ($(t1_start.east) + (70mm, 0)$);
+\end{tikzpicture}
+\caption{Quiescently consistent and linearizable.}
+\end{figure}
+}
+
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{Concepts and Definitions}
@@ -157,18 +324,9 @@ bool delete_min(V &val);
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
-\begin{frame}{Concepts and Definitions}
-\framesubtitle{Miscellaneous}
-
-\begin{itemize}
-\item \emph{Disjoint-access parallelism}: how well a data structure handles concurrent use by multiple
-      threads within disjoint areas
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
 \begin{frame}[fragile]{Concepts and Definitions}
 \framesubtitle{Miscellaneous}
-
+% TODO: Cut this slide?
 \begin{itemize}
 \item Synchronization primitives:
     \begin{itemize}
@@ -198,66 +356,22 @@ bool CAS(T *ptr, T *expected, T value) {
 \begin{itemize}
 \item Strict \acp{PQ}
     \begin{itemize}
-    \item \citeauthor{hunt1996efficient}: \textcolor{BrickRed}{Fine-grained locking heap}
+    \item \citeauthor{hunt1996efficient}: Fine-grained locking heap
     \item \citeauthor{shavit2000skiplist}: First SkipList-based \ac{PQ}
     \item \citeauthor{sundell2003fast}: First lock-free \ac{PQ}
-    \item \citeauthor{linden2013skiplist}: \textcolor{BrickRed}{Minimizes contention}
-    \item \citeauthor{cbpq}: \textcolor{BrickRed}{\ac{CBPQ}}
+    \item \citeauthor{linden2013skiplist}: Minimizes contention
+    \item \citeauthor{cbpq}: Novel (non-SkipList) concept, efficient
     \end{itemize}
 
 \item Relaxed \acp{PQ}
     \begin{itemize}
-    \item \citeauthor{kirsch2012fast}: k-FIFO queues
-    \item \citeauthor{alistarhspraylist}: \textcolor{BrickRed}{SprayList}
-    \item \citeauthor{rihani2014multiqueues}: \textcolor{BrickRed}{Multiqueues}
-    \item \citeauthor{wimmer2013data}: \textcolor{BrickRed}{k-\ac{LSM}}
+    \item \citeauthor{alistarhspraylist}: SprayList
+    \item \citeauthor{rihani2014multiqueues}: Multiqueues
+    \item \citeauthor{wimmer2013data}: k-\ac{LSM}
     \end{itemize}
 
-\item Non-standard synchronization primitives
-\item Bounded range priorities
+\item Others: Non-standard synchronization primitives, bounded range priorities
 
-\let\thefootnote\relax\footnote{Highlighted \acp{PQ} are presented in the following}
-
-\end{itemize}
-\end{frame}
-
-% --------------------------------------------------------------------------------------------------
-\section{Fine-grained Locking Heaps} \label{sec:locking}
-% --------------------------------------------------------------------------------------------------
-
-% TODO: Figure? Whiteboard demo? 1 summary slide only?
-
-\begin{frame}{\nameref{sec:locking}}
-\framesubtitle{\citeauthor{hunt1996efficient}}
-
-\begin{itemize}
-\item Naive \ac{PQ} parallelization: single global lock \textrightarrow ~ sequential bottleneck
-\item A first improvement: fine-grained locking using a lock per node
-\item \fullcite{hunt1996efficient}
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:locking}}
-\framesubtitle{\citeauthor{hunt1996efficient}: Innovations}
-
-\begin{itemize}
-\item One lock per node, \emph{but} additionally a global lock protecting the heap's
-      \lstinline|size| variable
-\item Insertions bottom-up, deletions top-down to reduce contention
-\item Successive insertions take disjoint paths towards the root
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:locking}}
-\framesubtitle{\citeauthor{hunt1996efficient}: Limitations}
-
-\begin{itemize}
-\item A global lock remains
-\item Heap is statically allocated
-\item Frequent complex heap reorganization
-\item Disjoint-access breaks down at high traffic levels
-\item Inherent \ac{PQ} bottleneck at the minimal node
-\item Benchmarks show only limited scalability up to a low thread count
 \end{itemize}
 \end{frame}
 
@@ -266,116 +380,10 @@ bool CAS(T *ptr, T *expected, T value) {
 % --------------------------------------------------------------------------------------------------
 
 \begin{frame}{\nameref{sec:lockfree}}
-\framesubtitle{SkipLists}
-
-\begin{itemize}
-\item Modern concurrent \acp{PQ} are mostly based on \citeauthor{pugh1990skip}'s \ac{SL}
-\item Probabilistic ordered search structure, insertions and deletions in expected $O(\log n)$ time
-\item No reorganizations
-\item Simple implementation
-\item Excellent disjoint-access properties
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}[fragile]{\nameref{sec:lockfree}}
-\framesubtitle{SkipLists}
-
-\begin{itemize}
-\item Collection of linked lists with corresponding levels
-\item Lowest list contains all items, higher lists are shortcuts
-\item \lstinline|Insert| chooses a \lstinline|level| according to geometric distribution
-\end{itemize}
-
-\begin{lstlisting}
-struct slist_t {
-  size_t max_level;
-  node_t head[max_level];
-};
-struct node_t {
-  key_t key;
-  value_t value;
-  size_t level;
-  node_t *next[level];
-};
-\end{lstlisting}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:lockfree}}
-\framesubtitle{\citeauthor{shavit2000skiplist}}
-
-\begin{itemize}
-\item First SkipList-based \ac{PQ}
-\item \fullcite{shavit2000skiplist}
-\item Initially lock-based (linearizable), lock-free (quiescently consistent)
-      variant published in 2008
-\item \fullcite{herlihy2012art}
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:lockfree}}
-\framesubtitle{\citeauthor{shavit2000skiplist}}
-
-\begin{figure}
-\includegraphics[width=\textwidth]{shavit_lotan}
-\caption{The \citeauthor{shavit2000skiplist} \ac{PQ} (Image source: \cite{shavit2000skiplist})}
-\end{figure}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:lockfree}}
-\framesubtitle{\citeauthor{shavit2000skiplist}}
-
-\begin{itemize}
-\item Items are considered in the list once inserted on bottom level
-\item Again, insertions bottom-up and deletions top-down
-\item Deletions are split
-    \begin{itemize}
-    \item Logical deletion sets a \lstinline|deleted| flag
-    \item Physical deletion performs actual pointer manipulations
-    \end{itemize}
-\item \lstinline|DeleteMin| attempts to logically delete the head node.
-     On success: delete physically \& return node. Otherwise, continue with
-     next node.
-\item \lstinline|Insert| is equivalent to the \ac{SL} insertion
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:lockfree}}
-\framesubtitle{\citeauthor{shavit2000skiplist}}
-
-\begin{itemize}
-\item Quiescently consistent, but not linearizable
-    \begin{itemize}
-    \item Slow thread A suspended at deleted key $k$ while in \lstinline|DeleteMin|
-    \item Fast thread B first inserts $k-1$, then $k+1$
-    \item A wakes up and returns $k+1$
-    \item Linearizability would require returning $k-1$
-    \end{itemize}
-
-\item Timestamp mechanism: stamp nodes on successful insertion,
-      \lstinline|DeleteMin| ignores all stamps earlier than its own starting point
-\item Improved scalability, but heavy contention at list head
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:lockfree}}
-\framesubtitle{\citeauthor{sundell2003fast}}
-
-\begin{itemize}
-\item First lock-free \ac{PQ}, linearizable, \ac{SL}-based, distinct priorities
-\item Deletion flag packed into least significant bits of \lstinline|next| pointers
-      prevent insertion \emph{after} deleted nodes
-\item Helping mechanism ensures only a single logically deleted node exists at any time
-\item Performs significantly better than the \citeauthor{hunt1996efficient} heap, slightly better
-      than a SkipList protected by a global lock
-\item \fullcite{sundell2003fast}
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:lockfree}}
 \framesubtitle{\citeauthor{linden2013skiplist}}
 
 \begin{itemize}
-\item Most efficient strict \ac{PQ}, \ac{SL}-based \& linearizable
+\item Most efficient strict \ac{SL}-based \ac{PQ}, linearizable
 \item Concurrent strict \ac{PQ} performance limited by contention and \ac{CAS} failures in
       \lstinline|DeleteMin| \textrightarrow ~ Minimize \ac{CAS} calls
 \item Deleted nodes form prefix of \ac{SL}, deletion flag packed into \lstinline|next| pointer of
@@ -399,8 +407,6 @@ struct node_t {
 \end{figure}
 \end{frame}
 
-% TODO: CBPQ
-
 % --------------------------------------------------------------------------------------------------
 \section{Relaxed Priority Queues} \label{sec:relaxed}
 % --------------------------------------------------------------------------------------------------
@@ -408,33 +414,37 @@ struct node_t {
 \begin{frame}{\nameref{sec:relaxed}}
 
 \begin{itemize}
-\item Strict \acp{PQ} have inherent bottleneck at minimal element
-\item To improve further: $< 1$ \ac{CAS} per \lstinline|DeleteMin|
+\item Strict \acp{PQ} have inherent bottleneck at minimal element.
 \item Another approach is to relax semantics, i.e. instead of returning \emph{the} minimal element,
-      return one of the $k$ minimal elements
+      return one of the $k$ minimal elements.
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:relaxed}}
-\framesubtitle{\citeauthor{alistarhspraylist}}
+\framesubtitle{\citeauthor{alistarhspraylist}: SprayList}
 
 \begin{itemize}
-\item Relaxed \ac{SL}-based \ac{PQ}, safety properties unclear
-\item \lstinline|DeleteMin| returns one of the $O(P \log^3 P)$ elements
+\item Relaxed \ac{SL}-based \ac{PQ}, safety properties unclear.
+\item \lstinline|DeleteMin| returns one of the $O(P \log^3 P)$ elements.
 \item Degrades to random-remove if the \ac{PQ} is small compared to thread count $P$ (for $P = 80$,
-      $P \log^3 P \approx 7000$)
+      $P \log^3 P \approx 7000$).
 \item \lstinline|DeleteMin| performs random walk: starting at the list head on some level $l$,
       repeatedly follow a randomized number of \lstinline|next[l]| pointers, descend a randomized
-      number of levels
-\item Parameters are chosen s.t. each element within the walk has approximately equal probability
-      of being returned
-\item Benchmarks show scalability comparable to a random-remove \lstinline|Delete| up to at
-      least 80 threads
+      number of levels.
+\item Each element within the walk has approximately equal probability of being returned.
 \item \fullcite{alistarhspraylist}
 \end{itemize}
 \end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:relaxed}}
+\framesubtitle{\citeauthor{rihani2014multiqueues}: Multiqueues}
 
-% TODO: Multiqueues
+\begin{itemize}
+\item ...
+\end{itemize}
+\end{frame}
+
+% TODO: Figures showing principle of spraylist / multiqueue deletions.
 
 % --------------------------------------------------------------------------------------------------
 \section{\klsm} \label{sec:klsm}
