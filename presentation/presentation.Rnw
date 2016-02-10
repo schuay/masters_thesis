@@ -665,6 +665,14 @@ bool CAS(T *ptr, T *expected, T value) {
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
+\framesubtitle{Implementation: Motivation}
+% TODO: Reasons.
+\begin{itemize}
+\item ...
+\end{itemize}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:klsm}}
 \framesubtitle{Implementation}
 
 % Note that beamer does not like \verb apparently.
