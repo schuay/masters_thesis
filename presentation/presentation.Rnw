@@ -569,7 +569,12 @@ bool CAS(T *ptr, T *expected, T value) {
 \framesubtitle{\citeauthor{rihani2014multiqueues}: Multiqueues}
 
 \begin{itemize}
-\item ...
+\item Decentralized collection of priority queues (e.g., sequential heaps protected by locks).
+\item No given semantic bounds.
+\item Insertions into a random queue.
+\item Deletions take minimal item from two random queues.
+\item \fullcite{rihani2014multiqueues}
+
 \end{itemize}
 \end{frame}
 
