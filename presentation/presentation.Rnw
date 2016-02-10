@@ -423,6 +423,48 @@ bool CAS(T *ptr, T *expected, T value) {
 \begin{frame}{\nameref{sec:relaxed}}
 \framesubtitle{\citeauthor{alistarhspraylist}: SprayList}
 
+\begin{figure}
+\centering
+\begin{tikzpicture}[
+    ->,
+    start chain,
+    every node/.style={font = \small},
+    item/.style= box,
+    label/.style={rectangle,minimum size = 5mm}
+    ]
+
+    \node[box] (3a) at (0, 15mm) {}; \node[box] (3h) at (70mm, 15mm) {};
+
+    \node[box] (2a) at (0, 10mm) {}; \node[box] (2c) at (20mm, 10mm) {};
+    \node[box] (2e) at (40mm, 10mm) {}; \node[box] (2h) at (70mm, 10mm) {};
+
+    \node[box] (1a) at (0, 5mm) {}; \node[box] (1c) at (20mm, 5mm) {};
+    \node[box] (1d) at (30mm, 5mm) {}; \node[box] (1e) at (40mm, 5mm) {}; \node[box] (1f) at (50mm, 5mm) {};
+    \node[box] (1h) at (70mm, 5mm) {};
+
+    \node[box] (0a) at (0, 0) {}; \node[box] (0b) at (10mm, 0) {0}; \node[box] (0c) at (20mm, 0) {1};
+    \node[box] (0d) at (30mm, 0) {2}; \node[box] (0e) at (40mm, 0) {3}; \node[box] (0f) at (50mm, 0) {4};
+    \node[box] (0g) at (60mm, 0) {5}; \node[box] (0h) at (70mm, 0) {};
+
+    {
+    [start chain] \chainin(0a); \chainin(0b) [join]; \chainin(0c) [join]; \chainin(0d) [join]; \chainin(0e) [join]; \chainin(0f) [join]; \chainin(0g) [join]; \chainin(0h) [join];
+    [start chain] \chainin(1a); \chainin(1c) [join]; \chainin(1d) [join]; \chainin(1e) [join]; \chainin(1f) [join]; \chainin(1h) [join];
+    [start chain] \chainin(2a); \chainin(2c) [join]; \chainin(2e) [join]; \chainin(2h) [join];
+    [start chain] \chainin(3a); \chainin(3h) [join];
+    }
+
+    \begin{scope}[on background layer]
+        \draw[gray, thick, dashed] (6mm, -4mm) rectangle (34mm, 19mm);
+    \end{scope}
+\end{tikzpicture}
+\caption{The SprayList is based on a lock-free SkipList. Deletions randomly pick
+         one of the $O(P \log P)$ smallest items.}
+\end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:relaxed}}
+\framesubtitle{\citeauthor{alistarhspraylist}: SprayList}
+
 \begin{itemize}
 \item Relaxed \ac{SL}-based \ac{PQ}, safety properties unclear.
 \item \lstinline|DeleteMin| returns one of the $O(P \log^3 P)$ elements.
@@ -439,12 +481,97 @@ bool CAS(T *ptr, T *expected, T value) {
 \begin{frame}{\nameref{sec:relaxed}}
 \framesubtitle{\citeauthor{rihani2014multiqueues}: Multiqueues}
 
+\begin{figure}
+\centering
+\begin{tikzpicture}[start chain,
+    ->,
+    every node/.style={font = \small},
+    label/.style={rectangle,minimum size = 5mm}]
+
+    \begin{scope}[start chain = 1 going right, node distance = -0.15mm]
+        \node [on chain=1, minimum width = 10mm] (ba0) {$q_0$};
+        \node [on chain=1, minimum width = 10mm] (ba1) {$q_1$};
+        \node [on chain=1, minimum width = 10mm] (ba2) {$q_2$};
+        \node [on chain=1, minimum width = 10mm] (ba3) {$q_3$};
+        \node [on chain=1, minimum width = 10mm] (ba4) {$q_4$};
+        \node [on chain=1, minimum width = 10mm] (ba5) {$q_5$};
+    \end{scope}
+
+    \begin{scope}[start chain = 2 going {above=of \tikzchainprevious.north},
+            every on chain/.style={anchor=south},
+            node distance = -0.15mm]
+        \node[on chain, box, above = of ba0, yshift = 3mm] (00) {0};
+        \node[on chain, box] {2};
+        \node[on chain, box] {1};
+        \node[on chain, box] {4};
+        \node[on chain, box] {6};
+        \node[on chain, box] {5};
+        \node[on chain, box] {3};
+        \node[on chain, box] {7};
+        \node[on chain, box] {8};
+    \end{scope}
+
+    \begin{scope}[start chain = 3 going {above=of \tikzchainprevious.north},
+            every on chain/.style={anchor=south},
+            node distance = -0.15mm]
+        \node[on chain, box, above = of ba1, yshift = 3mm] (10) {3};
+        \node[on chain, box] {5};
+        \node[on chain, box] {4};
+        \node[on chain, box] {7};
+        \node[on chain, box] {8};
+        \node[on chain, box] {5};
+    \end{scope}
+
+    \begin{scope}[start chain = 4 going {above=of \tikzchainprevious.north},
+            every on chain/.style={anchor=south},
+            node distance = -0.15mm]
+        \node[on chain, box, above = of ba2, yshift = 3mm] (20) {9};
+    \end{scope}
+
+    \begin{scope}[start chain = 5 going {above=of \tikzchainprevious.north},
+            every on chain/.style={anchor=south},
+            node distance = -0.15mm]
+        \node[on chain, box, above = of ba3, yshift = 3mm] (30) {1};
+        \node[on chain, box] {6};
+        \node[on chain, box] {9};
+        \node[on chain, box] {7};
+    \end{scope}
+
+    \begin{scope}[start chain = 6 going {above=of \tikzchainprevious.north},
+            every on chain/.style={anchor=south},
+            node distance = -0.15mm]
+        \node[on chain, box, above = of ba4, yshift = 3mm] (40) {2};
+    \end{scope}
+
+    \begin{scope}[start chain = 7 going {above=of \tikzchainprevious.north},
+            every on chain/.style={anchor=south},
+            node distance = -0.15mm]
+        \node[on chain, box, above = of ba5, yshift = 3mm] (50) {1};
+        \node[on chain, box] {3};
+        \node[on chain, box] {2};
+        \node[on chain, box] {3};
+        \node[on chain, box] {4};
+        \node[on chain, box] {5};
+        \node[on chain, box] {2};
+    \end{scope}
+
+    \begin{scope}[on background layer]
+        \draw[gray, thick, dashed] ($(00.south west) - (1.5mm, 1.5mm)$) rectangle
+                                ($(50.north east) + (1.5mm, 1.5mm)$);
+    \end{scope}
+\end{tikzpicture}
+\caption{Multiqueues are a collection of priority queues. Deletions remove the minimal
+         item from a randomly selected queue.}
+\end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:relaxed}}
+\framesubtitle{\citeauthor{rihani2014multiqueues}: Multiqueues}
+
 \begin{itemize}
 \item ...
 \end{itemize}
 \end{frame}
-
-% TODO: Figures showing principle of spraylist / multiqueue deletions.
 
 % --------------------------------------------------------------------------------------------------
 \section{\klsm} \label{sec:klsm}
