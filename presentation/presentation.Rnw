@@ -107,14 +107,26 @@ In general:
 \section{Introduction} \label{sec:intro}
 % --------------------------------------------------------------------------------------------------
 
+\begin{frame}{\nameref{sec:intro}}
+\framesubtitle{Contents}
+
+\begin{itemize}
+\item Background, terms, definitions.
+\item Related work.
+\item The \klsm: design and implementation.
+\item Results.
+\end{itemize}
+
+\end{frame}
+% --------------------------------------------------------------------------------------------------
 \begin{frame}[fragile]{\nameref{sec:intro}}
 \framesubtitle{Sequential priority queues}
 
 \acp{PQ}:
 
 \begin{itemize}
-\item Standard abstract data structure
-\item Used widely in algorithmics, operating systems, task scheduling, etc
+\item Standard abstract data structure.
+\item Used widely in algorithmics, operating systems, task scheduling, etc.
 \item Interface consists of two $O(\log n)$ operations:
 
 \begin{lstlisting}
@@ -122,7 +134,7 @@ void insert(const K &key, const V &val);
 bool delete_min(V &val);
 \end{lstlisting}
 
-\item Typical backing data structures: heaps \& search trees
+\item Typical backing data structures: heaps \& search trees.
 \end{itemize}
 
 \end{frame}
@@ -186,10 +198,22 @@ bool delete_min(V &val);
 
 \begin{itemize}
 \item Why? In the past decade, processor clock speeds have remained the same, trend towards multiple cores.
-\item How? New data structures required to take advantage of concurrent execution.
-\item This thesis: The \klsm, linearizable and lock-free priority queue with relaxed semantics.
+\item New data structures required to take advantage of concurrent execution.
 \end{itemize}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:intro}}
+\framesubtitle{In this thesis}
 
+The \klsm:
+
+\begin{itemize}
+\item Linearizable, lock-free, relaxed.
+\item Standalone reimplementation using C++11.
+\item Extensive evaluation against related structures on multiple machines.
+\item Different benchmarks demonstrate behavioral changes.
+\item Semantic quality benchmarks show results are within theoretical bounds.
+\end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{Concepts and Definitions}
@@ -323,6 +347,7 @@ bool delete_min(V &val);
 \item \emph{Wait-freedom}: every process finishes in a bounded number of steps
 \end{itemize}
 \end{frame}
+% TODO: Slide about relaxation.
 % --------------------------------------------------------------------------------------------------
 \begin{frame}[fragile]{Concepts and Definitions}
 \framesubtitle{Miscellaneous}
@@ -354,20 +379,20 @@ bool CAS(T *ptr, T *expected, T value) {
 
 \begin{frame}{\nameref{sec:related}}
 \begin{itemize}
-\item Strict \acp{PQ}
+\item Strict concurrent \acp{PQ}
     \begin{itemize}
-    \item \citeauthor{hunt1996efficient}: Fine-grained locking heap
-    \item \citeauthor{shavit2000skiplist}: First SkipList-based \ac{PQ}
-    \item \citeauthor{sundell2003fast}: First lock-free \ac{PQ}
-    \item \citeauthor{linden2013skiplist}: Minimizes contention
-    \item \citeauthor{cbpq}: Novel (non-SkipList) concept, efficient
+    \item \citeauthor{hunt1996efficient}: Fine-grained locking heap.
+    \item \citeauthor{shavit2000skiplist}: First SkipList-based \ac{PQ}.
+    \item \citeauthor{sundell2003fast}: First lock-free \ac{PQ}.
+    \item \citeauthor{linden2013skiplist}: Minimizes contention.
+    \item \citeauthor{cbpq}: Novel (non-SkipList) concept, efficient.
     \end{itemize}
 
-\item Relaxed \acp{PQ}
+\item Relaxed concurrent \acp{PQ}
     \begin{itemize}
-    \item \citeauthor{alistarhspraylist}: SprayList
-    \item \citeauthor{rihani2014multiqueues}: Multiqueues
-    \item \citeauthor{wimmer2013data}: k-\ac{LSM}
+    \item \citeauthor{alistarhspraylist}: SprayList.
+    \item \citeauthor{rihani2014multiqueues}: Multiqueues.
+    \item \citeauthor{wimmer2013data}: k-\ac{LSM}.
     \end{itemize}
 
 \item Others: Non-standard synchronization primitives, bounded range priorities
@@ -376,26 +401,26 @@ bool CAS(T *ptr, T *expected, T value) {
 \end{frame}
 
 % --------------------------------------------------------------------------------------------------
-\section{Lock-free Priority Queues} \label{sec:lockfree}
+\section{Strict Priority Queues} \label{sec:strict}
 % --------------------------------------------------------------------------------------------------
 
-\begin{frame}{\nameref{sec:lockfree}}
+\begin{frame}{\nameref{sec:strict}}
 \framesubtitle{\citeauthor{linden2013skiplist}}
 
 \begin{itemize}
-\item Most efficient strict \ac{SL}-based \ac{PQ}, linearizable
+\item Most efficient strict \ac{SL}-based \ac{PQ}, linearizable.
 \item Concurrent strict \ac{PQ} performance limited by contention and \ac{CAS} failures in
-      \lstinline|DeleteMin| \textrightarrow ~ Minimize \ac{CAS} calls
+      \lstinline|DeleteMin| \textrightarrow ~ Minimize \ac{CAS} calls.
 \item Deleted nodes form prefix of \ac{SL}, deletion flag packed into \lstinline|next| pointer of
-      \emph{previous} node prevents insertion \emph{before} deleted node
+      \emph{previous} node prevents insertion \emph{before} deleted node.
 \item Most \lstinline|DeleteMin| perform logical deletion (1 \ac{CAS}) only, physical deletion
-      only once a bound is reached
-\item Improves upon best previous \acp{PQ} by up to factor 2
+      only once a bound is reached.
+\item Improves upon best previous \acp{PQ} by up to factor 2.
 \item \fullcite{linden2013skiplist}
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:lockfree}}
+\begin{frame}{\nameref{sec:strict}}
 \framesubtitle{\citeauthor{linden2013skiplist}}
 
 \begin{figure}
@@ -583,8 +608,8 @@ bool CAS(T *ptr, T *expected, T value) {
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
 \begin{itemize}
-\item First relaxed linearizable \acp{PQ} by \citeauthor{wimmerphd}
-\item Composition of two designs: the \ac{SLSM}, and the distributed \ac{DLSM}
+\item First relaxed linearizable \ac{PQ} by \citeauthor{wimmerphd}.
+\item Composition of two designs: the \ac{SLSM}, and the distributed \ac{DLSM}.
 \item \fullcite{wimmer2015lock}
 \end{itemize}
 \end{frame}
@@ -619,10 +644,10 @@ bool CAS(T *ptr, T *expected, T value) {
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
 \begin{itemize}
-\item Based on the concept of \acp{LSM}
-\item Maintain items in a logarithmic number of sorted arrays
-\item Array merges are the central operation
-\item Both insertions and deletions are in $O(\log n)$
+\item Based on the concept of \acp{LSM}.
+\item Maintain items in a logarithmic number of sorted arrays.
+\item Array merges are the central operation.
+\item Both insertions and deletions are in $O(\log n)$.
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
@@ -666,9 +691,15 @@ bool CAS(T *ptr, T *expected, T value) {
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
 \framesubtitle{Implementation: Motivation}
-% TODO: Reasons.
 \begin{itemize}
-\item ...
+\item Comparability: Previously only part of the \emph{Pheet} task-scheduling framework,
+      no direct comparisons against related structures possible.
+\item Use in practice: Simple integration for use in practice.
+\item Maintainability: The reimplementation is easy to read, easy to understand, and
+      composable.
+\item Scientific reproducibility: Verifies performance
+      claims by \citeauthor{wimmerphd}.
+\item Further insight and improvements.
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
@@ -729,11 +760,11 @@ bool CAS(T *ptr, T *expected, T value) {
 \begin{frame}{\nameref{sec:klsm}}
 \framesubtitle{Implementation: \ac{DLSM}}
 \begin{itemize}
-\item Thread-local \acp{LSM}
-\item Reads by all threads, writes only by owner
-\item When local \ac{LSM} is empty, copy another thread's \ac{LSM} (\lstinline|spy|)
-\item Insertions atomically replace changed part of \ac{LSM}
-\item Deletions simply mark item as taken
+\item Thread-local \acp{LSM}.
+\item Reads by all threads, writes only by owner.
+\item When local \ac{LSM} is empty, copy another thread's \ac{LSM} (\lstinline|spy|).
+\item Insertions atomically replace changed part of \ac{LSM}.
+\item Deletions simply mark item as taken.
 \end{itemize}
 % TODO: Insertion figure? Item interface?
 \end{frame}
@@ -741,11 +772,11 @@ bool CAS(T *ptr, T *expected, T value) {
 \begin{frame}{\nameref{sec:klsm}}
 \framesubtitle{Implementation: \ac{SLSM}}
 \begin{itemize}
-\item Global \ac{LSM} shared by all threads
-\item Thread-local copies of the global \ac{LSM}
+\item Global \ac{LSM} shared by all threads.
+\item Thread-local copies of the global \ac{LSM}.
 \item Mutations change the thread-local copy, then atomically replace the global
-      \ac{LSM}
-\item Relaxation through so-called \emph{pivot} ranges
+      \ac{LSM}.
+\item Relaxation through so-called \emph{pivot} ranges.
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
@@ -768,17 +799,13 @@ bool CAS(T *ptr, T *expected, T value) {
 \framesubtitle{Throughput}
 
 \begin{itemize}
-\item We present throughput, i.e. the number of operations performed per second
-\item Measured on 3 machines, presented here: \lstinline|mars|, an 80-core (8x10 cores) Intel Xeon
-      E7-8850 @ 2 GHz and 1 TB of RAM. 32 KB L1, 256 KB L2, 24 MB L3 cache.
-\item Algorithms: \lstinline|globallock|, \lstinline|linden|, \lstinline|multiq|,
-      \lstinline|klsm16|, \lstinline|klsm128|, \ldots
+\item We present throughput, i.e. the number of operations performed per second.
 \item Prefilled with $10^6$ elements.
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
-\framesubtitle{Throughput}
+\framesubtitle{Throughput: Benchmarks}
 
 \begin{itemize}
 \item \emph{Uniform workload}: Each thread repeatedly chooses uniformly at random between
@@ -787,72 +814,124 @@ bool CAS(T *ptr, T *expected, T value) {
 \item \emph{Uniform key generation}: Keys for insertions are generated uniformly at random
         within the range of 32 bit integers.
 \item \emph{Ascending key generation}: Small range which rises over time:
-        $\text{key}_t \in [0, 512[ + t$.
+        $\text{key}_t \in [0, 512[ + t$. Similar to the classic Hold pattern.
 \item \emph{Restricted key generation}: Restricted key range, e.g. 8-bit integers.
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
+\begin{frame}[fragile]{\nameref{sec:Results}}
+\framesubtitle{Throughput: Algorithms}
+
+\begin{itemize}
+\item \verb|globallock|: A \verb|std::priority_queue<T>|, protected by a single global lock as a baseline.
+\item \verb|linden|: The lock-free, strict, SkipList-based priority queue \cite{linden2013skiplist}.
+\item \verb|spray|: A relaxed, lock-free, SkipList-based priority queue \cite{alistarhspraylist}.
+      Provided implementation crashes in most benchmarks.
+\item \verb|multiq|: A simple, elegant recent relaxed concurrent priority queue
+      design \cite{rihani2014multiqueues}.
+\item \verb|klsm16, klsm128, ...|:
+      The standalone \klsm
+      reimplementation using a wide range of values for the
+      relaxation parameter $k$. Linearizable, lock-free, and relaxed \cite{wimmer2015lock}.
+\end{itemize}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
-\framesubtitle{Throughput}
+\framesubtitle{Throughput: Machines}
+
+\begin{itemize}
+\item \lstinline|mars|, an 80-core (8x10 cores) Intel Xeon
+      E7-8850 @ 2 GHz and 1 TB of RAM. 32 KB L1, 256 KB L2, 24 MB L3 cache.
+\item \lstinline|saturn|, a 48-core machine with 4 AMD Opteron 6168 processors
+      with 12 cores each, clocked at 1.9 GHz. 125 GB RAM, 64 KB of L1, 512 KB of L2, and 5 MB of L3 cache.
+\item \lstinline|ceres|, a 64-core SPARCv9-based machine with 4 processors
+      of 16 cores each. Cores are clocked at 3.6 GHz and have 8-way hardware
+      hyperthreading. 1 TB RAM, 16 KB of L1, 128 KB of L2,
+      and 8 MB of L3 cache.
+\end{itemize}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput: Uniform workload, uniform key generation}
 <<echo = FALSE>>=
 \SweaveInput{pqplot.Rnw}
+
+filter_results <- function(filename) {
+    df <- read.csv(filename)
+    colnames(df) <- c("kernel", "p", "throughput")
+    df$throughput <- df$throughput/1E6
+
+    return (df[df$kernel %in% c("klsm128", "klsm256", "klsm4096", "linden", "multiq", "globallock"), ])
+}
 @
 
+\only<1>{
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot("results/20151112_mars_uni_uni")
 @
 \end{center}
-\caption{GCC 5.3.1, 80-core Intel Xeon E7-8850 @ 2 GHz. Initial \ac{PQ} size $10^6$ elements.}
+\caption{\lstinline|mars|}
 \end{figure}
+}
+
+\only<2>{
+\begin{figure}[ht]
+\begin{center}
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot_frame(filter_results("results/20160203_saturn_uni_uni"))
+@
+\end{center}
+\caption{\lstinline|saturn|}
+\end{figure}
+}
+
+\only<3>{
+\begin{figure}[ht]
+\begin{center}
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot_frame(filter_results("results/20160203_ceres_uni_uni"))
+@
+\end{center}
+\caption{\lstinline|ceres|}
+\end{figure}
+}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
-\framesubtitle{Throughput}
-<<echo = FALSE>>=
-\SweaveInput{pqplot.Rnw}
-@
-
+\framesubtitle{Throughput: Uniform workload, ascending keygeneration}
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot("results/20151112_mars_uni_asc")
 @
 \end{center}
-\caption{Uniform workload, ascending keygeneration.}
+\caption{\lstinline|mars|.}
 \end{figure}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
-\framesubtitle{Throughput}
-<<echo = FALSE>>=
-\SweaveInput{pqplot.Rnw}
-@
-
+\framesubtitle{Throughput: Split workload, uniform key generation}
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot("results/20151112_mars_spl_uni")
 @
 \end{center}
-\caption{Split workload, uniform key generation.}
+\caption{\lstinline|mars|.}
 \end{figure}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
-\framesubtitle{Throughput}
-<<echo = FALSE>>=
-\SweaveInput{pqplot.Rnw}
-@
-
+\framesubtitle{Throughput: Split workload, ascending keygeneration}
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot("results/20151112_mars_spl_asc")
 @
 \end{center}
-\caption{Split workload, ascending keygeneration.}
+\caption{\lstinline|mars|.}
 \end{figure}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
@@ -906,8 +985,8 @@ on \lstinline|mars|.}
 \begin{itemize}
 \item The \klsm can have exceptional performance.
 \item \ldots under the right conditions.
-\item Multiqueues have lower peak performance, but have stable behavior in all experiments.
 \item Although SkipList-based designs have dominated recent research, their performance is fairly low.
+\item Multiqueues have lower peak performance, but have stable behavior in all experiments.
 
 \end{itemize}
 \end{frame}
