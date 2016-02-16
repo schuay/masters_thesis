@@ -101,6 +101,9 @@ In general:
   implementation.
 * more benchmarks. Different benchmark types, possibly add discussion points to
   slides.
+  
+* Way too much content. Possibly remove large parts of background and related work.
+* Highlight more what I did.
 \end{comment}
 
 % --------------------------------------------------------------------------------------------------
@@ -483,7 +486,7 @@ bool CAS(T *ptr, T *expected, T value) {
     \end{scope}
 \end{tikzpicture}
 \caption{The SprayList is based on a lock-free SkipList. Deletions randomly pick
-         one of the $O(P \log P)$ smallest items.}
+         one of the $O(P \log^3 P)$ smallest items.}
 \end{figure}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
@@ -702,6 +705,7 @@ bool CAS(T *ptr, T *expected, T value) {
 \item Further insight and improvements.
 \end{itemize}
 \end{frame}
+% TODO: Implementation stats? Time, SLOC, 
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
 \framesubtitle{Implementation}
@@ -767,6 +771,7 @@ bool CAS(T *ptr, T *expected, T value) {
 \item Deletions simply mark item as taken.
 \end{itemize}
 % TODO: Insertion figure? Item interface?
+% TODO: A figure showing how we arrive at kP bound.
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
@@ -797,6 +802,10 @@ bool CAS(T *ptr, T *expected, T value) {
 
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{Throughput}
+
+% TODO: Do introduction of algorithms inline by changing algorithm colors to transparent?
+% Or simply by introducing them one by one. Same with experiments, explain uniform/... as they
+% come up.
 
 \begin{itemize}
 \item We present throughput, i.e. the number of operations performed per second.
@@ -983,6 +992,7 @@ on \lstinline|mars|.}
 
 \begin{frame}{\nameref{sec:conclusion}}
 \begin{itemize}
+\item Standalone reimplementation completed successfully.
 \item The \klsm can have exceptional performance.
 \item \ldots under the right conditions.
 \item Although SkipList-based designs have dominated recent research, their performance is fairly low.
