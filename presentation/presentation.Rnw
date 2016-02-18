@@ -790,7 +790,7 @@ bool CAS(T *ptr, T *expected, T value) {
 \begin{figure}
 \centering
 \input{slsm_structure.tex}
-\caption{Schematic block array structure containing blocks $b_i$ and pivot ranges $p_i$, $i \in [1, 4]$.
+\caption{Schematic block array structure containing blocks $b_i$ and pivot ranges $p_i$, $i \in [0, 3]$.
          Items shown in white have been deleted.}
 \label{fig:lsm_insertion}
 \end{figure}
