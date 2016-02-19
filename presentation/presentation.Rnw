@@ -218,7 +218,7 @@ pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", 
 \framesubtitle{Contents}
 
 \begin{itemize}
-\item Background, terms, definitions.
+\item Background.
 \item Related work.
 \item The \klsm: design and implementation.
 \item Results.
@@ -247,60 +247,6 @@ bool delete_min(V &val);
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:intro}}
-\framesubtitle{Sequential priority queues: Heaps}
-
-\begin{figure}
-\begin{minipage}[b]{.5\textwidth}
-\centering
-\begin{tikzpicture}[every node/.style = box]
-\node (1) at (0, 0)    {$0$};
-\node (2) at (5mm, 0)  {$2$};
-\node (3) at (10mm, 0) {$1$};
-\node (4) at (15mm, 0) {$4$};
-\node (5) at (20mm, 0) {$6$};
-\node (6) at (25mm, 0) {$5$};
-\node (7) at (30mm, 0) {$3$};
-\node (8) at (35mm, 0) {$7$};
-\node (9) at (40mm, 0) {$8$};
-
-\path[->, dashed, every node/.style= { font = \sffamily\small }]
-(1) edge[bend right = 60] node [right] {} (2)
-(1) edge[bend right = 60] node [right] {} (3)
-(2) edge[bend left = 60] node [right] {} (4)
-(2) edge[bend left = 60] node [right] {} (5)
-(3) edge[bend right = 60] node [right] {} (6)
-(3) edge[bend right = 60] node [right] {} (7)
-(4) edge[bend left = 60] node [right] {} (8)
-(4) edge[bend left = 60] node [right] {} (9);
-\end{tikzpicture}
-\subcaption{Heap-ordered array.}
-\end{minipage}%
-\begin{minipage}[b]{.5\textwidth}
-\centering
-\begin{tikzpicture}[
-    ->,
-    every node/.style = box,
-    level distance = 10mm,
-    level 1/.style = { sibling distance = 20mm },
-    level 2/.style = { sibling distance = 10mm }]]
-  \node {$0$}
-    child { node {$2$}
-      child { node {$4$}
-        child { node {$7$} }
-        child { node {$8$} } }
-      child { node {$6$} } }
-    child { node {$1$}
-      child { node {$5$} }
-      child { node {$3$} } };
-\end{tikzpicture}
-\subcaption{Heap-ordered binary tree.}
-\end{minipage}
-\label{fig:heap_structure}
-\end{figure}
-
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:intro}}
 \framesubtitle{Concurrent priority queues}
 
 \begin{itemize}
@@ -312,172 +258,14 @@ bool delete_min(V &val);
 \begin{frame}{\nameref{sec:intro}}
 \framesubtitle{In this thesis}
 
-The \klsm:
+Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 
 \begin{itemize}
-\item Linearizable, lock-free, relaxed.
-\item Standalone reimplementation using C++11.
+\item Standalone reimplementation (C++11, 4800 SLOC).
 \item Extensive evaluation against related structures on multiple machines.
 \item Different benchmarks demonstrate behavioral changes.
 \item Semantic quality benchmarks show results are within theoretical bounds.
 \end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{Concepts and Definitions}
-\framesubtitle{Safety conditions: nothing bad has happened yet}
-
-\begin{itemize}
-\item \emph{Quiescent consistency}: In a period of quiescence, semantics equivalent to some sequential ordering
-\item \emph{Linearizability}: Operations appear to take effect at a single point in time between method invocation
-      and return, called the linearization point.
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{Concepts and Definitions}
-\framesubtitle{Safety conditions: nothing bad has happened yet}
-
-\only<1>{
-\begin{figure}
-\centering
-\begin{tikzpicture}[start chain,
-    ->,
-    every node/.style={font = \small},
-    label/.style={rectangle,minimum size = 5mm}
-    ]
-
-    \begin{scope}[start chain = 1 going right]
-        \node [on chain=1] (t1_start) {Thread A};
-        \node [on chain=1, xshift = 70mm] (t1_end) {};
-    \end{scope}
-
-    \begin{scope}[start chain = 2 going right]
-        \node [on chain=2, below = of t1_start, yshift = 7.5mm] (t2_start) {Thread B};
-        \node [on chain=2, xshift = 70mm] (t2_end) {};
-    \end{scope}
-
-    \path[dashed, -stealth'] (t1_start) edge node [above] {} (t1_end);
-    \path[dashed, -stealth'] (t2_start) edge node [above] {} (t2_end);
-
-    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
-        ($(t2_start.east) + (05mm, 0)$) edge node [above] {\lstinline|insert(5)|}
-        ($(t2_start.east) + (20mm, 0)$)
-        ($(t2_start.east) + (30mm, 0)$) edge node [above] {\lstinline|delete_min(1)|}
-        ($(t2_start.east) + (45mm, 0)$);
-
-    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
-        ($(t1_start.east) + (55mm, 0)$) edge node [above] {\lstinline|insert(1)|}
-        ($(t1_start.east) + (70mm, 0)$);
-\end{tikzpicture}
-\caption{Neither quiescently consistent nor linearizable.}
-\end{figure}
-}
-
-\only<2>{
-\begin{figure}
-\centering
-\begin{tikzpicture}[start chain,
-    ->,
-    every node/.style={font = \small},
-    label/.style={rectangle,minimum size = 5mm}
-    ]
-
-    \begin{scope}[start chain = 1 going right]
-        \node [on chain=1] (t1_start) {Thread A};
-        \node [on chain=1, xshift = 70mm] (t1_end) {};
-    \end{scope}
-
-    \begin{scope}[start chain = 2 going right]
-        \node [on chain=2, below = of t1_start, yshift = 7.5mm] (t2_start) {Thread B};
-        \node [on chain=2, xshift = 70mm] (t2_end) {};
-    \end{scope}
-
-    \path[dashed, -stealth'] (t1_start) edge node [above] {} (t1_end);
-    \path[dashed, -stealth'] (t2_start) edge node [above] {} (t2_end);
-
-    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
-        ($(t2_start.east) + (10mm, 0)$) edge node [above] {\lstinline|delete_min(5)|}
-        ($(t2_start.east) + (30mm, 0)$)
-        ($(t2_start.east) + (40mm, 0)$) edge node [above] {\lstinline|insert(5)|}
-        ($(t2_start.east) + (60mm, 0)$);
-
-    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
-        ($(t1_start.east) + (25mm, 0)$) edge node [above] {\lstinline|insert(1)|}
-        ($(t1_start.east) + (45mm, 0)$);
-\end{tikzpicture}
-\caption{Quiescently consistent, but not linearizable.}
-\end{figure}
-}
-
-\only<3>{
-\begin{figure}
-\centering
-\begin{tikzpicture}[start chain,
-    ->,
-    every node/.style={font = \small},
-    label/.style={rectangle,minimum size = 5mm}
-    ]
-
-    \begin{scope}[start chain = 1 going right]
-        \node [on chain=1] (t1_start) {Thread A};
-        \node [on chain=1, xshift = 70mm] (t1_end) {};
-    \end{scope}
-
-    \begin{scope}[start chain = 2 going right]
-        \node [on chain=2, below = of t1_start, yshift = 7.5mm] (t2_start) {Thread B};
-        \node [on chain=2, xshift = 70mm] (t2_end) {};
-    \end{scope}
-
-    \path[dashed, -stealth'] (t1_start) edge node [above] {} (t1_end);
-    \path[dashed, -stealth'] (t2_start) edge node [above] {} (t2_end);
-
-    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
-        ($(t2_start.east) + (10mm, 0)$) edge node [above] {\lstinline|insert(5)|}
-        ($(t2_start.east) + (30mm, 0)$)
-        ($(t2_start.east) + (40mm, 0)$) edge node [above] {\lstinline|delete_min(1)|}
-        ($(t2_start.east) + (60mm, 0)$);
-
-    \path[line width = 1mm, serif cm-serif cm, every node/.style= { font = \footnotesize }]
-        ($(t1_start.east) + (50mm, 0)$) edge node [above] {\lstinline|insert(1)|}
-        ($(t1_start.east) + (70mm, 0)$);
-\end{tikzpicture}
-\caption{Quiescently consistent and linearizable.}
-\end{figure}
-}
-
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{Concepts and Definitions}
-\framesubtitle{Liveness conditions: something good eventually happens}
-
-\begin{itemize}
-\item \emph{Lock-freedom}: at least a single process makes progress at all times
-\item \emph{Wait-freedom}: every process finishes in a bounded number of steps
-\end{itemize}
-\end{frame}
-% TODO: Slide about relaxation.
-% --------------------------------------------------------------------------------------------------
-\begin{frame}[fragile]{Concepts and Definitions}
-\framesubtitle{Miscellaneous}
-% TODO: Cut this slide?
-\begin{itemize}
-\item Synchronization primitives:
-    \begin{itemize}
-    \item \ac{CAS}, \ac{FAA}, \ac{FAO}, \ac{TAS}
-    \item \ac{DCAS}, \ac{DCSS}
-    \end{itemize}
-\end{itemize}
-
-\begin{lstlisting}
-bool CAS(T *ptr, T *expected, T value) {
-  if (*ptr == *expected) {
-    *ptr = value;
-    return true;
-  } else {
-    *expected = *ptr;
-    return false;
-  }
-}
-\end{lstlisting}
 \end{frame}
 
 % --------------------------------------------------------------------------------------------------
@@ -505,38 +293,6 @@ bool CAS(T *ptr, T *expected, T value) {
 \item Others: Non-standard synchronization primitives, bounded range priorities
 
 \end{itemize}
-\end{frame}
-
-% --------------------------------------------------------------------------------------------------
-\section{Strict Priority Queues} \label{sec:strict}
-% --------------------------------------------------------------------------------------------------
-
-\begin{frame}{\nameref{sec:strict}}
-\framesubtitle{\citeauthor{linden2013skiplist}}
-
-\begin{itemize}
-\item Most efficient strict \ac{SL}-based \ac{PQ}, linearizable.
-\item Concurrent strict \ac{PQ} performance limited by contention and \ac{CAS} failures in
-      \lstinline|DeleteMin| \textrightarrow ~ Minimize \ac{CAS} calls.
-\item Deleted nodes form prefix of \ac{SL}, deletion flag packed into \lstinline|next| pointer of
-      \emph{previous} node prevents insertion \emph{before} deleted node.
-\item Most \lstinline|DeleteMin| perform logical deletion (1 \ac{CAS}) only, physical deletion
-      only once a bound is reached.
-\item Improves upon best previous \acp{PQ} by up to factor 2.
-\item \fullcite{linden2013skiplist}
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:strict}}
-\framesubtitle{\citeauthor{linden2013skiplist}}
-
-\begin{figure}
-\includegraphics[width=\textwidth]{linden}
-\caption{The \citeauthor{linden2013skiplist} \ac{PQ}. Concurrent \lstinline|Insert(3)| and
-\lstinline|DeleteMin| operations. Top right: \lstinline|DeleteMin| succeeds first,
-\lstinline|Insert(3)| \ac{CAS} fails. Bottom right: \lstinline|Insert(3)| succeeds first,
-\lstinline|DeleteMin| returns 3. (Image source: \cite{linden2013skiplist})}
-\end{figure}
 \end{frame}
 
 % --------------------------------------------------------------------------------------------------
