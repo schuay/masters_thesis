@@ -5,5 +5,6 @@ add_latex_document(presentation.tex
            klsm_insertion_00.tex
            klsm_insertion_01.tex
            klsm_insertion_02.tex
+           klsm_insertion_03.tex
            slsm_structure.tex
     BIBFILES bibliography.bib)

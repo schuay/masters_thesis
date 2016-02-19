@@ -522,12 +522,12 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \begin{minipage}[t]{.5\textwidth}
 \centering
 \input{klsm_insertion_00.tex}
-\subcaption{The initial state with item 7 inserted as a new block.}
+\subcaption{The initial state.}
 \end{minipage}%
 \begin{minipage}[t]{.5\textwidth}
 \centering
 \input{klsm_insertion_01.tex}
-\subcaption{After the first merge.}
+\subcaption{Item 7 inserted as a new block.}
 \end{minipage}
 \caption{Insertion of a new element into the \ac{LSM}.}
 \label{fig:lsm_insertion}
@@ -538,12 +538,12 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \begin{figure}
 \begin{minipage}[t]{.5\textwidth}
 \centering
-\input{klsm_insertion_01.tex}
+\input{klsm_insertion_02.tex}
 \subcaption{After the first merge.}
 \end{minipage}%
 \begin{minipage}[t]{.5\textwidth}
 \centering
-\input{klsm_insertion_02.tex}
+\input{klsm_insertion_03.tex}
 \subcaption{After the second merge.}
 \end{minipage}
 \caption{Insertion of a new element into the \ac{LSM}.}

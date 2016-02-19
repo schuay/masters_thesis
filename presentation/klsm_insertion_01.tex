@@ -34,11 +34,17 @@
             every on chain/.style={anchor=south},
             node distance = -0.15mm, every node/.style = box]
         \node[on chain, box, above = of ba2, yshift = 3mm] (20) {2};
-        \node[on chain, box] {7};
+    \end{scope}
+
+    \begin{scope}[start chain = 6 going {above=of \tikzchainprevious.north},
+            every on chain/.style={anchor=south},
+            node distance = -0.15mm, every node/.style = box]
+        \node[on chain, box, above = of ba3, yshift = 3mm] (30) {7};
     \end{scope}
 
     \path[->, every node/.style= { font = \sffamily\small }]
     (ba0) edge node [right] {} (00)
     (ba1) edge node [right] {} (10)
-    (ba2) edge node [right] {} (20);
+    (ba2) edge node [right] {} (20)
+    (ba3) edge node [right] {} (30);
 \end{tikzpicture}
