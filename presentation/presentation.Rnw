@@ -110,6 +110,110 @@ In general:
 \section{Introduction} \label{sec:intro}
 % --------------------------------------------------------------------------------------------------
 
+<<echo = FALSE>>=
+library(RColorBrewer)
+library(Rmisc)
+library(ggplot2)
+library(grid)
+library(plyr)
+library(scales)
+
+pqplot <- function(csvfile) {
+    # install.packages(c("Rmisc", "ggplot2", "plyr"))
+
+    df <- read.csv(csvfile)
+    colnames(df) <- c("kernel", "p", "throughput")
+
+    df$throughput <- df$throughput/1E6
+
+    pqplot_frame(df)
+}
+
+pqplot_frame <- function(df) {
+    df2 <- ddply(df, .(kernel, p), summarize, mean = mean(throughput),
+                 lower = CI(throughput)[[3]], upper = CI(throughput)[[1]])
+
+    pq_colors <- brewer.pal(8, "Dark2")
+    names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "linden", "multiq", "globallock", "spray")
+
+    p <- ggplot(df2, aes(x = p, y = mean, color = kernel, shape = kernel)) +
+                geom_line() +
+                geom_point(size = 3) +
+                geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.3) +
+                scale_y_continuous(limits = c(0, NA), oob = squish) +
+                scale_colour_manual(name = "kernel", values = pq_colors) +
+                ylab("Throughput in Mops/s") +
+                xlab("Number of threads") +
+    # Themes
+                theme_bw() +
+                theme(axis.text = element_text(size = 16),
+                      axis.title = element_text(size = 18),
+                      legend.text = element_text(size = 16),
+                      legend.title = element_text(size = 18),
+                      legend.position = c(0, 1),
+                      legend.justification = c(0, 1),
+                      legend.background = element_rect(fill = alpha("black", 0)),
+                      plot.margin = unit(c(0,0,0,0), "mm"))
+
+    plot(p)
+}
+
+filter_results_to <- function(filename, algorithms) {
+    df <- read.csv(filename)
+    colnames(df) <- c("kernel", "p", "throughput")
+    df$throughput <- df$throughput/1E6
+
+    return (df[df$kernel %in% algorithms, ])
+}
+
+filter_results <- function(filename) {
+    return (filter_results_to(filename, c("klsm128", "klsm256", "klsm4096", "linden", "multiq", "globallock")))
+}
+
+@
+
+\begin{frame}{\nameref{sec:intro}}
+\framesubtitle{The \klsm}
+
+\begin{itemize}
+\item Concurrent priority queue by Wimmer
+\item \emph{Lock-free}: Progress condition. At least one thread makes progress at any time.
+\item \emph{Linearizable}: Safety condition. Operations appear to take effect at one instant in time.
+\item \emph{Relaxed}: Deletions may return one of $k$ smallest elements.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{\nameref{sec:intro}}
+\framesubtitle{Motivation}
+
+\begin{figure}[ht]
+\begin{center}
+\only<1>{
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock")))
+@
+}
+\only<2>{
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", "linden")))
+@
+}
+\only<3>{
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", "linden", "multiq", "spray")))
+@
+}
+\only<4>{
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", "linden", "multiq", "spray", "klsm256", "klsm4096")))
+@
+}
+\end{center}
+\caption{Throughput on \lstinline|mars|, uniform workload, uniform key generation.}
+\end{figure}
+  
+\end{frame}
+
 \begin{frame}{\nameref{sec:intro}}
 \framesubtitle{Contents}
 
@@ -862,17 +966,6 @@ bool CAS(T *ptr, T *expected, T value) {
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{Throughput: Uniform workload, uniform key generation}
-<<echo = FALSE>>=
-\SweaveInput{pqplot.Rnw}
-
-filter_results <- function(filename) {
-    df <- read.csv(filename)
-    colnames(df) <- c("kernel", "p", "throughput")
-    df$throughput <- df$throughput/1E6
-
-    return (df[df$kernel %in% c("klsm128", "klsm256", "klsm4096", "linden", "multiq", "globallock"), ])
-}
-@
 
 \only<1>{
 \begin{figure}[ht]
