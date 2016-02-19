@@ -568,21 +568,6 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
-\framesubtitle{Implementation: Motivation}
-\begin{itemize}
-\item Comparability: Previously only part of the \emph{Pheet} task-scheduling framework,
-      no direct comparisons against related structures possible.
-\item Use in practice: Simple integration for use in practice.
-\item Maintainability: The reimplementation is easy to read, easy to understand, and
-      composable.
-\item Scientific reproducibility: Verifies performance
-      claims by \citeauthor{wimmerphd}.
-\item Further insight and improvements.
-\end{itemize}
-\end{frame}
-% TODO: Implementation stats? Time, SLOC, 
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:klsm}}
 \framesubtitle{Implementation}
 
 % Note that beamer does not like \verb apparently.
@@ -645,6 +630,7 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \item Insertions atomically replace changed part of \ac{LSM}.
 \item Deletions simply mark item as taken.
 \end{itemize}
+% TODO: Replace this slide by insertion figure (linked list, new tail is atomically replaced).
 % TODO: Insertion figure? Item interface?
 % TODO: A figure showing how we arrive at kP bound.
 \end{frame}
@@ -706,27 +692,29 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{Throughput: Uniform workload, uniform key generation}
 
+% TODO: Introduce eperiments one by one instead of one large information dump.
+
 \begin{figure}[ht]
 \centering
 \only<1>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot_frame(filter_results("results/20151112_mars_uni_uni"))
 @
-\caption{\lstinline|mars|}
+\caption{\lstinline|mars| (80 core Intel Xeon at 2 GHz)}
 }
 
 \only<2>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot_frame(filter_results("results/20151112_saturn_uni_uni"))
 @
-\caption{\lstinline|saturn|}
+\caption{\lstinline|saturn| (48 core AMD Opteron at 1.9 GHz)}
 }
 
 \only<3>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot_frame(filter_results("results/20151116_ceres_uni_uni"))
 @
-\caption{\lstinline|ceres|}
+\caption{\lstinline|ceres| (64 core SPARCv9 at 3.6 GHz)}
 }
 \end{figure}
 
@@ -804,7 +792,8 @@ on \lstinline|mars|.}
 \item Standalone reimplementation completed successfully.
 \item The \klsm can have exceptional performance.
 \item \ldots under the right conditions.
-\item Although SkipList-based designs have dominated recent research, their performance is fairly low.
+\item Very good quality results in practice.
+\item The standard uniform workload, uniform key generation benchmark is not enough to evaluate performance.
 \item Multiqueues have lower peak performance, but have stable behavior in all experiments.
 
 \end{itemize}
