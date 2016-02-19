@@ -117,6 +117,7 @@ library(ggplot2)
 library(grid)
 library(plyr)
 library(scales)
+library("xtable")
 
 pqplot <- function(csvfile) {
     # install.packages(c("Rmisc", "ggplot2", "plyr"))
@@ -170,6 +171,57 @@ filter_results <- function(filename) {
     return (filter_results_to(filename, c("klsm128", "klsm256", "klsm4096", "linden", "multiq", "globallock")))
 }
 
+gen_table <- function(filename, thread_counts) {
+    df <- read.csv(filename)
+
+    colnames(df) <- c("kernel", "p", "mean", "max", "stdev")
+    df$max <- NULL
+
+    df <- subset(df, p %in% thread_counts)
+
+    kernel_summary <- function(df, kernel) {
+        return(c( kernel
+                , round(df[df$p == thread_counts[1] & df$kernel == kernel, 3], 0)
+                , round(df[df$p == thread_counts[1] & df$kernel == kernel, 4], 0)
+                , round(df[df$p == thread_counts[2] & df$kernel == kernel, 3], 0)
+                , round(df[df$p == thread_counts[2] & df$kernel == kernel, 4], 0)
+                , round(df[df$p == thread_counts[3] & df$kernel == kernel, 3], 0)
+                , round(df[df$p == thread_counts[3] & df$kernel == kernel, 4], 0)
+                ))
+    }
+
+    df2 <- rbind( kernel_summary(df, "globallock")
+                , kernel_summary(df, "klsm16")
+                , kernel_summary(df, "klsm128")
+                , kernel_summary(df, "klsm256")
+                , kernel_summary(df, "klsm4096")
+                , kernel_summary(df, "multiq")
+                )
+
+    colnames(df2) <- c(" ", "Mean", "SD", "Mean", "SD", "Mean", "SD")
+
+    return(df2)
+}
+
+print_table <- function(filename, thread_counts) {
+    df <- gen_table(filename, thread_counts)
+
+    print(xtable(df, align = "llrrrrrr"),
+        floating = FALSE,
+        hline.after = NULL,
+        include.rownames = FALSE,
+        add.to.row = list(
+            pos = list(-1, 0, nrow(df)),
+            command = c( paste( "\\toprule\n& \\multicolumn{2}{c}{"
+                              , thread_counts[1]
+                              , " threads} & \\multicolumn{2}{c}{"
+                              , thread_counts[2]
+                              , " threads} & \\multicolumn{2}{c}{"
+                              , thread_counts[3]
+                              , " threads} \\\\ \\cmidrule(r){2-3}\\cmidrule(r){4-5}\\cmidrule(r){6-7}", sep = "")
+                       , "\\midrule\n"
+                       , "\\bottomrule\n")))
+}
 @
 
 \begin{frame}{\nameref{sec:intro}}
@@ -770,24 +822,9 @@ is the $k$-smallest item at that time, it has rank $k$.
 \begin{table}[ht]
 \footnotesize
 \begin{center}
-\begin{tabular}{lrrrrrr}
-\toprule
-& \multicolumn{2}{c}{20 threads} & \multicolumn{2}{c}{40 threads} & \multicolumn{2}{c}{80 threads} \\
-\cmidrule(r){2-3}\cmidrule(r){4-5}\cmidrule(r){6-7}
-& Mean & StdDev & Mean & StdDev & Mean & StdDev \\
-\midrule
-\lstinline|globallock| & 1.9 & 1.0 & 2.9 & 1.7 & 4.8 & 2.9 \\
-\lstinline|klsm16|   & 20 & 15 & 23 & 20 & 15 & 9 \\
-~(max)  & 320 & - & 640 & - & 1280 & - \\
-\lstinline|klsm128|  & 33 & 31 & 55 & 46 & 430 & 294 \\
-~(max)  & 2560 & - & 5120 & - & 10240 & - \\
-\lstinline|klsm256|  & 42 & 42 & 71 & 61 & 750 & 828 \\
-~(max)  & 5120 & - & 10240 & - & 20480 & - \\
-\lstinline|klsm4096| & 297 & 496 & 625 & 1014 & 10353 & 12667 \\
-~(max)  & 81920 & - & 163840 & - & 327680 & - \\
-\lstinline|multiq|   & 984 & 2899 & 2252 & 7433 & 3787 & 12549 \\
-\bottomrule
-\end{tabular}
+<<results = tex, echo = FALSE>>=
+print_table("results/20151112_mars_uni_uni_q", c(20, 40, 80))
+@
 \end{center}
 \caption{Rank error for the uniform workload, uniform key generation benchmark
 on \lstinline|mars|.}
