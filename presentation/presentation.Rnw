@@ -688,73 +688,33 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
-\begin{frame}[fragile]{\nameref{sec:Results}}
-\framesubtitle{Throughput: Algorithms}
-
-\begin{itemize}
-\item \verb|globallock|: A \verb|std::priority_queue<T>|, protected by a single global lock as a baseline.
-\item \verb|linden|: The lock-free, strict, SkipList-based priority queue \cite{linden2013skiplist}.
-\item \verb|spray|: A relaxed, lock-free, SkipList-based priority queue \cite{alistarhspraylist}.
-      Provided implementation crashes in most benchmarks.
-\item \verb|multiq|: A simple, elegant recent relaxed concurrent priority queue
-      design \cite{rihani2014multiqueues}.
-\item \verb|klsm16, klsm128, ...|:
-      The standalone \klsm
-      reimplementation using a wide range of values for the
-      relaxation parameter $k$. Linearizable, lock-free, and relaxed \cite{wimmer2015lock}.
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:Results}}
-\framesubtitle{Throughput: Machines}
-
-\begin{itemize}
-\item \lstinline|mars|, an 80-core (8x10 cores) Intel Xeon
-      E7-8850 @ 2 GHz and 1 TB of RAM. 32 KB L1, 256 KB L2, 24 MB L3 cache.
-\item \lstinline|saturn|, a 48-core machine with 4 AMD Opteron 6168 processors
-      with 12 cores each, clocked at 1.9 GHz. 125 GB RAM, 64 KB of L1, 512 KB of L2, and 5 MB of L3 cache.
-\item \lstinline|ceres|, a 64-core SPARCv9-based machine with 4 processors
-      of 16 cores each. Cores are clocked at 3.6 GHz and have 8-way hardware
-      hyperthreading. 1 TB RAM, 16 KB of L1, 128 KB of L2,
-      and 8 MB of L3 cache.
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{Throughput: Uniform workload, uniform key generation}
 
-\only<1>{
 \begin{figure}[ht]
-\begin{center}
+\centering
+\only<1>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot("results/20151112_mars_uni_uni")
 @
-\end{center}
 \caption{\lstinline|mars|}
-\end{figure}
 }
 
 \only<2>{
-\begin{figure}[ht]
-\begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot_frame(filter_results("results/20160203_saturn_uni_uni"))
 @
-\end{center}
 \caption{\lstinline|saturn|}
-\end{figure}
 }
 
 \only<3>{
-\begin{figure}[ht]
-\begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot_frame(filter_results("results/20160203_ceres_uni_uni"))
 @
-\end{center}
 \caption{\lstinline|ceres|}
-\end{figure}
 }
+\end{figure}
+
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
