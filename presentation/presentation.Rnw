@@ -852,12 +852,4 @@ on \lstinline|mars|.}
 Questions?
 \end{frame}
 
-% --------------------------------------------------------------------------------------------------
-\section{References} \label{sec:references}
-% --------------------------------------------------------------------------------------------------
-
-\begin{frame}[allowframebreaks]{\nameref{sec:references}}
-\printbibliography
-\end{frame}
-
 \end{document}
