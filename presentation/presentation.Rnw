@@ -403,22 +403,6 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:relaxed}}
-\framesubtitle{\citeauthor{alistarhspraylist}: SprayList}
-
-\begin{itemize}
-\item Relaxed \ac{SL}-based \ac{PQ}, safety properties unclear.
-\item \lstinline|DeleteMin| returns one of the $O(P \log^3 P)$ elements.
-\item Degrades to random-remove if the \ac{PQ} is small compared to thread count $P$ (for $P = 80$,
-      $P \log^3 P \approx 7000$).
-\item \lstinline|DeleteMin| performs random walk: starting at the list head on some level $l$,
-      repeatedly follow a randomized number of \lstinline|next[l]| pointers, descend a randomized
-      number of levels.
-\item Each element within the walk has approximately equal probability of being returned.
-\item \fullcite{alistarhspraylist}
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:relaxed}}
 \framesubtitle{\citeauthor{rihani2014multiqueues}: Multiqueues}
 
 \begin{figure}
@@ -504,30 +488,9 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
          item from a randomly selected queue.}
 \end{figure}
 \end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:relaxed}}
-\framesubtitle{\citeauthor{rihani2014multiqueues}: Multiqueues}
-
-\begin{itemize}
-\item Decentralized collection of priority queues (e.g., sequential heaps protected by locks).
-\item No given semantic bounds.
-\item Insertions into a random queue.
-\item Deletions take minimal item from two random queues.
-\item \fullcite{rihani2014multiqueues}
-
-\end{itemize}
-\end{frame}
 
 % --------------------------------------------------------------------------------------------------
 \section{\klsm} \label{sec:klsm}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:klsm}}
-\begin{itemize}
-\item First relaxed linearizable \ac{PQ} by \citeauthor{wimmerphd}.
-\item Composition of two designs: the \ac{SLSM}, and the distributed \ac{DLSM}.
-\item \fullcite{wimmer2015lock}
-\end{itemize}
-\end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
 \begin{figure}[ht]
