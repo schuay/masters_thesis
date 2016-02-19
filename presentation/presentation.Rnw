@@ -695,21 +695,21 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \centering
 \only<1>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot("results/20151112_mars_uni_uni")
+pqplot_frame(filter_results("results/20151112_mars_uni_uni"))
 @
 \caption{\lstinline|mars|}
 }
 
 \only<2>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20160203_saturn_uni_uni"))
+pqplot_frame(filter_results("results/20151112_saturn_uni_uni"))
 @
 \caption{\lstinline|saturn|}
 }
 
 \only<3>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20160203_ceres_uni_uni"))
+pqplot_frame(filter_results("results/20151116_ceres_uni_uni"))
 @
 \caption{\lstinline|ceres|}
 }
@@ -722,7 +722,7 @@ pqplot_frame(filter_results("results/20160203_ceres_uni_uni"))
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot("results/20151112_mars_uni_asc")
+pqplot_frame(filter_results("results/20151112_mars_uni_asc"))
 @
 \end{center}
 \caption{\lstinline|mars|.}
@@ -734,7 +734,7 @@ pqplot("results/20151112_mars_uni_asc")
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot("results/20151112_mars_spl_uni")
+pqplot_frame(filter_results("results/20151112_mars_spl_uni"))
 @
 \end{center}
 \caption{\lstinline|mars|.}
@@ -746,7 +746,7 @@ pqplot("results/20151112_mars_spl_uni")
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot("results/20151112_mars_spl_asc")
+pqplot_frame(filter_results("results/20151112_mars_spl_asc"))
 @
 \end{center}
 \caption{\lstinline|mars|.}
