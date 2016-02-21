@@ -134,8 +134,8 @@ pqplot_frame <- function(df) {
     df2 <- ddply(df, .(kernel, p), summarize, mean = mean(throughput),
                  lower = CI(throughput)[[3]], upper = CI(throughput)[[1]])
 
-    pq_colors <- brewer.pal(8, "Dark2")
-    names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "linden", "multiq", "globallock", "spray")
+    pq_colors <- brewer.pal(10, "Paired")
+    names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "linden", "multiq", "globallock", "spray", "pheet256", "pheet4096")
 
     p <- ggplot(df2, aes(x = p, y = mean, color = kernel, shape = kernel)) +
                 geom_line() +
@@ -332,7 +332,7 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
     \item \citeauthor{shavit2000skiplist}: First SkipList-based \ac{PQ}.
     \item \citeauthor{sundell2003fast}: First lock-free \ac{PQ}.
     \item \citeauthor{linden2013skiplist}: Minimizes contention.
-    \item \citeauthor{cbpq}: Novel (non-SkipList) concept, efficient.
+    \item \citeauthor{cbpq}: List of arrays, efficient.
     \end{itemize}
 
 \item Relaxed concurrent \acp{PQ}
@@ -341,8 +341,6 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
     \item \citeauthor{rihani2014multiqueues}: Multiqueues.
     \item \citeauthor{wimmer2013data}: k-\ac{LSM}.
     \end{itemize}
-
-\item Others: Non-standard synchronization primitives, bounded range priorities
 
 \end{itemize}
 \end{frame}
@@ -382,9 +380,9 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
     \node[box] (1d) at (30mm, 5mm) {}; \node[box] (1e) at (40mm, 5mm) {}; \node[box] (1f) at (50mm, 5mm) {};
     \node[box] (1h) at (70mm, 5mm) {};
 
-    \node[box] (0a) at (0, 0) {}; \node[box] (0b) at (10mm, 0) {0}; \node[box] (0c) at (20mm, 0) {1};
+    \node[box] (0a) at (0, 0) {H}; \node[box] (0b) at (10mm, 0) {0}; \node[box] (0c) at (20mm, 0) {1};
     \node[box] (0d) at (30mm, 0) {2}; \node[box] (0e) at (40mm, 0) {3}; \node[box] (0f) at (50mm, 0) {4};
-    \node[box] (0g) at (60mm, 0) {5}; \node[box] (0h) at (70mm, 0) {};
+    \node[box] (0g) at (60mm, 0) {5}; \node[box] (0h) at (70mm, 0) {T};
 
     {
     [start chain] \chainin(0a); \chainin(0b) [join]; \chainin(0c) [join]; \chainin(0d) [join]; \chainin(0e) [join]; \chainin(0f) [join]; \chainin(0g) [join]; \chainin(0h) [join];
@@ -703,14 +701,22 @@ pqplot_frame(filter_results("results/20151112_mars_uni_uni"))
 \caption{\lstinline|mars| (80 core Intel Xeon at 2 GHz)}
 }
 
+% TODO: Better comparison against pheet. Use Dark palette again.
 \only<2>{
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("klsm256", "klsm4096", "pheet256", "pheet4096")))
+@
+\caption{\lstinline|mars|, comparison against the Pheet \klsm}
+}
+
+\only<3>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot_frame(filter_results("results/20151112_saturn_uni_uni"))
 @
 \caption{\lstinline|saturn| (48 core AMD Opteron at 1.9 GHz)}
 }
 
-\only<3>{
+\only<4>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pqplot_frame(filter_results("results/20151116_ceres_uni_uni"))
 @
@@ -755,6 +761,9 @@ pqplot_frame(filter_results("results/20151112_mars_spl_asc"))
 \caption{\lstinline|mars|.}
 \end{figure}
 \end{frame}
+
+% TODO: Quick summary slide of performance reasons.
+
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{Quality}
