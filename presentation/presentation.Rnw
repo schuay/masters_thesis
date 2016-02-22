@@ -652,8 +652,7 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \begin{figure}
 \centering
 \input{slsm_structure.tex}
-\caption{Schematic block array structure containing blocks $b_i$ and pivot ranges $p_i$, $i \in [0, 3]$.
-         Items shown in white have been deleted.}
+\caption{Pivot ranges contain subset of $k + 1$ smallest elements \textrightarrow~ Deletions skip at most $k$.}
 \label{fig:lsm_insertion}
 \end{figure}
 \end{frame}
@@ -663,48 +662,20 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 % --------------------------------------------------------------------------------------------------
 
 \begin{frame}{\nameref{sec:Results}}
-\framesubtitle{Throughput}
-
-% TODO: Do introduction of algorithms inline by changing algorithm colors to transparent?
-% Or simply by introducing them one by one. Same with experiments, explain uniform/... as they
-% come up.
+\framesubtitle{Throughput: Uniform workload, uniform key generation}
 
 \begin{itemize}
-\item We present throughput, i.e. the number of operations performed per second.
-\item Prefilled with $10^6$ elements.
-\end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:Results}}
-\framesubtitle{Throughput: Benchmarks}
-
-\begin{itemize}
-\item \emph{Uniform workload}: Each thread repeatedly chooses uniformly at random between
-    \lstinline|Insert| and \lstinline|DeleteMin|.
-\item \emph{Split workload}: Half of all threads insert only, the other half deletes.
-\item \emph{Uniform key generation}: Keys for insertions are generated uniformly at random
-        within the range of 32 bit integers.
-\item \emph{Ascending key generation}: Small range which rises over time:
-        $\text{key}_t \in [0, 512[ + t$. Similar to the classic Hold pattern.
-\item \emph{Restricted key generation}: Restricted key range, e.g. 8-bit integers.
+\item Most commonly used benchmark.
+\item Throughput: Number of operations per second.
+\item Each thread: 50\% insertions, 50\% deletions.
+\item Keys taken at random from 32-bit integer range.
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{Throughput: Uniform workload, uniform key generation}
-
-% TODO: Introduce eperiments one by one instead of one large information dump.
-
 \begin{figure}[ht]
 \centering
-\only<1>{
-<<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20151112_mars_uni_uni"))
-@
-\caption{\lstinline|mars| (80 core Intel Xeon at 2 GHz)}
-}
-
-\only<2>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
 pq_colors <- brewer.pal(6, "Dark2")
 names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "pheet256", "pheet4096")
@@ -712,23 +683,27 @@ names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "pheet256", "pheet4096")
 pqplot_frame_palette(filter_results_to("results/20151112_mars_uni_uni", c("klsm256", "klsm4096", "pheet256", "pheet4096")), pq_colors)
 @
 \caption{\lstinline|mars|, comparison against the Pheet \klsm}
-}
-
-\only<3>{
-<<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20151112_saturn_uni_uni"))
-@
-\caption{\lstinline|saturn| (48 core AMD Opteron at 1.9 GHz)}
-}
-
-\only<4>{
-<<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20151116_ceres_uni_uni"))
-@
-\caption{\lstinline|ceres| (64 core SPARCv9 at 3.6 GHz)}
-}
 \end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput: Uniform workload, uniform key generation}
+\begin{figure}[ht]
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot_frame(filter_results("results/20151112_mars_uni_uni"))
+@
+\caption{\lstinline|mars| (80 core Intel Xeon at 2 GHz)}
+\end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput: Uniform workload, ascending keygeneration}
 
+\begin{itemize}
+\item Keys taken from $[0, 512[ + t$.
+\item Induces FIFO-like behavior.
+\end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
@@ -741,6 +716,14 @@ pqplot_frame(filter_results("results/20151112_mars_uni_asc"))
 \end{center}
 \caption{\lstinline|mars|.}
 \end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput: Split workload, uniform key generation}
+
+\begin{itemize}
+\item 50\% of threads insert, others delete.
+\end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
@@ -766,15 +749,21 @@ pqplot_frame(filter_results("results/20151112_mars_spl_asc"))
 \caption{\lstinline|mars|.}
 \end{figure}
 \end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
 
-% TODO: Quick summary slide of performance reasons.
+\begin{itemize}
+\item Performance directly dependent on utilization of the \ac{DLSM}.
+\item Uniform/uniform benchmark: 95\% of all deletions from the \ac{DLSM}.
+\end{itemize}
+\end{frame}
 
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:Results}}
 \framesubtitle{Quality}
 
 \begin{itemize}
-\item Are semantic guarantees fulfilled? And how good is the quality of results?
+\item And how good is the quality of results?
 \item Determined by rank: for each \lstinline|delete_min|, if the removed item
 is the $k$-smallest item at that time, it has rank $k$.
 \item Reminder: The \klsm allows deletions to return up to rank $kP$ ($P$ is the number of threads).
