@@ -273,7 +273,7 @@ pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", 
 \begin{itemize}
 \item Background.
 \item Related work.
-\item The \klsm: design and implementation.
+\item The \klsm design.
 \item Results.
 \end{itemize}
 
