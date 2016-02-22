@@ -751,8 +751,8 @@ on \lstinline|mars|.}
 \item Standalone reimplementation completed successfully.
 \item The \klsm can have exceptional performance.
 \item \ldots under the right conditions.
-\item Very good quality results in practice.
 \item The standard uniform workload, uniform key generation benchmark is not enough to evaluate performance.
+\item Very good quality results in practice.
 \item Multiqueues have lower peak performance, but have stable behavior in all experiments.
 
 \end{itemize}
