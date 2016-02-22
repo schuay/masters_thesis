@@ -634,12 +634,9 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \begin{figure}[ht]
 \centering
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pq_colors <- brewer.pal(6, "Dark2")
-names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "pheet256", "pheet4096")
-
-pqplot_frame_palette(filter_results_to("results/20151112_mars_uni_uni", c("klsm256", "klsm4096", "pheet256", "pheet4096")), pq_colors)
+pqplot_frame(filter_results("results/20151112_mars_uni_uni"))
 @
-\caption{\lstinline|mars|, comparison against the Pheet \klsm}
+\caption{\lstinline|mars| (80 core Intel Xeon at 2 GHz)}
 \end{figure}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
@@ -648,9 +645,12 @@ pqplot_frame_palette(filter_results_to("results/20151112_mars_uni_uni", c("klsm2
 \begin{figure}[ht]
 \centering
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20151112_mars_uni_uni"))
+pq_colors <- brewer.pal(6, "Dark2")
+names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "pheet256", "pheet4096")
+
+pqplot_frame_palette(filter_results_to("results/20151112_mars_uni_uni", c("klsm256", "klsm4096", "pheet256", "pheet4096")), pq_colors)
 @
-\caption{\lstinline|mars| (80 core Intel Xeon at 2 GHz)}
+\caption{\lstinline|mars|, comparison against the Pheet \klsm}
 \end{figure}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
