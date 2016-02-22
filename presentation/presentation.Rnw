@@ -231,7 +231,8 @@ print_table <- function(filename, thread_counts) {
 \item Concurrent priority queue by Wimmer
 \item \emph{Lock-free}: Progress condition. At least one thread makes progress at any time.
 \item \emph{Linearizable}: Safety condition. Operations appear to take effect at one instant in time.
-\item \emph{Relaxed}: Deletions may return one of $k$ smallest elements.
+\item \emph{Relaxed}: Deletions may return one of $kP$ smallest elements 
+      ($k$ is configurable, $P$ is the thread count).
 \end{itemize}
 \end{frame}
 
@@ -519,6 +520,7 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
+\framesubtitle{The \ac{LSM}}
 \begin{itemize}
 \item Based on the concept of \acp{LSM}.
 \item Maintain items in a logarithmic number of sorted arrays.
@@ -566,92 +568,60 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
-\framesubtitle{Implementation}
+\framesubtitle{\ac{LSM} Deletions}
 
-% Note that beamer does not like \verb apparently.
 \begin{figure}
+\begin{minipage}[t]{.5\textwidth}
 \centering
-    \begin{tikzpicture}[start chain,
-        ->,
-        every node/.style={font = \small},
-        label/.style={rectangle,minimum size = 5mm}
-      ]
-
-        \begin{scope}[start chain = 1 going {below=of \tikzchainprevious.south},
-                every on chain/.style = {anchor = north},
-                node distance = -0.15mm]
-            \node[on chain, box] (klsm) {\texttt{k\_lsm}};
-            \node[on chain, yshift = -5mm] (abpt) {\texttt{aligned\_block\_ptr}};
-            \node[on chain] (bpool) {\texttt{block\_pool}};
-            \node[on chain] (italloc) {\texttt{item\_allocator}};
-            \node[on chain] (bstorage) {\texttt{block\_storage}};
-            \node[on chain] (mm) {\emph{\small Memory Management}};
-            \node[on chain, box, yshift = -5mm] (block) {\texttt{block}};
-            \node[on chain, box, yshift = -5mm] (item) {\texttt{item}};
-        \end{scope}
-
-        \node[box, left = of italloc] (dlsm) {\texttt{dist\_lsm}};
-        \node[box, right = of italloc] (slsm) {\texttt{shared\_lsm}};
-
-        \node[box, below = of slsm] (barray) {\texttt{block\_array}};
-        \node[box, below = of barray] (bpivots) {\texttt{block\_pivots}};
-
-        \begin{pgfonlayer}{background}
-            \draw[box] ($(abpt.north west) - (2mm, 0)$) rectangle ($(mm.north east) + (1mm, 0)$);
-        \end{pgfonlayer}
-
-        \path[->, every node/.style= { font = \sffamily\small }]
-            (klsm.west) edge[bend right = 30] node [right] {} (dlsm)
-            (klsm.east) edge[bend left = 30] node [right] {} (slsm)
-            (dlsm.east) edge[bend right = 10] node [right] {} (italloc.west)
-            (dlsm.east) edge[bend right = 10] node [right] {} (bstorage.west)
-            (slsm.west) edge[bend left = 10] node [right] {} (abpt.east)
-            (slsm.west) edge[bend left = 10] node [right] {} (bpool.east)
-            (slsm.west) edge[bend left = 10] node [right] {} (italloc.east)
-            (slsm.south) edge node [right] {} (barray.north)
-            (barray.west) edge[bend left = 10] node [right] {} (block.east)
-            (barray.south) edge node [right] {} (bpivots.north)
-            (dlsm.south) edge[bend right = 30] node [right] {} (block.west)
-            (block.south) edge node [right] {} (item.north);
-    \end{tikzpicture}
-\caption{Overview of the \lstinline|k_lsm| class structure.}
-\label{fig:klsm_structure}
+\input{klsm_deletion_00.tex}
+\subcaption{The initial state.}
+\end{minipage}%
+\begin{minipage}[t]{.5\textwidth}
+\centering
+\input{klsm_deletion_01.tex}
+\subcaption{Item 0 marked as deleted.}
+\end{minipage}
+\caption{Deletion from the \ac{LSM}.}
+\label{fig:lsm_deletion}
 \end{figure}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
-\framesubtitle{Implementation: \ac{DLSM}}
+\framesubtitle{\ac{DLSM}}
 \begin{itemize}
-\item Thread-local \acp{LSM}.
-\item Reads by all threads, writes only by owner.
-\item When local \ac{LSM} is empty, copy another thread's \ac{LSM} (\lstinline|spy|).
-\item Insertions atomically replace changed part of \ac{LSM}.
-\item Deletions simply mark item as taken.
+\item One \ac{LSM} per thread (thread-local).
+\item Inter-thread communication only when local \ac{LSM} is empty (\lstinline|spy|).
 \end{itemize}
-% TODO: Replace this slide by insertion figure (linked list, new tail is atomically replaced).
-% TODO: Insertion figure? Item interface?
-% TODO: A figure showing how we arrive at kP bound.
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
-\framesubtitle{Implementation: \ac{SLSM}}
+\framesubtitle{\ac{SLSM}}
 \begin{itemize}
-\item Global \ac{LSM} shared by all threads.
-\item Thread-local copies of the global \ac{LSM}.
-\item Mutations change the thread-local copy, then atomically replace the global
+\item One global \ac{LSM} shared by all threads.
+\item Insertions change the thread-local copy, then atomically replace the global
       \ac{LSM}.
 \item Relaxation through so-called \emph{pivot} ranges.
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:klsm}}
-\framesubtitle{Implementation: \ac{SLSM}}
+\framesubtitle{\ac{SLSM}}
 \begin{figure}
 \centering
 \input{slsm_structure.tex}
-\caption{Pivot ranges contain subset of $k + 1$ smallest elements \textrightarrow~ Deletions skip at most $k$.}
+\caption{Pivot ranges contain subset of $k + 1$ smallest elements.}
 \label{fig:lsm_insertion}
 \end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:klsm}}
+\framesubtitle{\klsm: The $kP$ bound}
+\begin{itemize}
+\item \klsm deletions peek at \ac{DLSM} and \ac{SLSM} and remove the smaller item.
+\item Each thread-local \ac{DLSM} has a capacity of $k$ \textrightarrow~ deletions skip at most $k(P - 1)$ items.
+\item The \ac{SLSM} pivot range contains $k + 1$ smallest items \textrightarrow~ deletions skip at most $k$ items.
+\item Combining both: at most $kP$ items skipped.
+\end{itemize}
 \end{frame}
 
 % --------------------------------------------------------------------------------------------------
