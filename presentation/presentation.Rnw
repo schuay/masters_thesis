@@ -286,7 +286,6 @@ pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", 
 
 \begin{itemize}
 \item Standard abstract data structure.
-\item Used widely in algorithmics, operating systems, task scheduling, etc.
 \item Interface consists of two $O(\log n)$ operations:
 
 \begin{lstlisting}
@@ -297,15 +296,6 @@ bool delete_min(V &val);
 \item Typical backing data structures: heaps \& search trees.
 \end{itemize}
 
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:intro}}
-\framesubtitle{Concurrent priority queues}
-
-\begin{itemize}
-\item Why? In the past decade, processor clock speeds have remained the same, trend towards multiple cores.
-\item New data structures required to take advantage of concurrent execution.
-\end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:intro}}
