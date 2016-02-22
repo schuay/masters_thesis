@@ -253,12 +253,12 @@ pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", 
 }
 \only<3>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", "linden", "multiq", "spray")))
+pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", "linden", "multiq")))
 @
 }
 \only<4>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", "linden", "multiq", "spray", "klsm256", "klsm4096")))
+pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", "linden", "multiq", "klsm4096")))
 @
 }
 \end{center}
