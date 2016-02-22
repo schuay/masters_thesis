@@ -193,10 +193,7 @@ gen_table <- function(filename, thread_counts) {
                 ))
     }
 
-    df2 <- rbind( kernel_summary(df, "globallock")
-                , kernel_summary(df, "klsm16")
-                , kernel_summary(df, "klsm128")
-                , kernel_summary(df, "klsm256")
+    df2 <- rbind( kernel_summary(df, "klsm256")
                 , kernel_summary(df, "klsm4096")
                 , kernel_summary(df, "multiq")
                 )
@@ -766,7 +763,6 @@ pqplot_frame(filter_results("results/20151112_mars_spl_asc"))
 \item And how good is the quality of results?
 \item Determined by rank: for each \lstinline|delete_min|, if the removed item
 is the $k$-smallest item at that time, it has rank $k$.
-\item Reminder: The \klsm allows deletions to return up to rank $kP$ ($P$ is the number of threads).
 \end{itemize}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
@@ -780,7 +776,7 @@ is the $k$-smallest item at that time, it has rank $k$.
 print_table("results/20151112_mars_uni_uni_q", c(20, 40, 80))
 @
 \end{center}
-\caption{Rank error for the uniform workload, uniform key generation benchmark
+\caption{Uniform workload, uniform key generation benchmark
 on \lstinline|mars|.}
 \label{tbl:mars_uni_uni_q}
 \end{table}
