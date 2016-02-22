@@ -131,18 +131,21 @@ pqplot <- function(csvfile) {
 }
 
 pqplot_frame <- function(df) {
+    pq_colors <- brewer.pal(8, "Dark2")
+    names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "linden", "multiq", "globallock", "spray")
+    pqplot_frame_palette(df, pq_colors)
+}
+
+pqplot_frame_palette <- function(df, palette) {
     df2 <- ddply(df, .(kernel, p), summarize, mean = mean(throughput),
                  lower = CI(throughput)[[3]], upper = CI(throughput)[[1]])
-
-    pq_colors <- brewer.pal(10, "Paired")
-    names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "linden", "multiq", "globallock", "spray", "pheet256", "pheet4096")
 
     p <- ggplot(df2, aes(x = p, y = mean, color = kernel, shape = kernel)) +
                 geom_line() +
                 geom_point(size = 3) +
                 geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.3) +
                 scale_y_continuous(limits = c(0, NA), oob = squish) +
-                scale_colour_manual(name = "kernel", values = pq_colors) +
+                scale_colour_manual(name = "kernel", values = palette) +
                 ylab("Throughput in Mops/s") +
                 xlab("Number of threads") +
     # Themes
@@ -701,10 +704,12 @@ pqplot_frame(filter_results("results/20151112_mars_uni_uni"))
 \caption{\lstinline|mars| (80 core Intel Xeon at 2 GHz)}
 }
 
-% TODO: Better comparison against pheet. Use Dark palette again.
 \only<2>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("klsm256", "klsm4096", "pheet256", "pheet4096")))
+pq_colors <- brewer.pal(6, "Dark2")
+names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "pheet256", "pheet4096")
+
+pqplot_frame_palette(filter_results_to("results/20151112_mars_uni_uni", c("klsm256", "klsm4096", "pheet256", "pheet4096")), pq_colors)
 @
 \caption{\lstinline|mars|, comparison against the Pheet \klsm}
 }
