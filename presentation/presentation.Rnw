@@ -263,10 +263,22 @@ pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", 
 }
 \end{center}
 \caption{Throughput on \lstinline|mars|, uniform workload, uniform key generation.}
-\end{figure}
-  
+\end{figure}  
 \end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:intro}}
+\framesubtitle{In this thesis}
 
+Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
+
+\begin{itemize}
+\item Standalone reimplementation (C++11, 4800 SLOC).
+\item Extensive evaluation against related structures on multiple machines.
+\item Different benchmarks demonstrate behavioral changes.
+\item Semantic quality benchmarks show results are within theoretical bounds.
+\end{itemize}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
 \begin{frame}{\nameref{sec:intro}}
 \framesubtitle{Contents}
 
@@ -296,19 +308,6 @@ bool delete_min(V &val);
 \item Typical backing data structures: heaps \& search trees.
 \end{itemize}
 
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:intro}}
-\framesubtitle{In this thesis}
-
-Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
-
-\begin{itemize}
-\item Standalone reimplementation (C++11, 4800 SLOC).
-\item Extensive evaluation against related structures on multiple machines.
-\item Different benchmarks demonstrate behavioral changes.
-\item Semantic quality benchmarks show results are within theoretical bounds.
-\end{itemize}
 \end{frame}
 
 % --------------------------------------------------------------------------------------------------
@@ -588,8 +587,6 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 \framesubtitle{\ac{SLSM}}
 \begin{itemize}
 \item One global \ac{LSM} shared by all threads.
-\item Insertions change the thread-local copy, then atomically replace the global
-      \ac{LSM}.
 \item Relaxation through so-called \emph{pivot} ranges.
 \end{itemize}
 \end{frame}
@@ -637,20 +634,6 @@ Previously, \klsm only part of task-scheduling framework \emph{Pheet}.
 pqplot_frame(filter_results("results/20151112_mars_uni_uni"))
 @
 \caption{\lstinline|mars| (80 core Intel Xeon at 2 GHz)}
-\end{figure}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:Results}}
-\framesubtitle{Throughput: Uniform workload, uniform key generation}
-\begin{figure}[ht]
-\centering
-<<fig = TRUE, width = 10, echo = FALSE>>=
-pq_colors <- brewer.pal(6, "Dark2")
-names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "pheet256", "pheet4096")
-
-pqplot_frame_palette(filter_results_to("results/20151112_mars_uni_uni", c("klsm256", "klsm4096", "pheet256", "pheet4096")), pq_colors)
-@
-\caption{\lstinline|mars|, comparison against the Pheet \klsm}
 \end{figure}
 \end{frame}
 % --------------------------------------------------------------------------------------------------
@@ -723,23 +706,9 @@ pqplot_frame(filter_results("results/20151112_mars_spl_asc"))
 \item And how good is the quality of results?
 \item Determined by rank: for each \lstinline|delete_min|, if the removed item
 is the $k$-smallest item at that time, it has rank $k$.
+\item \klsm results are usually within $5^{\text{th}}$ percentile of allowed relaxation.
+\item \lstinline|multiq| approximately comparable to \lstinline|klsm4096|.
 \end{itemize}
-\end{frame}
-% --------------------------------------------------------------------------------------------------
-\begin{frame}{\nameref{sec:Results}}
-\framesubtitle{Quality}
-
-\begin{table}[ht]
-\footnotesize
-\begin{center}
-<<results = tex, echo = FALSE>>=
-print_table("results/20151112_mars_uni_uni_q", c(20, 40, 80))
-@
-\end{center}
-\caption{Uniform workload, uniform key generation benchmark
-on \lstinline|mars|.}
-\label{tbl:mars_uni_uni_q}
-\end{table}
 \end{frame}
 
 % --------------------------------------------------------------------------------------------------
@@ -762,5 +731,58 @@ on \lstinline|mars|.}
 \centering
 Questions?
 \end{frame}
+
+\appendix
+
+\section{Additional Slides}
+
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput: Uniform workload, uniform key generation}
+\begin{figure}[ht]
+\centering
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pq_colors <- brewer.pal(6, "Dark2")
+names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "pheet256", "pheet4096")
+
+pqplot_frame_palette(filter_results_to("results/20151112_mars_uni_uni", c("klsm256", "klsm4096", "pheet256", "pheet4096")), pq_colors)
+@
+\caption{\lstinline|mars|, comparison against the Pheet \klsm}
+\end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Throughput: Uniform workload, uniform key generation}
+\begin{figure}[ht]
+\centering
+\only<1>{
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot_frame(filter_results("results/20151112_saturn_uni_uni"))
+@
+\caption{\lstinline|saturn|}
+} \only<2>{
+<<fig = TRUE, width = 10, echo = FALSE>>=
+pqplot_frame(filter_results("results/20151116_ceres_uni_uni"))
+@
+\caption{\lstinline|ceres|}
+}
+\end{figure}
+\end{frame}
+% --------------------------------------------------------------------------------------------------
+\begin{frame}{\nameref{sec:Results}}
+\framesubtitle{Quality: Uniform workload, uniform key generation}
+
+\begin{table}[ht]
+\footnotesize
+\begin{center}
+<<results = tex, echo = FALSE>>=
+print_table("results/20151112_mars_uni_uni_q", c(20, 40, 80))
+@
+\end{center}
+\caption{\lstinline|mars|.}
+\label{tbl:mars_uni_uni_q}
+\end{table}
+\end{frame}
+
 
 \end{document}
