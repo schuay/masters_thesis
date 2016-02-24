@@ -162,6 +162,10 @@ pqplot_frame_palette <- function(df, palette) {
     plot(p)
 }
 
+mars <- function(df) { return (df[df$p <= 80, ]) }
+saturn <- function(df) { return (df[df$p <= 48, ]) }
+ceres <- function(df) { return (df[df$p <= 64, ]) }
+
 filter_results_to <- function(filename, algorithms) {
     df <- read.csv(filename)
     colnames(df) <- c("kernel", "p", "throughput")
@@ -243,22 +247,22 @@ print_table <- function(filename, thread_counts) {
 \begin{center}
 \only<1>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock")))
+pqplot_frame(mars(filter_results_to("results/20160203_mars_uni_uni", c("globallock"))))
 @
 }
 \only<2>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", "linden")))
+pqplot_frame(mars(filter_results_to("results/20160203_mars_uni_uni", c("globallock", "linden"))))
 @
 }
 \only<3>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", "linden", "multiq")))
+pqplot_frame(mars(filter_results_to("results/20160203_mars_uni_uni", c("globallock", "linden", "multiq"))))
 @
 }
 \only<4>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results_to("results/20151112_mars_uni_uni", c("globallock", "linden", "multiq", "klsm4096")))
+pqplot_frame(mars(filter_results_to("results/20160203_mars_uni_uni", c("globallock", "linden", "multiq", "klsm4096"))))
 @
 }
 \end{center}
@@ -534,7 +538,7 @@ bool delete_min(V &val);
 \subcaption{Item 7 inserted as a new block.}
 \end{minipage}
 \caption{Insertion of a new element into the \ac{LSM}.}
-\label{fig:lsm_insertion}
+\label{fig:lsm_insertion_00_01}
 \end{figure}
 }
 
@@ -551,7 +555,7 @@ bool delete_min(V &val);
 \subcaption{After the second merge.}
 \end{minipage}
 \caption{Insertion of a new element into the \ac{LSM}.}
-\label{fig:lsm_insertion}
+\label{fig:lsm_insertion_02_03}
 \end{figure}
 }
 \end{frame}
@@ -631,7 +635,7 @@ bool delete_min(V &val);
 \begin{figure}[ht]
 \centering
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20151112_mars_uni_uni"))
+pqplot_frame(mars(filter_results("results/20160203_mars_uni_uni")))
 @
 \caption{\lstinline|mars| (80 core Intel Xeon at 2 GHz)}
 \end{figure}
@@ -651,7 +655,7 @@ pqplot_frame(filter_results("results/20151112_mars_uni_uni"))
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20151112_mars_uni_asc"))
+pqplot_frame(mars(filter_results("results/20160203_mars_uni_asc")))
 @
 \end{center}
 \caption{\lstinline|mars|.}
@@ -671,7 +675,7 @@ pqplot_frame(filter_results("results/20151112_mars_uni_asc"))
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20151112_mars_spl_uni"))
+pqplot_frame(mars(filter_results("results/20160203_mars_spl_uni")))
 @
 \end{center}
 \caption{\lstinline|mars|.}
@@ -683,7 +687,7 @@ pqplot_frame(filter_results("results/20151112_mars_spl_uni"))
 \begin{figure}[ht]
 \begin{center}
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20151112_mars_spl_asc"))
+pqplot_frame(mars(filter_results("results/20160203_mars_spl_asc")))
 @
 \end{center}
 \caption{\lstinline|mars|.}
@@ -745,7 +749,7 @@ Questions?
 pq_colors <- brewer.pal(6, "Dark2")
 names(pq_colors) <- c("klsm128", "klsm256", "klsm4096", "pheet256", "pheet4096")
 
-pqplot_frame_palette(filter_results_to("results/20151112_mars_uni_uni", c("klsm256", "klsm4096", "pheet256", "pheet4096")), pq_colors)
+pqplot_frame_palette(mars(filter_results_to("results/20160203_mars_uni_uni", c("klsm256", "klsm4096", "pheet256", "pheet4096"))), pq_colors)
 @
 \caption{\lstinline|mars|, comparison against the Pheet \klsm}
 \end{figure}
@@ -757,12 +761,12 @@ pqplot_frame_palette(filter_results_to("results/20151112_mars_uni_uni", c("klsm2
 \centering
 \only<1>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20151112_saturn_uni_uni"))
+pqplot_frame(saturn(filter_results("results/20160203_saturn_uni_uni")))
 @
 \caption{\lstinline|saturn|}
 } \only<2>{
 <<fig = TRUE, width = 10, echo = FALSE>>=
-pqplot_frame(filter_results("results/20151116_ceres_uni_uni"))
+pqplot_frame(ceres(filter_results("results/20160203_ceres_uni_uni")))
 @
 \caption{\lstinline|ceres|}
 }
@@ -776,7 +780,7 @@ pqplot_frame(filter_results("results/20151116_ceres_uni_uni"))
 \footnotesize
 \begin{center}
 <<results = tex, echo = FALSE>>=
-print_table("results/20151112_mars_uni_uni_q", c(20, 40, 80))
+print_table("results/20160122_mars_uni_uni_q", c(20, 40, 80))
 @
 \end{center}
 \caption{\lstinline|mars|.}
