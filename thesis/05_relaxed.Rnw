@@ -142,7 +142,7 @@ allocated in a pool and reused. Memory management will be discussed in further d
 \subsection{\aclp{LSM}} \label{ssec:lsm}
 
 \aclp{LSM} were introduced to the database community in \citedate{o1996log} \cite{o1996log}
-and reinvented indepently by \citeauthor{wimmerphd} based on the requirements of concurrent
+and reinvented independently by \citeauthor{wimmerphd} based on the requirements of concurrent
 priority queues. \acp{LSM} are the basic building blocks of the \ac{SLSM} and \ac{DLSM}
 and hence also the \klsm.
 
